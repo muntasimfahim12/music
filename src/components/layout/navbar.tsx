@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion"; 
+import { motion, AnimatePresence } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 
 const navLinks = [
@@ -21,19 +22,30 @@ const Navbar = () => {
         className="fixed inset-x-0 top-0 z-[100] h-[70px] flex items-center bg-black/40 backdrop-blur-md border-b border-white/5 transition-all duration-300"
       >
         <div className="mx-auto max-w-[1400px] w-full flex items-center justify-between px-6 md:px-12">
-          
-          {/* LOGO AREA - Slim & Elegant */}
-          <motion.div 
-            whileHover={{ opacity: 0.8 }}
-            className="flex items-center cursor-pointer"
+
+        {/* LOGO AREA - Slim & Elegant */}
+          <motion.div
+            whileHover={{ scale: 1.05, opacity: 0.9 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center cursor-pointer relative group"
           >
-            <h1 className="text-[#D4AF37] text-xl md:text-2xl font-black tracking-tighter uppercase italic select-none">
-              DEEBZLENÜZ
-            </h1>
+           
+            <img 
+              src="/logo/logo2.png" 
+              alt="DEEBZLENÜZ Logo" 
+              className="h-15 md:h-25 w-auto object-contain transition-all duration-300 filter brightness-110 group-hover:drop-shadow-[0_0_8px_rgba(212,175,87,0.5)]"
+            />
+            <img 
+              src="/logo/logo.png" 
+              alt="DEEBZLENÜZ Logo" 
+              className="h-8 md:h-10 w-auto object-contain transition-all duration-300 filter brightness-110 group-hover:drop-shadow-[0_0_8px_rgba(212,175,87,0.5)]"
+            />
+            
+            <div className="absolute inset-0 bg-[#D4AF37]/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
           </motion.div>
 
           {/* DESKTOP MENU - White Hover Effect */}
-          <nav className="hidden lg:flex items-center gap-10"> 
+          <nav className="hidden lg:flex items-center gap-10">
             {navLinks.map((item) => (
               <a
                 key={item.name}
@@ -46,8 +58,8 @@ const Navbar = () => {
           </nav>
 
           {/* MOBILE TOGGLE */}
-          <button 
-            className="lg:hidden text-white/80 p-2" 
+          <button
+            className="lg:hidden text-white/80 p-2"
             onClick={() => setOpen(!open)}
           >
             {open ? <IconX size={26} /> : <IconMenu2 size={26} />}
