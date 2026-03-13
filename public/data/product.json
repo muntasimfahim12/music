@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "name": "NOCTURNAL VIBE TEE",
+    "subtext": "Stone Washed Black",
+    "price": "$48.00",
+    "category": "TEES",
+    "mainImage": "/hero/image.png",
+    "hoverImage": "/hero/img1.png",
+    "tag": "NEW ARRIVAL"
+  },
+  {
+    "id": 2,
+    "name": "OFFICIAL LOGO HOODIE",
+    "subtext": "Crimson Red / Oversized",
+    "price": "$89.00",
+    "category": "HOODIES",
+    "mainImage": "/hero/img.jpg",
+    "hoverImage": "/hero/imgt.jpg",
+    "tag": "LIMITED"
+  },
+  {
+    "id": 3,
+    "name": "URBAN SIGNATURE CAP",
+    "subtext": "Matte Black Edition",
+    "price": "$32.00",
+    "category": "ACCESSORIES",
+    "mainImage": "/hero/img.jpg",
+    "hoverImage": "/hero/image.png",
+    "tag": "SOLD OUT"
+  },
+  {
+    "id": 4,
+    "name": "SONIC REVOLUTION VINYL",
+    "subtext": "12\" Translucent Red",
+    "price": "$45.00",
+    "category": "BUNDLES",
+    "mainImage": "/hero/imgt.jpg",
+    "hoverImage": "/hero/image.png",
+    "tag": null
+  },
+  {
+    "id": 5,
+    "name": "VOID OVERSIZED HOODIE",
+    "subtext": "Carbon Gray",
+    "price": "$95.00",
+    "category": "HOODIES",
+    "mainImage": "/hero/img.jpg",
+    "hoverImage": "/hero/image.png",
+    "tag": "POPULAR"
+  },
+  {
+    "id": 6,
+    "name": "METRO TRUCKER HAT",
+    "subtext": "Midnight Navy / Mesh",
+    "price": "$29.00",
+    "category": "ACCESSORIES",
+    "mainImage": "/hero/img.jpg",
+    "hoverImage": "/hero/imgt.jpg",
+    "tag": "NEW"
+  },
+  {
+    "id": 7,
+    "name": "GRAPHIC LOGO TEE",
+    "subtext": "Vintage White",
+    "price": "$42.00",
+    "category": "TEES",
+    "mainImage": "/hero/image.png",
+    "hoverImage": "/hero/img1.png",
+    "tag": "RESTOCK"
+  },
+  {
+    "id": 8,
+    "name": "DISTORTED VISION TEE",
+    "subtext": "Charcoal Grey",
+    "price": "$46.00",
+    "category": "TEES",
+    "mainImage": "/hero/img1.png",
+    "hoverImage": "/hero/image.png",
+    "tag": null
+  },
+  {
+    "id": 9,
+    "name": "CYBERPUNK HOODIE",
+    "subtext": "Neon Accents / Heavy",
+    "price": "$110.00",
+    "category": "HOODIES",
+    "mainImage": "/hero/imgt.jpg",
+    "hoverImage": "/hero/img.jpg",
+    "tag": "EXCLUSIVE"
+  },
+  {
+    "id": 10,
+    "name": "MINIMALIST BEANIE",
+    "subtext": "Soft Knit / Jet Black",
+    "price": "$22.00",
+    "category": "ACCESSORIES",
+    "mainImage": "/hero/img.jpg",
+    "hoverImage": "/hero/image.png",
+    "tag": null
+  },
+  {
+    "id": 11,
+    "name": "TECH-WEAR BUNDLE",
+    "subtext": "Tee + Cap + Sticker Set",
+    "price": "$75.00",
+    "category": "BUNDLES",
+    "mainImage": "/hero/imgt.jpg",
+    "hoverImage": "/hero/image.png",
+    "tag": "BEST VALUE"
+  },
+  {
+    "id": 12,
+    "name": "ELEMENTAL TEE",
+    "subtext": "Sandstone Washed",
+    "price": "$44.00",
+    "category": "TEES",
+    "mainImage": "/hero/image.png",
+    "hoverImage": "/hero/img1.png",
+    "tag": "HOT"
+  },
+  {
+    "id": 13,
+    "name": "PHANTOM ZIP-UP",
+    "subtext": "Double-lined / Stealth",
+    "price": "$125.00",
+    "category": "HOODIES",
+    "mainImage": "/hero/img.jpg",
+    "hoverImage": "/hero/imgt.jpg",
+    "tag": "LIMITED"
+  },
+  {
+    "id": 14,
+    "name": "ARCHIVE CARGO PACK",
+    "subtext": "Limited Edition Bundle",
+    "price": "$150.00",
+    "category": "BUNDLES",
+    "mainImage": "/hero/image.png",
+    "hoverImage": "/hero/imgt.jpg",
+    "tag": null
+  },
+  {
+    "id": 15,
+    "name": "SPECTRUM TEE",
+    "subtext": "Multi-color Print",
+    "price": "$48.00",
+    "category": "TEES",
+    "mainImage": "/hero/img1.png",
+    "hoverImage": "/hero/image.png",
+    "tag": "NEW"
+  },
+  {
+    "id": 16,
+    "name": "ULTRA LOGO SOCKS",
+    "subtext": "3-Pack Essentials",
+    "price": "$18.00",
+    "category": "ACCESSORIES",
+    "mainImage": "/hero/imgt.jpg",
+    "hoverImage": "/hero/img.jpg",
+    "tag": null
+  }
+]
