@@ -4,6 +4,7 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import { Play } from 'lucide-react';
+import Button from '../ui/button';
 
 const Hero = () => {
   return (
@@ -70,15 +71,10 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-10 flex flex-row items-center justify-center gap-3 md:gap-6 w-full px-4"
           >
-            {/* LISTEN NOW */}
-            <button className="group relative flex-1 max-w-[180px] md:max-w-[240px] py-4 bg-[#FF2E2E] text-white font-black text-[9px] md:text-xs uppercase tracking-[0.2em] transition-all hover:bg-white hover:text-black">
-              LISTEN NOW
-            </button>
+            <Button title="LISTEN NOW" variant="primary"></Button>
 
             {/* STREAM NOW */}
-            <button className="flex-1 max-w-[180px] md:max-w-[240px] py-4 border border-[#D4AF37] text-[#D4AF37] font-black text-[9px] md:text-xs uppercase tracking-[0.2em] transition-all hover:bg-[#D4AF37] hover:text-black">
-              STREAM NOW
-            </button>
+           <Button title="STREAM NOW" variant="outline" />
           </motion.div>
 
         </div>

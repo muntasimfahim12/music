@@ -1,85 +1,121 @@
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
 import React from 'react';
-import { Instagram, Twitter, Youtube, Music2 } from 'lucide-react'; // আইকনের জন্য
+import { motion } from "framer-motion";
+import { Instagram, Twitter, Youtube, Music2, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-black text-white py-12 px-6 md:px-16 font-sans border-t border-zinc-800">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Top Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          
-          {/* Logo & Newsletter */}
-          <div className="md:col-span-1">
-            <h2 className="text-3xl font-black tracking-tighter mb-4">
-              DEEBZ<span className="text-[#FF004D]">LENUZ</span>
-            </h2>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-              Ultra-Modern, High-Fidelity Audio Experiences. <br />
-              Shaping the sound of the new era.
-            </p>
-            
-            <div className="relative flex items-center max-w-sm">
-              <input 
-                type="email" 
-                placeholder="Join the mailing list..." 
-                className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-zinc-600 transition-all"
+    <footer className="bg-[#050505] text-white py-16 px-6 md:px-12 lg:px-24 border-t border-white/5 relative overflow-hidden">
+
+      {/* Background Subtle Glow */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FF2E2E]/5 blur-[150px] -z-10 pointer-events-none" />
+
+      <div className="max-w-[1400px] mx-auto">
+
+        {/* Top Section: Logo & Newsletter */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-white/5">
+
+          {/* Brand Info */}
+          <div className="lg:col-span-5 space-y-8">
+            {/* LOGO AREA - Slim & Elegant */}
+            <motion.div
+              whileHover={{ scale: 1.05, opacity: 0.9 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center cursor-pointer relative group"
+            >
+
+              <img
+                src="/logo/logo2.png"
+                alt="DEEBZLENÜZ Logo"
+                className="h-15 md:h-25 w-auto object-contain transition-all duration-300 filter brightness-110 group-hover:drop-shadow-[0_0_8px_rgba(212,175,87,0.5)]"
               />
-              <button className="absolute right-1.5 bg-white text-black font-bold text-xs px-4 py-2 rounded-md hover:bg-zinc-200 transition-colors">
-                SUBSCRIBE
-              </button>
+              <img
+                src="/logo/logo.png"
+                alt="DEEBZLENÜZ Logo"
+                className="h-8 md:h-10 w-auto object-contain transition-all duration-300 filter brightness-110 group-hover:drop-shadow-[0_0_8px_rgba(212,175,87,0.5)]"
+              />
+
+              <div className="absolute inset-0 bg-[#D4AF37]/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+            </motion.div>
+
+            <p className="text-zinc-500 text-sm md:text-base leading-relaxed max-w-sm font-medium">
+              Shaping the future of Caribbean sound through high-fidelity audio
+              experiences and global independent movement.
+            </p>
+
+            {/* Social Icons - Modern Style */}
+            <div className="flex items-center gap-5">
+              {[
+                { icon: <Instagram size={18} />, label: "IG" },
+                { icon: <Twitter size={18} />, label: "X" },
+                { icon: <Youtube size={18} />, label: "YT" },
+                { icon: <Music2 size={18} />, label: "TK" },
+              ].map((social, i) => (
+                <motion.a
+                  key={i}
+                  href="#"
+                  whileHover={{ y: -3, color: "#FF2E2E" }}
+                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:border-[#FF2E2E] transition-all"
+                >
+                  {social.icon}
+                </motion.a>
+              ))}
             </div>
           </div>
 
-          {/* Explore Links */}
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest mb-6 text-zinc-200">Explore</h3>
-            <ul className="space-y-4 text-zinc-400 text-sm">
-              <li className="hover:text-white cursor-pointer transition-colors">Music</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Videos</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Tour Dates</li>
-              <li className="hover:text-white cursor-pointer transition-colors">The Vault (Shop)</li>
-            </ul>
+          {/* Quick Links */}
+          <div className="lg:col-span-3 grid grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white">Explore</h3>
+              <ul className="space-y-4 text-zinc-500 text-sm font-semibold">
+                <li className="hover:text-white cursor-pointer flex items-center gap-1 transition-all">Music <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100" /></li>
+                <li className="hover:text-white cursor-pointer transition-all">Videos</li>
+                <li className="hover:text-white cursor-pointer transition-all">The Vault</li>
+                <li className="hover:text-white cursor-pointer transition-all">Tour</li>
+              </ul>
+            </div>
+            <div className="space-y-6">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white">Support</h3>
+              <ul className="space-y-4 text-zinc-500 text-sm font-semibold">
+                <li className="hover:text-white cursor-pointer transition-all">Contact</li>
+                <li className="hover:text-white cursor-pointer transition-all">EPK</li>
+                <li className="hover:text-white cursor-pointer transition-all">Shipping</li>
+              </ul>
+            </div>
           </div>
 
-          {/* Connect Links */}
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest mb-6 text-zinc-200">Connect</h3>
-            <ul className="space-y-4 text-zinc-400 text-sm">
-              <li className="flex items-center gap-2 hover:text-white cursor-pointer transition-colors">
-                <Instagram size={16} /> Instagram
-              </li>
-              <li className="flex items-center gap-2 hover:text-white cursor-pointer transition-colors">
-                <Twitter size={16} /> Twitter/X
-              </li>
-              <li className="flex items-center gap-2 hover:text-white cursor-pointer transition-colors">
-                <Youtube size={16} /> YouTube
-              </li>
-              <li className="flex items-center gap-2 hover:text-white cursor-pointer transition-colors">
-                <Music2 size={16} /> TikTok
-              </li>
-            </ul>
-          </div>
-
-          {/* Management & Booking */}
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest mb-6 text-zinc-200">Management</h3>
-            <button className="w-full border border-red-900/50 bg-red-950/10 text-red-500 font-bold py-4 px-6 rounded-md hover:bg-red-900/20 transition-all duration-300 shadow-[0_0_15px_rgba(153,27,27,0.1)] mb-4 uppercase tracking-tighter text-sm">
-              Book DEEBZLENUZ
-            </button>
-            <p className="text-zinc-500 text-xs hover:text-zinc-300 cursor-pointer transition-colors">
-              Press Kit (EPK)
+          {/* Newsletter / Action */}
+          <div className="lg:col-span-4 space-y-6">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white">Stay Updated</h3>
+            <div className="relative group">
+              <input
+                type="email"
+                placeholder="Email address"
+                className="w-full bg-white/5 border border-white/10 py-4 px-6 rounded-xl text-sm focus:outline-none focus:border-[#FF2E2E] transition-all placeholder:text-zinc-700"
+              />
+              <button className="absolute right-2 top-2 bg-white text-black font-black text-[10px] px-5 py-2.5 rounded-lg hover:bg-[#FF2E2E] hover:text-white transition-all uppercase tracking-widest">
+                Join
+              </button>
+            </div>
+            <p className="text-[10px] text-zinc-600 uppercase tracking-widest">
+              Join the mailing list for exclusive drops.
             </p>
           </div>
-
         </div>
 
-        {/* Bottom Section */}
-        <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs text-zinc-500 uppercase tracking-widest">
-          <p>© 2024 DEEBZLENUZ OFFICIAL. All rights reserved.</p>
-          <div className="flex gap-8">
-            <span className="hover:text-white cursor-pointer">Privacy Policy</span>
-            <span className="hover:text-white cursor-pointer">Terms of Service</span>
+        {/* Bottom Section: Legal & Credits */}
+        <div className="pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-[0.2em] text-center md:text-left">
+            © {currentYear} DEEBZLENÜZ OFFICIAL. Crafted for the global stage.
+          </p>
+
+          <div className="flex gap-8 text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em]">
+            <span className="hover:text-white cursor-pointer transition-all">Privacy Policy</span>
+            <span className="hover:text-white cursor-pointer transition-all">Terms of Use</span>
           </div>
         </div>
       </div>
