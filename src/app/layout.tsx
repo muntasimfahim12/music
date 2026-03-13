@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast"; 
+import { Toaster } from "react-hot-toast";
 import Navbar from "../components/layout/navbar";
 import Footer from "../components/layout/footer";
 
@@ -16,10 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DEEBZLENUZ | Official Website",
-  description: "Official platform for DEEBZLENUZ - Music, Videos, and Exclusive Merchandise.",
+  title: "DEEBZLENÜZ | Official Website",
+  description: "Official platform for DEEBZLENÜZ - Music, Videos, and Exclusive Merchandise.",
   icons: {
-    icon: "/images/icons/logo.png",
+    icon: "/logo/logo2.png",
   }
 };
 
@@ -31,9 +31,24 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#050505] text-white min-h-screen flex flex-col selection:bg-[#FF2E2E] selection:text-white`}
       >
-        <Toaster position="top-center" reverseOrder={false} />
+        {/* Toast Notifications */}
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              background: '#121212',
+              color: '#fff',
+              border: '1px solid rgba(255,255,255,0.1)',
+              fontSize: '14px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              fontWeight: 'bold',
+            },
+          }}
+        />
 
         <Navbar />
 
@@ -41,7 +56,7 @@ export default function RootLayout({
           {children}
         </main>
 
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );

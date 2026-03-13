@@ -6,7 +6,7 @@ import Button from '../ui/button';
 
 const stats = [
   {
-    label: "SONGS RELEASED", // ছবি অনুযায়ী লেবেল আপডেট
+    label: "SONGS RELEASED", 
     value: "50+",
     color: "text-[#FF2E2E]",
   },
@@ -26,7 +26,6 @@ const StatsSection = () => {
   return (
     <section className="relative w-full bg-[#050505] py-24 md:py-32 overflow-hidden border-t border-white/5">
 
-      {/* ছবির মতো হুবহু গ্রিড ব্যাকগ্রাউন্ড */}
       <div className="absolute inset-0 opacity-5 pointer-events-none"
         style={{
           backgroundImage: `linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
@@ -89,7 +88,6 @@ const StatsSection = () => {
         </div>
       </div>
 
-      {/* নিচের শ্যাডো ইফেক্ট */}
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#050505] to-transparent"></div>
     </section>
   );
