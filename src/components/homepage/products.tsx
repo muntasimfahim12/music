@@ -174,7 +174,7 @@ const Products = () => {
                                 Season 01 Collection
                             </span>
                         </motion.div>
-                        <h2 className="text-white text-4xl md:text-5xl font-[1000] uppercase tracking-tighter leading-[1]">
+                        <h2 className="text-white text-4xl judson-bold md:text-5xl font-[1000] uppercase tracking-tighter leading-[1]">
                             HUMAN <span className="text-zinc-600">ARCHIVE</span> <br />
                             <span className="text-[14px] md:text-[16px] font-medium tracking-[0.1em] text-zinc-500 uppercase">
                                 Designed for the modern movement

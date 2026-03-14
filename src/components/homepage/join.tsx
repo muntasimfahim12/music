@@ -17,7 +17,7 @@ const Join = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-white text-4xl md:text-6xl font-[1000] uppercase tracking-tighter mb-6"
+          className="text-white text-4xl md:text-6xl judson-bold font-[1000] uppercase tracking-tighter mb-6"
         >
           JOIN THE MOVEMENT
         </motion.h2>

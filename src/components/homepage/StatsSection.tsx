@@ -44,7 +44,7 @@ const StatsSection = () => {
             className="flex-1 space-y-8 text-center lg:text-left"
           >
             <div className="space-y-4">
-              <h2 className="text-white text-3xl md:text-5xl font-[1000] uppercase tracking-tighter">
+              <h2 className="text-white text-3xl judson-bold md:text-5xl font-[1000] uppercase tracking-tighter">
                 SUPPORT INDEPENDENT MUSIC
               </h2>
               <p className="text-zinc-500 text-sm md:text-base leading-relaxed max-w-lg font-medium mx-auto lg:mx-0">

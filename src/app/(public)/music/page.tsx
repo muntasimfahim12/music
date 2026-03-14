@@ -138,7 +138,7 @@ const MusicPage = () => {
     return (
         <main className="bg-[#050505] min-h-screen text-white p-4 md:p-12 selection:bg-[#FF4D3D]">
             <div className="max-w-[1400px] mx-auto">
-                
+
                 {/* --- Modern Header --- */}
                 <header className="relative mb-12 md:mb-20 overflow-hidden rounded-[24px] md:rounded-[40px] border border-white/5 bg-[#0A0A0A]">
                     <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#FF4D3D]/10 to-transparent pointer-events-none" />
@@ -177,7 +177,7 @@ const MusicPage = () => {
                             className="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl py-4 md:py-5 pl-12 pr-4 inter-medium text-sm focus:outline-none focus:border-[#FF4D3D]/30 transition-all"
                         />
                     </div>
-                    <button 
+                    <button
                         onClick={() => setIsMobileFilterOpen(true)}
                         className="lg:hidden flex items-center justify-center gap-3 bg-white text-black rounded-2xl py-4 inter-bold text-xs uppercase tracking-widest"
                     >
@@ -221,13 +221,13 @@ const MusicPage = () => {
                                                         e.currentTarget.src = "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=500";
                                                     }}
                                                 />
-                                                
+
                                                 {/* Labels */}
                                                 <div className="absolute top-4 left-4 flex flex-col gap-2">
                                                     {album.tag && (
                                                         <span className={`px-3 py-1 rounded-full inter-bold text-[8px] uppercase tracking-widest backdrop-blur-md shadow-lg
-                                                            ${album.tag === 'NEW RELEASE' ? 'bg-[#FF4D3D] text-white' : 
-                                                              album.tag === 'SOLD OUT' ? 'bg-black/60 text-zinc-400' : 'bg-[#FFD166] text-black'}`}>
+                                                            ${album.tag === 'NEW RELEASE' ? 'bg-[#FF4D3D] text-white' :
+                                                                album.tag === 'SOLD OUT' ? 'bg-black/60 text-zinc-400' : 'bg-[#FFD166] text-black'}`}>
                                                             {album.tag}
                                                         </span>
                                                     )}
@@ -263,9 +263,9 @@ const MusicPage = () => {
                                     <ChevronLeft size={20} />
                                 </button>
                                 {[...Array(totalPages)].map((_, i) => (
-                                    <button 
-                                        key={i} 
-                                        onClick={() => paginate(i + 1)} 
+                                    <button
+                                        key={i}
+                                        onClick={() => paginate(i + 1)}
                                         className={`w-12 h-12 rounded-2xl inter-bold text-xs transition-all ${currentPage === i + 1 ? 'bg-[#FF4D3D] text-white shadow-lg shadow-[#FF4D3D]/20' : 'bg-[#0A0A0A] border border-white/5 text-zinc-500 hover:border-white/20'}`}
                                     >
                                         {i + 1}
@@ -284,22 +284,22 @@ const MusicPage = () => {
             <AnimatePresence>
                 {isMobileFilterOpen && (
                     <>
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setIsMobileFilterOpen(false)}
-                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[99] lg:hidden" 
+                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[99] lg:hidden"
                         />
-                        <motion.div 
+                        <motion.div
                             initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
                             className="fixed right-0 top-0 h-full w-[85%] max-w-sm bg-[#0A0A0A] border-l border-white/10 z-[100] p-8 overflow-y-auto lg:hidden"
                         >
                             <div className="flex justify-between items-center mb-10">
                                 <h2 className="judson-bold text-3xl">Filters</h2>
-                                <button onClick={() => setIsMobileFilterOpen(false)} className="p-2 bg-white/5 rounded-full"><X size={20}/></button>
+                                <button onClick={() => setIsMobileFilterOpen(false)} className="p-2 bg-white/5 rounded-full"><X size={20} /></button>
                             </div>
                             <FilterContent />
-                            <button 
+                            <button
                                 onClick={() => { clearFilters(); setIsMobileFilterOpen(false); }}
                                 className="w-full mt-6 py-4 border border-[#FF4D3D] text-[#FF4D3D] inter-bold text-[10px] uppercase tracking-widest rounded-xl"
                             >

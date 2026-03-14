@@ -47,7 +47,7 @@ const MusicCatalog = () => {
           >
             <span className="h-[2px] w-12 bg-[#FF2E2E]"></span>
           </motion.div>
-          <h2 className="text-white text-4xl md:text-5xl font-[1000] uppercase tracking-tighter mb-4">
+          <h2 className="text-white judson-bold text-4xl md:text-5xl font-[1000] uppercase tracking-tighter mb-4">
             MUSIC <span className="text-zinc-700">CATALOG</span>
           </h2>
           <p className="text-zinc-500 text-sm md:text-base max-w-xl mx-auto uppercase tracking-widest font-medium">

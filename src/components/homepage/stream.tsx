@@ -43,7 +43,7 @@ const StreamEverywhere = () => {
                     transition={{ duration: 0.6 }}
                     className="mb-12 md:mb-16 space-y-2"
                 >
-                    <h2 className="text-white text-3xl md:text-5xl font-bold tracking-tight">
+                    <h2 className="text-white text-3xl  judson-bold md:text-5xl font-bold tracking-tight">
                         Stream Everywhere
                     </h2>
                     <div className="w-12 h-[2px] bg-[#FF2E2E] mx-auto rounded-full" />

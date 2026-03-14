@@ -20,10 +20,10 @@ const LatestRelease = () => {
                     className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left"
                 >
                     <div className="space-y-2 md:space-y-3">
-                        <h2 className="text-white text-3xl sm:text-5xl md:text-6xl font-[1000] uppercase tracking-tighter leading-[0.9] md:leading-none">
+                        <h2 className="text-white text-3xl judson-bold sm:text-5xl md:text-6xl font-[1000] uppercase tracking-tighter leading-[0.9] md:leading-none">
                             LATEST <span className="text-zinc-700">RELEASE</span>
                         </h2>
-                        <h3 className="text-[#FF2E2E] text-lg sm:text-xl md:text-2xl font-black uppercase tracking-[0.2em]">
+                        <h3 className="text-[#FF2E2E] judson-bold text-lg sm:text-xl md:text-2xl font-black uppercase tracking-[0.2em]">
                             CARIBBEAN FIRE
                         </h3>
                     </div>
@@ -62,7 +62,6 @@ const LatestRelease = () => {
                     </div>
                 </motion.div>
 
-                {/* Right Side: Image Area - মোবাইলে এটি উপরে থাকবে (Order-1) */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -75,7 +74,6 @@ const LatestRelease = () => {
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
 
-                    {/* Play Button Overlay - মোবাইলে সব সময় হালকা ভিজিবল বা হোভারে ফুল */}
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer">
                         <motion.div
                             whileHover={{ scale: 1.15 }}
