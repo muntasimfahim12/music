@@ -1,0 +1,400 @@
+[
+  {
+    "id": 1,
+    "title": "Echoes of Eternity",
+    "artist": "Lumina Sun",
+    "cover_image": "/music/album-1.jpg",
+    "main_genre": "Synthwave",
+    "release_year": "2024",
+    "total_tracks": "12 Tracks",
+    "duration": "48:20",
+    "description": "A journey through time and space with retro-futuristic synth pads. The bass response is tight and the synth layers are crystal clear. Perfect for late-night drives through neon-lit cities.",
+    "tag": "NEW RELEASE",
+    "rating": 4.8,
+    "review_count": 128,
+    "formats": [
+      { "type": "Digital Download", "price": 9.99, "desc": "MP3 (320kbps) + WAV / FLAC" },
+      { "type": "Limited Edition Vinyl", "price": 24.99, "desc": "180g Translucent Red Vinyl + Digital", "stock_status": "SELLING FAST" },
+      { "type": "Compact Disc", "price": 14.99, "desc": "Digipak with 12-page booklet" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Neon Horizon", "duration": "03:45", "preview_url": "/audio/preview.mp3" },
+      { "no": "02", "title": "Digital Silence", "duration": "04:12" },
+      { "no": "03", "title": "Midnight Void", "duration": "03:58" },
+      { "no": "04", "title": "Static Dreams", "duration": "04:30" },
+      { "no": "05", "title": "Cyber Heart", "duration": "03:22" }
+    ],
+    "reviews": [
+      { "user": "Sarah Jenkins", "date": "2 days ago", "comment": "The production quality on this vinyl is absolutely insane. Highly recommended!", "rating": 5 },
+      { "user": "Marcus Chen", "date": "1 week ago", "comment": "Digital download was instant and high quality FLAC. Great experience.", "rating": 5 }
+    ],
+    "bundle_deal": {
+      "title": "The Vinyl Collection Bundle",
+      "items": "Echoes of Eternity (LP) + Static Dreams (LP)",
+      "price": 42.48,
+      "old_price": 49.98,
+      "save": "15%"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Midnight Void",
+    "artist": "Shadow Pulse",
+    "cover_image": "/music/album-2.jpg",
+    "main_genre": "Ambient",
+    "release_year": "2024",
+    "total_tracks": "8 Tracks",
+    "duration": "35:10",
+    "description": "Deep atmospheric soundscapes designed for late-night contemplation and meditation. Each track flows seamlessly into the next, creating a continuous wave of calm.",
+    "tag": "TRENDING",
+    "rating": 4.5,
+    "review_count": 85,
+    "formats": [
+      { "type": "Digital Download", "price": 7.99, "desc": "WAV / FLAC (24-bit)" },
+      { "type": "Cassette", "price": 12.99, "desc": "Limited Smoky Shell Edition", "stock_status": "LAST 10 LEFT" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Dark Matter", "duration": "05:20" },
+      { "no": "02", "title": "Event Horizon", "duration": "04:45" },
+      { "no": "03", "title": "Zero Gravity", "duration": "06:10" },
+      { "no": "04", "title": "Stardust", "duration": "04:15" }
+    ],
+    "reviews": [
+      { "user": "Elena Vance", "date": "3 days ago", "comment": "Perfect for studying. Very relaxing.", "rating": 4 }
+    ],
+    "bundle_deal": null
+  },
+  {
+    "id": 3,
+    "title": "Neon Horizon",
+    "artist": "Vector Unit",
+    "cover_image": "/music/album-3.jpg",
+    "main_genre": "Synthwave",
+    "release_year": "2023",
+    "total_tracks": "10 Tracks",
+    "duration": "42:15",
+    "description": "Inspired by 80s cyberpunk aesthetics, featuring high-energy lead synths and driving rhythms. A true homage to the golden era of arcade gaming.",
+    "tag": "BEST SELLER",
+    "rating": 4.9,
+    "review_count": 210,
+    "formats": [
+      { "type": "Digital Download", "price": 9.99, "desc": "High Quality MP3 + Artwork" },
+      { "type": "Vinyl LP", "price": 29.99, "desc": "Neon Pink Vinyl", "stock_status": "5 LEFT" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Chrome City", "duration": "04:02" },
+      { "no": "02", "title": "Laser Drive", "duration": "03:55" },
+      { "no": "03", "title": "Vector Run", "duration": "04:10" }
+    ],
+    "reviews": [
+      { "user": "Alex Rivera", "date": "1 month ago", "comment": "Best synthwave album of the year! The pink vinyl looks amazing.", "rating": 5 }
+    ],
+    "bundle_deal": null
+  },
+  {
+    "id": 4,
+    "title": "Digital Silence",
+    "artist": "Null Pointer",
+    "cover_image": "/music/album-4.jpg",
+    "main_genre": "Experimental",
+    "release_year": "2022",
+    "total_tracks": "14 Tracks",
+    "duration": "55:00",
+    "description": "Glitch-hop beats mixed with organic field recordings for a unique auditory experience. Explore the boundary between nature and machine.",
+    "tag": null,
+    "rating": 4.2,
+    "review_count": 45,
+    "formats": [
+      { "type": "Digital", "price": 14.99, "desc": "Lossless Audio Package" },
+      { "type": "Cassette", "price": 18.00, "desc": "Hand-numbered Limited Edition" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Boot Sequence", "duration": "02:10" },
+      { "no": "02", "title": "White Noise", "duration": "05:30" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 5,
+    "title": "Static Dreams",
+    "artist": "Frequency",
+    "cover_image": "/music/music3.avif",
+    "main_genre": "Industrial",
+    "release_year": "2021",
+    "total_tracks": "9 Tracks",
+    "duration": "40:30",
+    "description": "Heavy distorted rhythms meet melodic industrial techno. A raw energy from start to finish that challenges the listener.",
+    "tag": null,
+    "rating": 4.6,
+    "review_count": 92,
+    "formats": [
+      { "type": "Digital Download", "price": 8.99, "desc": "Standard FLAC" },
+      { "type": "CD", "price": 18.99, "desc": "Standard Jewel Case + Poster" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Iron Pulse", "duration": "04:50" },
+      { "no": "02", "title": "Factory Floor", "duration": "03:45" }
+    ],
+    "reviews": [
+      { "user": "Dave G.", "date": "2 weeks ago", "comment": "Aggressive but beautiful.", "rating": 5 }
+    ],
+    "bundle_deal": null
+  },
+  {
+    "id": 6,
+    "title": "Lost Signals",
+    "artist": "The Voyager",
+    "cover_image": "/music/album-2.jpg",
+    "main_genre": "Ambient",
+    "release_year": "2020",
+    "total_tracks": "7 Tracks",
+    "duration": "60:00",
+    "description": "Analog modular synthesis recorded in a remote forest cabin. Deeply immersive and hauntingly beautiful.",
+    "tag": "SOLD OUT",
+    "rating": 4.7,
+    "review_count": 156,
+    "formats": [
+      { "type": "Vinyl", "price": 34.99, "desc": "Clear Smoke Vinyl", "stock_status": "OUT OF STOCK" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Radio Silence", "duration": "10:20" },
+      { "no": "02", "title": "Deep Space", "duration": "08:15" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 7,
+    "title": "Solar Flare",
+    "artist": "Apex Collective",
+    "cover_image": "/music/album-3.jpg",
+    "main_genre": "Experimental",
+    "release_year": "2024",
+    "total_tracks": "11 Tracks",
+    "duration": "44:00",
+    "description": "Experimental jazz fusion with electronic elements. A bright and vibrant sound that explores the warmth of the sun through sound.",
+    "tag": "NEW RELEASE",
+    "rating": 4.4,
+    "review_count": 32,
+    "formats": [
+      { "type": "Digital", "price": 12.99, "desc": "Studio Master Quality" },
+      { "type": "Compact Disc", "price": 16.99, "desc": "Limited Digipak" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Sunspot", "duration": "03:20" },
+      { "no": "02", "title": "Corona", "duration": "04:10" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 8,
+    "title": "Cyber City",
+    "artist": "Glitch Ghost",
+    "cover_image": "/music/album-4.jpg",
+    "main_genre": "Synthwave",
+    "release_year": "2023",
+    "total_tracks": "13 Tracks",
+    "duration": "50:00",
+    "description": "Dystopian melodies and fast-paced beats for the urban traveler. The soundtrack to a city that never sleeps.",
+    "tag": null,
+    "rating": 4.5,
+    "review_count": 67,
+    "formats": [
+      { "type": "CD", "price": 22.00, "desc": "Special Edition Gold Disc" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Neon Rain", "duration": "04:30" },
+      { "no": "02", "title": "Subway Ghost", "duration": "03:15" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 9,
+    "title": "Oceanic Waves",
+    "artist": "Deep Blue",
+    "cover_image": "/music/album-1.jpg",
+    "main_genre": "Ambient",
+    "release_year": "2024",
+    "total_tracks": "6 Tracks",
+    "duration": "38:00",
+    "description": "Calming water-based textures for meditation and sleep. Recorded near the Pacific coast for ultimate authenticity.",
+    "tag": "NEW RELEASE",
+    "rating": 4.8,
+    "review_count": 40,
+    "formats": [
+      { "type": "Vinyl", "price": 26.50, "desc": "Ocean Blue Swirl Marble Vinyl" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Tide", "duration": "07:00" },
+      { "no": "02", "title": "Abyss", "duration": "06:40" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 10,
+    "title": "Aftermath",
+    "artist": "Iron Core",
+    "cover_image": "/music/album-2.jpg",
+    "main_genre": "Industrial",
+    "release_year": "2022",
+    "total_tracks": "10 Tracks",
+    "duration": "45:00",
+    "description": "Post-apocalyptic rhythms and gritty basslines that push boundaries. A sonic exploration of a world rebuilt.",
+    "tag": "BEST SELLER",
+    "rating": 4.6,
+    "review_count": 88,
+    "formats": [
+      { "type": "Cassette", "price": 15.99, "desc": "Rusted Steel Color Shell" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Survival", "duration": "04:00" },
+      { "no": "02", "title": "Broken Gears", "duration": "04:20" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 11,
+    "title": "Ethereal Echo",
+    "artist": "Mist",
+    "cover_image": "/music/album-3.jpg",
+    "main_genre": "Ambient",
+    "release_year": "2021",
+    "total_tracks": "12 Tracks",
+    "duration": "52:00",
+    "description": "Light and airy compositions for deep focus and creative work. Minimalist piano meets subtle synthesizer layers.",
+    "tag": null,
+    "rating": 4.3,
+    "review_count": 54,
+    "formats": [
+      { "type": "Digital", "price": 11.00, "desc": "FLAC/WAV Bundle" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Fog", "duration": "04:50" },
+      { "no": "02", "title": "Cloud Lift", "duration": "05:10" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 12,
+    "title": "Voltage Control",
+    "artist": "Synth Lord",
+    "cover_image": "/music/album-4.jpg",
+    "main_genre": "Synthwave",
+    "release_year": "2024",
+    "total_tracks": "11 Tracks",
+    "duration": "47:00",
+    "description": "Pure analog bliss from rare vintage hardware synthesizers. No plugins, just electricity and voltage.",
+    "tag": "NEW RELEASE",
+    "rating": 4.9,
+    "review_count": 110,
+    "formats": [
+      { "type": "Vinyl", "price": 30.00, "desc": "Gatefold Double LP" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Oscillator", "duration": "04:15" },
+      { "no": "02", "title": "Patchwork", "duration": "03:55" }
+    ],
+    "reviews": [
+      { "user": "AnalogFan", "date": "5 days ago", "comment": "You can hear the warmth of the tubes!", "rating": 5 }
+    ],
+    "bundle_deal": null
+  },
+  {
+    "id": 13,
+    "title": "Ghost in Machine",
+    "artist": "Cyberia",
+    "cover_image": "/music/album-1.jpg",
+    "main_genre": "Experimental",
+    "release_year": "2023",
+    "total_tracks": "15 Tracks",
+    "duration": "58:00",
+    "description": "Haunting vocals over complex breakbeats and cinematic atmospheres. A dark trip through virtual reality.",
+    "tag": null,
+    "rating": 4.1,
+    "review_count": 39,
+    "formats": [
+      { "type": "CD", "price": 19.99, "desc": "Blackened Digipak" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Memory Leak", "duration": "03:40" },
+      { "no": "02", "title": "Soul.exe", "duration": "04:20" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 14,
+    "title": "Metal Pulse",
+    "artist": "Reverb",
+    "cover_image": "/music/album-2.jpg",
+    "main_genre": "Industrial",
+    "release_year": "2022",
+    "total_tracks": "8 Tracks",
+    "duration": "36:00",
+    "description": "Raw, unpolished industrial music for the brave listener. Recorded in an abandoned iron works factory.",
+    "tag": null,
+    "rating": 4.4,
+    "review_count": 72,
+    "formats": [
+      { "type": "Vinyl", "price": 28.00, "desc": "Heavyweight Black Vinyl" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Grind", "duration": "04:10" },
+      { "no": "02", "title": "Impact", "duration": "03:50" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 15,
+    "title": "Infinite Loop",
+    "artist": "Ouroboros",
+    "cover_image": "/music/album-3.jpg",
+    "main_genre": "Experimental",
+    "release_year": "2020",
+    "total_tracks": "5 Tracks",
+    "duration": "45:00",
+    "description": "Loop-based experiments in repetitive structure and evolving patterns. A meditative cycle of sound.",
+    "tag": "SOLD OUT",
+    "rating": 4.5,
+    "review_count": 130,
+    "formats": [
+      { "type": "Digital", "price": 9.99, "desc": "Continuous 45-min Mix" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Loop A", "duration": "09:00" },
+      { "no": "02", "title": "Loop B", "duration": "09:00" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  },
+  {
+    "id": 16,
+    "title": "Star Dust",
+    "artist": "Nebula",
+    "cover_image": "/music/album-4.jpg",
+    "main_genre": "Ambient",
+    "release_year": "2024",
+    "total_tracks": "10 Tracks",
+    "duration": "51:00",
+    "description": "Spaced-out melodies from the edge of the galaxy. Deeply celestial textures for stargazing and dreaming.",
+    "tag": "NEW RELEASE",
+    "rating": 4.7,
+    "review_count": 25,
+    "formats": [
+      { "type": "Vinyl", "price": 25.00, "desc": "Starfield Splatter Vinyl" }
+    ],
+    "tracklist": [
+      { "no": "01", "title": "Supernova", "duration": "05:40" },
+      { "no": "02", "title": "Milky Way", "duration": "06:10" }
+    ],
+    "reviews": [],
+    "bundle_deal": null
+  }
+]
