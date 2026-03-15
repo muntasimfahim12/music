@@ -136,7 +136,6 @@ const ShopPage = () => {
                 </div>
             </section>
 
-            {/* মেইন কন্টেন্ট এরিয়া */}
             <section id="products" className="py-16 px-4 md:px-12 lg:px-20 max-w-[1600px] mx-auto min-h-[600px]">
                 {loading ? (
                     <div className="h-96 flex flex-col items-center justify-center gap-4">

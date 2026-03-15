@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Sarah Jenkins",
+    "image": "https://i.pravatar.cc/150?u=sarah",
+    "status": "Verified Purchase",
+    "date": "2 days ago",
+    "comment": "The production quality on this vinyl is absolutely insane. The bass response is tight and the synth layers are crystal clear. A must-have for any synthwave collector."
+  },
+  {
+    "id": 2,
+    "name": "Marcus Chen",
+    "image": "https://i.pravatar.cc/150?u=marcus",
+    "status": "Verified Purchase",
+    "date": "1 week ago",
+    "comment": "Digital download was instant and high quality FLAC. This album really captures that futuristic nostalgia perfectly."
+  },
+  {
+    "id": 3,
+    "name": "Elena Rodriguez",
+    "image": "https://i.pravatar.cc/150?u=elena",
+    "status": "Verified Purchase",
+    "date": "3 days ago",
+    "comment": "The atmospheric depth in 'Cyber Heart' is breathtaking. Sounds incredible on my studio monitors."
+  },
+  {
+    "id": 4,
+    "name": "David Wilson",
+    "image": "https://i.pravatar.cc/150?u=david",
+    "status": "Verified Purchase",
+    "date": "5 days ago",
+    "comment": "Fast shipping and the packaging was super secure. The red translucent vinyl looks even better in person!"
+  },
+  {
+    "id": 5,
+    "name": "Sophie Turner",
+    "image": "https://i.pravatar.cc/150?u=sophie",
+    "status": "Verified Purchase",
+    "date": "2 weeks ago",
+    "comment": "A masterpiece of modern synthwave. Every track tells a story. Highly recommended for late-night drives."
+  },
+  {
+    "id": 6,
+    "name": "Alex Rivers",
+    "image": "https://i.pravatar.cc/150?u=alex",
+    "status": "Verified Purchase",
+    "date": "1 month ago",
+    "comment": "Been following LUMINA for years, and this is by far their best work. The mixing and mastering are top-tier."
+  }
+]
