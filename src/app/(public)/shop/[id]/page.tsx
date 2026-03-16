@@ -14,11 +14,13 @@ import {
 import { showCartToast } from '@/src/components/shared/ToastProvider';
 import Reviews from '@/src/components/shared/Reviews';
 import RelatedProduct from '@/src/components/shared/RelatedProduct';
+import { CartItem, useCart } from '@/src/context/CartContext';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const router = useRouter();
-  
+  const { addToCart } = useCart();
+
   // --- States ---
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -54,7 +56,21 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    showCartToast(product.name);
+    if (!product) return;
+
+    const itemToCart: CartItem = {
+      id: `${product.id}-${selectedSize || 'default'}`,
+      name: product.name || product.title,
+      price: product.price?.sale_price || product.price?.amount || product.price || 0,
+      image: product.mainImage || product.cover_image,
+      quantity: quantity,
+      size: selectedSize,
+      color: product.colors ? product.colors[selectedColor]?.name : undefined,
+      type: product.category === 'HOODIES' ? 'physical' : 'digital'
+    };
+
+    addToCart(itemToCart);
+    showCartToast(product.name || product.title);
   };
 
   if (loading) return (
@@ -91,7 +107,7 @@ const ProductDetails = () => {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-          
+
           {/* --- LEFT: Image Gallery --- */}
           <div className="lg:col-span-6 space-y-6 md:sticky md:top-24">
             <motion.div
@@ -118,7 +134,7 @@ const ProductDetails = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
 
-              <button 
+              <button
                 onClick={() => setIsFullscreen(true)}
                 className="absolute bottom-6 right-6 p-4 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-black shadow-2xl z-10"
               >
@@ -131,11 +147,10 @@ const ProductDetails = () => {
                 <button
                   key={i}
                   onClick={() => setMainDisplayImg(img)}
-                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 transition-all duration-500 overflow-hidden ${
-                    mainDisplayImg === img 
-                    ? 'ring-1 ring-[#E63946] ring-offset-4 ring-offset-black opacity-100' 
+                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 transition-all duration-500 overflow-hidden ${mainDisplayImg === img
+                    ? 'ring-1 ring-[#E63946] ring-offset-4 ring-offset-black opacity-100'
                     : 'opacity-30 hover:opacity-70 grayscale hover:grayscale-0'
-                  }`}
+                    }`}
                 >
                   <img src={img} className="w-full h-full object-cover" alt={`view-${i}`} />
                 </button>
@@ -256,9 +271,8 @@ const ProductDetails = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-5 text-[10px] font-black tracking-[0.3em] transition-all duration-500 relative group ${
-                  activeTab === tab ? 'text-white' : 'text-white/20 hover:text-white/50'
-                }`}
+                className={`pb-5 text-[10px] font-black tracking-[0.3em] transition-all duration-500 relative group ${activeTab === tab ? 'text-white' : 'text-white/20 hover:text-white/50'
+                  }`}
               >
                 <span className="relative z-10">{tab}</span>
                 {activeTab === tab && (
@@ -356,14 +370,14 @@ const ProductDetails = () => {
 
       <div className="w-full border-t border-white/5 bg-black/20 backdrop-blur-sm">
         <div className="max-w-[1300px] mx-auto px-6 md:px-10">
-          <RelatedProduct/>
+          <RelatedProduct />
         </div>
       </div>
 
       {/* --- FULLSCREEN LIGHTBOX PORTAL --- */}
       <AnimatePresence>
         {isFullscreen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

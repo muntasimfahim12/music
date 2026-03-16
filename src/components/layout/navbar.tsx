@@ -70,8 +70,7 @@ const Navbar = () => {
               <IconSearch size={22} stroke={1.5} />
             </button>
 
-            {/* CART */}
-            <div className="relative cursor-pointer group">
+            <Link href="/cart" className="relative cursor-pointer group">
               <IconShoppingBag
                 size={22}
                 stroke={1.5}
@@ -81,7 +80,7 @@ const Navbar = () => {
               <span className="absolute -top-1 -right-2 bg-[#FF2E2E] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(255,46,46,0.5)]">
                 2
               </span>
-            </div>
+            </Link>
 
             {/* MOBILE MENU BUTTON */}
             <button
