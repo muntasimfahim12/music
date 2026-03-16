@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -14,6 +15,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import Reviews from '@/src/components/shared/Reviews';
+import RelatedMusic from '@/src/components/shared/RelatedMusic';
 
 const MusicDetails = () => {
     const { id } = useParams();
@@ -223,9 +225,6 @@ const MusicDetails = () => {
                             </div>
                         </section>
 
-                        <div className="pt-10 border-t border-white/5">
-                            <Reviews />
-                        </div>
                     </div>
 
                     {/* --- Right Column (Sidebar) --- */}
@@ -261,27 +260,99 @@ const MusicDetails = () => {
                                     <ShoppingCart size={16} /> Add To Cart
                                 </button>
                             </div>
-
-                            {/* Bundle Deal */}
+                            {/* --- 100% Real JSON Integrated Bundle Deal --- */}
                             {album.bundle_deal && (
-                                <motion.div className="bg-gradient-to-br from-zinc-900 to-black border border-white/5 rounded-[32px] p-6 relative overflow-hidden group">
-                                    <div className="relative z-10">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <span className="text-[#FFB800] text-[8px] font-black uppercase tracking-[0.2em]">Collectors Edition</span>
-                                            <span className="bg-[#FFB800] text-black text-[8px] font-black px-2 py-0.5 rounded">SAVE {album.bundle_deal.save}</span>
+                                <motion.div
+                                    initial={{ opacity: 0, y: 15 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-[#0A0A0A] border border-zinc-800/50 rounded-[28px] p-7 shadow-2xl relative overflow-hidden group transition-all duration-500"
+                                >
+                                    {/* Decorative Ambient Light */}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFB800]/5 blur-[60px] rounded-full pointer-events-none" />
+
+                                    <div className="relative z-10 space-y-6">
+
+                                        {/* Header: Title & Save Badge from JSON */}
+                                        <div className="flex justify-between items-center">
+                                            <h3 className="text-[#FFB800] text-[10px] font-black uppercase tracking-[0.3em]">
+                                                {album.bundle_deal.title}
+                                            </h3>
+                                            {album.bundle_deal.save && (
+                                                <span className="bg-[#FFB800] text-black text-[9px] font-black px-2.5 py-1 rounded-md shadow-lg">
+                                                    SAVE {album.bundle_deal.save}
+                                                </span>
+                                            )}
                                         </div>
-                                        <h4 className="text-[13px] font-bold mb-1">{album.bundle_deal.title}</h4>
-                                        <p className="text-[9px] text-zinc-500 mb-4">{album.bundle_deal.items}</p>
-                                        <button className="w-full py-3 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex justify-between px-4 items-center">
-                                            <span>Upgrade to Bundle</span>
-                                            <span className="text-white">${album.bundle_deal.price}</span>
+
+                                        {/* Visual Part: Images & Plus Sign */}
+                                        <div className="flex items-center gap-6">
+                                            {/* Image 1: Current Album Cover */}
+                                            <div className="relative group/cover">
+                                                <div className="w-[75px] h-[75px] rounded-xl overflow-hidden border border-white/10 shadow-2xl transition-transform duration-500 group-hover/cover:scale-105">
+                                                    <img src={album.cover_image} alt="Main Album" className="w-full h-full object-cover" />
+                                                </div>
+                                            </div>
+
+                                            {/* Plus Sign */}
+                                            <span className="text-zinc-700 text-2xl font-light select-none">+</span>
+
+                                            <div className="relative group/cover">
+                                                <div className="w-[75px] h-[75px] rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-gradient-to-br from-zinc-800 to-black flex items-center justify-center p-3 transition-transform duration-500 group-hover/cover:scale-105">
+                                                    <div className="text-[#FFB800] opacity-40">
+                                                        <img src={album.cover_image} alt="Bundle Content" className="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Content: Title & Items from JSON */}
+                                        <div className="space-y-1">
+                                            <h4 className="text-white text-[16px] font-bold tracking-tight">
+                                                The Vinyl Collection Bundle
+                                            </h4>
+                                            <p className="text-zinc-500 text-[11px] font-medium leading-relaxed max-w-[250px]">
+                                                {album.bundle_deal.items}
+                                            </p>
+                                        </div>
+
+                                        {/* Action Button: Price from JSON */}
+                                        <button className="w-full mt-2 py-4 px-6 rounded-2xl bg-zinc-900 border border-white/5 hover:bg-white/10 transition-all duration-300 flex justify-between items-center group/btn active:scale-[0.98]">
+                                            <span className="text-[11px] font-black uppercase tracking-[0.25em] text-zinc-100 group-hover/btn:text-white transition-colors">
+                                                Add Bundle
+                                            </span>
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-[15px] text-white font-bold tracking-tight">
+                                                    ${album.bundle_deal.price}
+                                                </span>
+                                                {album.bundle_deal.old_price && (
+                                                    <span className="text-[11px] text-zinc-600 line-through font-medium">
+                                                        ${album.bundle_deal.old_price}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </button>
                                     </div>
-                                    <Sparkles size={40} className="absolute -top-2 -right-2 text-white/5 group-hover:text-[#FFB800]/10 transition-colors" />
+
+                                    {/* Glossy Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
                                 </motion.div>
                             )}
                         </div>
                     </aside>
+                </div>
+            </div>
+
+            {/* Related Music Section - Full Width Background but Centered Content */}
+            <div className="w-full -mb-12 border-t border-white/5 bg-black/20 backdrop-blur-sm">
+                <div className="max-w-[1300px] mx-auto px-6 md:px-10 py-20">
+                    <Reviews />
+                </div>
+            </div>
+
+            {/* Related Music Section - Full Width Background but Centered Content */}
+            <div className="w-full m border-t border-white/5 bg-black/20 backdrop-blur-sm">
+                <div className="max-w-[1300px] mx-auto px-6 md:px-10 ">
+                    <RelatedMusic />
                 </div>
             </div>
 
