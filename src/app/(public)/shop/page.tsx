@@ -3,21 +3,26 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import Link from 'next/link'; 
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
 import UniversalHero from '@/src/components/shared/Hero';
 import ProductCard from '@/src/components/shared/ProductCard';
 import Features from '@/src/components/shared/Features';
 
-// ১. টাইপ ডিফিনিশন (TypeScript Error Fix)
 interface ShopProduct {
     id: number | string;
     name: string;
+    slug: string;
     subtext: string;
-    price: string;
+    price: {
+        amount: number;
+        currency: string;
+        sale_price: number | null;
+    };
     category: string;
     mainImage: string;
-    hoverImage: string;
+    hoverImage?: string;
     tag?: string | null;
 }
 
@@ -25,7 +30,6 @@ const CATEGORIES = ["ALL", "TEES", "HOODIES", "ACCESSORIES", "BUNDLES"];
 const ITEMS_PER_PAGE = 8;
 
 const ShopPage = () => {
-    // স্টেট ডিফাইন করার সময় টাইপ বলে দেওয়া হয়েছে
     const [products, setProducts] = useState<ShopProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -33,7 +37,7 @@ const ShopPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentTime, setCurrentTime] = useState("");
 
-    // ২. রিয়েল-টাইম ক্লক
+    // রিয়েল-টাইম ক্লক
     useEffect(() => {
         const timer = setInterval(() => {
             const now = new Date();
@@ -42,20 +46,18 @@ const ShopPage = () => {
         return () => clearInterval(timer);
     }, []);
 
-    // ৩. Axios Fetching with ENV (Professional Error Handling)
+    // Axios Fetching
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
                 setError(null);
-
                 const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
                 const response = await axios.get(`${baseUrl}/data/product.json`);
-
                 setProducts(response.data);
             } catch (err: any) {
                 console.error("Fetch Error:", err);
-                setError(err.response?.status === 404 ? "Product data file not found (404)." : "Failed to load products.");
+                setError(err.response?.status === 404 ? "Data file not found (404)." : "Failed to load products.");
             } finally {
                 setLoading(false);
             }
@@ -63,15 +65,16 @@ const ShopPage = () => {
         fetchProducts();
     }, []);
 
-    // ৪. ফিল্টারিং লজিক
+    // ফিল্টারিং লজিক (Category অনুযায়ী)
     const filteredProducts = useMemo(() => {
         return selectedCategory === "ALL"
             ? products
-            : products.filter(p => p.category === selectedCategory);
+            : products.filter(p => p.category.toUpperCase() === selectedCategory);
     }, [selectedCategory, products]);
 
-    // ৫. পেজিনেশন লজিক
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    
+    // পেজিনেশন লজিক
     const currentData = useMemo(() => {
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
         return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
@@ -86,7 +89,7 @@ const ShopPage = () => {
     };
 
     return (
-        <main className="bg-[#050505] min-h-screen pb-32 selection:bg-[#FF2E2E] selection:text-white">
+        <main className="bg-[#050505] min-h-screen pb-32 selection:bg-[#FF2E2E] selection:text-white font-judson-bold">
             <UniversalHero
                 tagline="Limited Drop"
                 titleFirst='THE "VOID"'
@@ -100,7 +103,7 @@ const ShopPage = () => {
                 targetDate="2026-11-20T00:00:00"
             />
 
-            {/* ফিল্টার বার */}
+            {/* Filter Navigation Bar */}
             <section className="sticky top-0 z-40 bg-[#050505]/80 backdrop-blur-md border-y border-white/5 py-4">
                 <div className="max-w-[1600px] mx-auto px-4 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2 order-2 md:order-1">
@@ -130,12 +133,13 @@ const ShopPage = () => {
 
                     <div className="hidden lg:block order-3">
                         <span className="text-white/40 text-[10px] font-black uppercase tracking-widest italic">
-                            Sector: 00{currentPage} / {totalPages.toString().padStart(2, '0')}
+                            Sector: 00{currentPage} / {Math.max(1, totalPages).toString().padStart(2, '0')}
                         </span>
                     </div>
                 </div>
             </section>
 
+            {/* Product Grid Section */}
             <section id="products" className="py-16 px-4 md:px-12 lg:px-20 max-w-[1600px] mx-auto min-h-[600px]">
                 {loading ? (
                     <div className="h-96 flex flex-col items-center justify-center gap-4">
@@ -163,13 +167,26 @@ const ShopPage = () => {
                                         exit={{ opacity: 0, scale: 0.9 }}
                                         transition={{ duration: 0.4 }}
                                     >
-                                        <ProductCard {...product} />
+                                        <Link href={`/shop/${product.id}`} className="block h-full cursor-pointer">
+                                            <ProductCard 
+                                                id={product.id}
+                                                name={product.name}
+                                                subtext={product.subtext}
+                                                // Error fix: price কে string হিসেবে পাঠানো হচ্ছে
+                                                price={product.price.sale_price ? product.price.sale_price.toString() : product.price.amount.toString()}
+                                                mainImage={product.mainImage}
+                                                hoverImage={product.hoverImage || product.mainImage}
+                                                tag={product.tag as any} 
+                                                // যদি ProductCard এ category না থাকে, তবে নিচের লাইনটি রিমুভ করুন অথবা ProductCard এ category যোগ করুন।
+                                                {...({ category: product.category } as any)}
+                                            />
+                                        </Link>
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
                         </motion.div>
 
-                        {/* Pagination */}
+                        {/* Pagination Section */}
                         {totalPages > 1 && (
                             <div className="mt-28 flex items-center justify-center gap-3">
                                 <button
@@ -207,8 +224,9 @@ const ShopPage = () => {
                     </>
                 )}
             </section>
+            
             <Features />
-        </main>
+        </main >
     );
 };
 

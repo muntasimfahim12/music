@@ -1,162 +1,1225 @@
 [
   {
     "id": 1,
-    "name": "NOCTURNAL VIBE TEE",
-    "subtext": "Stone Washed Black",
-    "price": "$48.00",
+    "name": "NOCTURNAL Vibe Tee",
+    "slug": "nocturnal-vibe-tee",
+    "subtext": "Stone Washed Black / Boxy Fit",
+    "price": {
+      "amount": 48.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "TEES",
-    "mainImage": "/hero/image.png",
+    "tag": "NEW ARRIVAL",
+    "mainImage": "/hero/imgt.jpg",
     "hoverImage": "/hero/img1.png",
-    "tag": "NEW ARRIVAL"
+    "gallery": [
+      "/hero/imgt.jpg",
+      "/hero/img1.png",
+      "/details/tee-zoom.jpg",
+      "/details/tee-fabric.jpg"
+    ],
+    "description": "Premium heavyweight tee with a vintage stone-wash finish. Engineered for a boxy, modern silhouette with reinforced seams.",
+    "colors": [
+      {
+        "name": "Midnight Black",
+        "hex": "#0D0D0D"
+      },
+      {
+        "name": "Slate",
+        "hex": "#3E3E3E"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "inventory": {
+      "S": 10,
+      "M": 15,
+      "L": 4,
+      "XL": 2,
+      "XXL": 0,
+      "low_stock_threshold": 5
+    },
+    "tabs": {
+      "description": "A staple for any streetwear enthusiast, this tee combines vintage aesthetics with modern durability.",
+      "specifications": [
+        {
+          "label": "Material",
+          "value": "100% Organic Cotton Terry"
+        },
+        {
+          "label": "Weight",
+          "value": "240gsm Heavyweight"
+        },
+        {
+          "label": "Fit",
+          "value": "Contemporary Boxy Fit"
+        }
+      ],
+      "logistics": {
+        "shipping": "Free delivery on orders over $100",
+        "delivery": "3-5 Business Days",
+        "returns": "30-day easy returns"
+      }
+    },
+    "highlights": [
+      {
+        "title": "HEAVYWEIGHT",
+        "desc": "240gsm Cotton Terry fabric",
+        "icon": "weight"
+      },
+      {
+        "title": "HAND FINISHED",
+        "desc": "Unique distressed detailing",
+        "icon": "brush"
+      },
+      {
+        "title": "PUFF PRINT",
+        "desc": "3D Silicone high-density graphic",
+        "icon": "layers"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.9,
+      "review_count": 56,
+      "status": "In Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 3,
+        "name": "Urban Signature Cap",
+        "price": 32.00
+      },
+      {
+        "id": 10,
+        "name": "Minimalist Beanie",
+        "price": 22.00
+      }
+    ],
+    "upsell_ids": [
+      3,
+      10
+    ]
   },
   {
     "id": 2,
     "name": "OFFICIAL LOGO HOODIE",
+    "slug": "official-logo-hoodie-crimson",
     "subtext": "Crimson Red / Oversized",
-    "price": "$89.00",
+    "price": {
+      "amount": 89.00,
+      "currency": "USD",
+      "sale_price": 75.00
+    },
     "category": "HOODIES",
-    "mainImage": "/hero/img.jpg",
+    "tag": "LIMITED",
+    "mainImage": "/hero/image.png",
     "hoverImage": "/hero/imgt.jpg",
-    "tag": "LIMITED"
+    "gallery": [
+      "/hero/image.png",
+      "/hero/imgt.jpg",
+      "/hero/img.jpg"
+    ],
+    "description": "Ultra-heavyweight French Terry hoodie. Features our signature 'VOID' puff-print logo and double-lined hood for structure.",
+    "colors": [
+      {
+        "name": "Crimson",
+        "hex": "#7B0000"
+      },
+      {
+        "name": "Black",
+        "hex": "#000000"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "S": 5,
+      "M": 0,
+      "L": 8,
+      "XL": 1,
+      "low_stock_threshold": 3
+    },
+    "tabs": {
+      "description": "The ultimate comfort meets high-fashion street aesthetics in this limited edition crimson piece.",
+      "specifications": [
+        {
+          "label": "Fabric",
+          "value": "500gsm French Terry"
+        },
+        {
+          "label": "Logo",
+          "value": "High-build silicone puff print"
+        },
+        {
+          "label": "Stitching",
+          "value": "Double needle reinforced"
+        }
+      ],
+      "logistics": {
+        "shipping": "Standard Worldwide Shipping",
+        "delivery": "5-7 Business Days",
+        "returns": "Refunds within 14 days"
+      }
+    },
+    "highlights": [
+      {
+        "title": "PREMIUM FLEECE",
+        "desc": "500gsm heavy thermal protection",
+        "icon": "thermometer"
+      },
+      {
+        "title": "OVERSIZED",
+        "desc": "Relaxed shoulder architectural fit",
+        "icon": "expand"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.7,
+      "review_count": 120,
+      "status": "Limited Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 16,
+        "name": "Ultra Logo Socks",
+        "price": 18.00
+      }
+    ],
+    "upsell_ids": [
+      6,
+      16
+    ]
   },
   {
     "id": 3,
     "name": "URBAN SIGNATURE CAP",
+    "slug": "urban-signature-cap",
     "subtext": "Matte Black Edition",
-    "price": "$32.00",
+    "price": {
+      "amount": 32.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "ACCESSORIES",
+    "tag": "SOLD OUT",
     "mainImage": "/hero/img.jpg",
-    "hoverImage": "/hero/image.png",
-    "tag": "SOLD OUT"
+    "gallery": [
+      "/hero/image.png",
+      "/hero/imgt.jpg"
+    ],
+    "description": "Distressed cotton twill dad hat with high-density embroidery. Features an adjustable metallic clasp.",
+    "colors": [
+      {
+        "name": "Matte Black",
+        "hex": "#1A1A1A"
+      }
+    ],
+    "sizes": [
+      "One Size"
+    ],
+    "inventory": {
+      "One Size": 0,
+      "low_stock_threshold": 10
+    },
+    "tabs": {
+      "description": "An essential accessory designed for the urban explorer.",
+      "specifications": [
+        {
+          "label": "Material",
+          "value": "100% Distressed Cotton Twill"
+        },
+        {
+          "label": "Embroidery",
+          "value": "3D High-density stitch"
+        }
+      ],
+      "logistics": {
+        "shipping": "Global flat rate $10",
+        "delivery": "7-10 Days",
+        "returns": "Final Sale"
+      }
+    },
+    "highlights": [
+      {
+        "title": "COTTON TWILL",
+        "desc": "Breathable all-day comfort",
+        "icon": "wind"
+      },
+      {
+        "title": "EMBROIDERY",
+        "desc": "Raised 3D signature logo",
+        "icon": "feather"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.5,
+      "review_count": 34,
+      "status": "Out of Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 1,
+        "name": "Nocturnal Vibe Tee",
+        "price": 48.00
+      }
+    ],
+    "upsell_ids": [
+      1,
+      5
+    ]
   },
   {
     "id": 4,
     "name": "SONIC REVOLUTION VINYL",
-    "subtext": "12\" Translucent Red",
-    "price": "$45.00",
+    "slug": "sonic-revolution-vinyl",
+    "subtext": "12\" Translucent Red / Limited Edition",
+    "price": {
+      "amount": 45.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "BUNDLES",
-    "mainImage": "/hero/imgt.jpg",
-    "hoverImage": "/hero/image.png",
-    "tag": null
+    "tag": "COLLECTORS",
+    "mainImage": "/hero/image.png",
+    "gallery": [
+      "/hero/image.png",
+      "/hero/img.jpg"
+    ],
+    "description": "Limited edition 180g translucent red vinyl. Includes digital download and exclusive art booklet.",
+    "colors": [
+      {
+        "name": "Ruby Red",
+        "hex": "#E60000"
+      }
+    ],
+    "sizes": [
+      "12\""
+    ],
+    "inventory": {
+      "12\"": 25,
+      "low_stock_threshold": 5
+    },
+    "tabs": {
+      "description": "Experience the sound of the void in high-fidelity 180g vinyl pressing.",
+      "specifications": [
+        {
+          "label": "Weight",
+          "value": "180g Audiophile Pressing"
+        },
+        {
+          "label": "Bonus",
+          "value": "24-page Digital Art Booklet"
+        }
+      ],
+      "logistics": {
+        "shipping": "Specialized media mail packaging",
+        "delivery": "5-7 Days",
+        "returns": "Replacement for defects only"
+      }
+    },
+    "highlights": [
+      {
+        "title": "HI-FI AUDIO",
+        "desc": "Premium analog sound quality",
+        "icon": "music"
+      },
+      {
+        "title": "COLLECTOR'S",
+        "desc": "Limited to 500 copies worldwide",
+        "icon": "award"
+      }
+    ],
+    "social_proof": {
+      "rating": 5.0,
+      "review_count": 12,
+      "status": "In Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 14,
+        "name": "Archive Cargo Pack",
+        "price": 150.00
+      }
+    ],
+    "upsell_ids": [
+      11,
+      14
+    ]
   },
   {
     "id": 5,
-    "name": "VOID OVERSIZED HOODIE",
-    "subtext": "Carbon Gray",
-    "price": "$95.00",
+    "name": "VOID HOODIE",
+    "slug": "void-hoodie",
+    "subtext": "Signature Series / Oversized",
+    "price": {
+      "amount": 65.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "HOODIES",
-    "mainImage": "/hero/img.jpg",
-    "hoverImage": "/hero/image.png",
-    "tag": "POPULAR"
+    "tag": "BEST SELLER",
+    "mainImage": "/hero/image.png",
+    "gallery": [
+      "/hero/image.png",
+      "/hero/image.png",
+      "/hero/img.jpg"
+    ],
+    "description": "The signature piece of the Void Collection. Crafted from ultra-heavyweight 480gsm French terry cotton.",
+    "colors": [
+      {
+        "name": "Midnight Black",
+        "hex": "#0D0D0D"
+      },
+      {
+        "name": "Slate Gray",
+        "hex": "#3E3E3E"
+      },
+      {
+        "name": "Cream",
+        "hex": "#F5F5F5"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "inventory": {
+      "S": 20,
+      "M": 12,
+      "L": 4,
+      "XL": 10,
+      "XXL": 0,
+      "low_stock_threshold": 5
+    },
+    "tabs": {
+      "description": "Designed in Berlin, this hoodie is the pinnacle of the collection's architectural silhouette.",
+      "specifications": [
+        {
+          "label": "Material",
+          "value": "480gsm French Terry"
+        },
+        {
+          "label": "Finish",
+          "value": "Hand-distressed hems"
+        }
+      ],
+      "logistics": {
+        "shipping": "Free Express Shipping",
+        "delivery": "2-3 Days",
+        "returns": "30-day returns"
+      }
+    },
+    "highlights": [
+      {
+        "title": "HEAVYWEIGHT",
+        "desc": "480gsm premium comfort",
+        "icon": "shield"
+      },
+      {
+        "title": "PUFF PRINT",
+        "desc": "3D signature graphics",
+        "icon": "star"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.8,
+      "review_count": 124,
+      "status": "In Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 3,
+        "name": "Logo Dad Hat",
+        "price": 25.00
+      },
+      {
+        "id": 16,
+        "name": "Everyday Tote",
+        "price": 18.00
+      }
+    ],
+    "upsell_ids": [
+      6,
+      10
+    ]
   },
   {
     "id": 6,
     "name": "METRO TRUCKER HAT",
-    "subtext": "Midnight Navy / Mesh",
-    "price": "$29.00",
+    "slug": "metro-trucker-hat",
+    "subtext": "Midnight Navy / Mesh Back",
+    "price": {
+      "amount": 29.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "ACCESSORIES",
+    "tag": "NEW",
     "mainImage": "/hero/img.jpg",
-    "hoverImage": "/hero/imgt.jpg",
-    "tag": "NEW"
+    "gallery": [
+      "/hero/img.jpg"
+    ],
+    "description": "Classic trucker silhouette with premium mesh ventilation and curved brim.",
+    "colors": [
+      {
+        "name": "Navy",
+        "hex": "#000033"
+      }
+    ],
+    "sizes": [
+      "One Size"
+    ],
+    "inventory": {
+      "One Size": 40,
+      "low_stock_threshold": 10
+    },
+    "tabs": {
+      "description": "Vintage aesthetic meets modern street style.",
+      "specifications": [
+        {
+          "label": "Back",
+          "value": "Breathable Polyester Mesh"
+        },
+        {
+          "label": "Closure",
+          "value": "Snapback"
+        }
+      ]
+    },
+    "highlights": [
+      {
+        "title": "VENTILATED",
+        "desc": "High-quality mesh for airflow",
+        "icon": "air"
+      },
+      {
+        "title": "ADJUSTABLE",
+        "desc": "Custom snapback closure",
+        "icon": "settings"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.6,
+      "review_count": 18,
+      "status": "In Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 2,
+        "name": "Official Logo Hoodie",
+        "price": 89.00
+      }
+    ],
+    "upsell_ids": [
+      2,
+      7
+    ]
   },
   {
     "id": 7,
     "name": "GRAPHIC LOGO TEE",
-    "subtext": "Vintage White",
-    "price": "$42.00",
+    "slug": "graphic-logo-tee",
+    "subtext": "Vintage White / Relaxed",
+    "price": {
+      "amount": 42.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "TEES",
-    "mainImage": "/hero/image.png",
-    "hoverImage": "/hero/img1.png",
-    "tag": "RESTOCK"
+    "tag": "RESTOCK",
+    "mainImage": "/hero/img.jpg",
+    "gallery": [
+      "/hero/imgt.jpg"
+    ],
+    "description": "Iconic logo tee on a cream-toned vintage base. Soft-touch water-based print.",
+    "colors": [
+      {
+        "name": "Vintage White",
+        "hex": "#F5F5DC"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "S": 15,
+      "M": 15,
+      "L": 15,
+      "XL": 15,
+      "low_stock_threshold": 5
+    },
+    "tabs": {
+      "description": "An eco-friendly take on our classic logo tee.",
+      "specifications": [
+        {
+          "label": "Ink",
+          "value": "Water-based Eco-ink"
+        },
+        {
+          "label": "Base",
+          "value": "Cream Vintage Cotton"
+        }
+      ]
+    },
+    "highlights": [
+      {
+        "title": "SOFT TOUCH",
+        "desc": "Breathable and soft print",
+        "icon": "heart"
+      },
+      {
+        "title": "RELAXED",
+        "desc": "Classic everyday comfort",
+        "icon": "user"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.8,
+      "review_count": 89,
+      "status": "Full Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 16,
+        "name": "Ultra Logo Socks",
+        "price": 18.00
+      }
+    ],
+    "upsell_ids": [
+      3,
+      16
+    ]
   },
   {
     "id": 8,
     "name": "DISTORTED VISION TEE",
-    "subtext": "Charcoal Grey",
-    "price": "$46.00",
+    "slug": "distorted-vision-tee",
+    "subtext": "Charcoal Grey / Athletic Cut",
+    "price": {
+      "amount": 46.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "TEES",
-    "mainImage": "/hero/img1.png",
-    "hoverImage": "/hero/image.png",
-    "tag": null
+    "tag": null,
+    "mainImage": "/hero/imgt.jpg",
+    "gallery": [
+      "/hero/image.png"
+    ],
+    "description": "Abstract distorted graphic on a charcoal base. Mid-weight cotton for all-season wear.",
+    "colors": [
+      {
+        "name": "Charcoal",
+        "hex": "#333333"
+      }
+    ],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "M": 5,
+      "L": 1,
+      "XL": 4,
+      "low_stock_threshold": 2
+    },
+    "tabs": {
+      "description": "Artistic expression meets premium streetwear.",
+      "specifications": [
+        {
+          "label": "Print",
+          "value": "Full Front/Back Graphic"
+        }
+      ]
+    },
+    "highlights": [
+      {
+        "title": "GRAPHIC",
+        "desc": "Exclusive distorted art",
+        "icon": "image"
+      },
+      {
+        "title": "FIT",
+        "desc": "Standard athletic silhouette",
+        "icon": "zap"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.7,
+      "review_count": 22,
+      "status": "Low Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 6,
+        "name": "Metro Trucker Hat",
+        "price": 29.00
+      }
+    ],
+    "upsell_ids": [
+      6,
+      10
+    ]
   },
   {
     "id": 9,
     "name": "CYBERPUNK HOODIE",
-    "subtext": "Neon Accents / Heavy",
-    "price": "$110.00",
+    "slug": "cyberpunk-hoodie",
+    "subtext": "Neon Accents / 3M Reflective",
+    "price": {
+      "amount": 110.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "HOODIES",
-    "mainImage": "/hero/imgt.jpg",
-    "hoverImage": "/hero/img.jpg",
-    "tag": "EXCLUSIVE"
+    "tag": "EXCLUSIVE",
+    "mainImage": "/hero/image.png",
+    "gallery": [
+      "/hero/image.png",
+      "/hero/image.png"
+    ],
+    "description": "Tech-inspired hoodie with neon reflective piping and utility pocketing.",
+    "colors": [
+      {
+        "name": "Cyber Black",
+        "hex": "#050505"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "S": 2,
+      "M": 3,
+      "L": 0,
+      "XL": 1,
+      "low_stock_threshold": 1
+    },
+    "tabs": {
+      "description": "Functionality meets the future. High visibility 3M details.",
+      "specifications": [
+        {
+          "label": "Pockets",
+          "value": "Sleeve Zip & Utility Kangaroo"
+        }
+      ]
+    },
+    "highlights": [
+      {
+        "title": "REFLECTIVE",
+        "desc": "3M high-visibility piping",
+        "icon": "sun"
+      },
+      {
+        "title": "UTILITY",
+        "desc": "Water-resistant sleeve pocket",
+        "icon": "briefcase"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.9,
+      "review_count": 45,
+      "status": "Exclusive Item"
+    },
+    "style_it_with": [
+      {
+        "id": 11,
+        "name": "Tech-Wear Bundle",
+        "price": 75.00
+      }
+    ],
+    "upsell_ids": [
+      11,
+      14
+    ]
   },
   {
     "id": 10,
     "name": "MINIMALIST BEANIE",
-    "subtext": "Soft Knit / Jet Black",
-    "price": "$22.00",
+    "slug": "minimalist-beanie",
+    "subtext": "Merino Wool Blend",
+    "price": {
+      "amount": 22.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "ACCESSORIES",
+    "tag": null,
     "mainImage": "/hero/img.jpg",
-    "hoverImage": "/hero/image.png",
-    "tag": null
+    "gallery": [
+      "/hero/image.png"
+    ],
+    "description": "Double-layered merino wool blend beanie with a subtle woven label.",
+    "colors": [
+      {
+        "name": "Jet Black",
+        "hex": "#000000"
+      }
+    ],
+    "sizes": [
+      "One Size"
+    ],
+    "inventory": {
+      "One Size": 50,
+      "low_stock_threshold": 10
+    },
+    "tabs": {
+      "description": "Classic warmth without the bulk.",
+      "specifications": [
+        {
+          "label": "Material",
+          "value": "50% Merino Wool / 50% Acrylic"
+        }
+      ]
+    },
+    "highlights": [
+      {
+        "title": "WARMTH",
+        "desc": "Thermal regulating Merino",
+        "icon": "coffee"
+      },
+      {
+        "title": "FIT",
+        "desc": "Snug fit that keeps shape",
+        "icon": "refresh"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.8,
+      "review_count": 67,
+      "status": "In Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 5,
+        "name": "Void Hoodie",
+        "price": 65.00
+      }
+    ],
+    "upsell_ids": [
+      1,
+      5
+    ]
   },
   {
     "id": 11,
     "name": "TECH-WEAR BUNDLE",
-    "subtext": "Tee + Cap + Sticker Set",
-    "price": "$75.00",
+    "slug": "tech-wear-bundle",
+    "subtext": "Tee + Cap + Stickers",
+    "price": {
+      "amount": 75.00,
+      "currency": "USD",
+      "sale_price": 60.00
+    },
     "category": "BUNDLES",
-    "mainImage": "/hero/imgt.jpg",
-    "hoverImage": "/hero/image.png",
-    "tag": "BEST VALUE"
+    "tag": "BEST VALUE",
+    "mainImage": "/hero/img.jpg",
+    "gallery": [
+      "/hero/img.jpg"
+    ],
+    "description": "The essential starter pack. Features our top-tier tee, signature cap, and 5-pack stickers.",
+    "colors": [
+      {
+        "name": "Mixed",
+        "hex": "#808080"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "S": 10,
+      "M": 10,
+      "L": 10,
+      "XL": 10,
+      "low_stock_threshold": 5
+    },
+    "tabs": {
+      "description": "Everything you need to join the revolution."
+    },
+    "highlights": [
+      {
+        "title": "BUNDLE",
+        "desc": "Save 20% compared to individual",
+        "icon": "gift"
+      },
+      {
+        "title": "EXCLUSIVE",
+        "desc": "Sticker set only in bundle",
+        "icon": "smile"
+      }
+    ],
+    "social_proof": {
+      "rating": 5.0,
+      "review_count": 156,
+      "status": "Popular"
+    },
+    "style_it_with": [
+      {
+        "id": 14,
+        "name": "Archive Cargo Pack",
+        "price": 150.00
+      }
+    ],
+    "upsell_ids": [
+      14,
+      9
+    ]
   },
   {
     "id": 12,
     "name": "ELEMENTAL TEE",
-    "subtext": "Sandstone Washed",
-    "price": "$44.00",
+    "slug": "elemental-tee",
+    "subtext": "Sandstone / Organic Cotton",
+    "price": {
+      "amount": 44.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "TEES",
-    "mainImage": "/hero/image.png",
-    "hoverImage": "/hero/img1.png",
-    "tag": "HOT"
+    "tag": "HOT",
+    "mainImage": "/hero/img.jpg",
+    "gallery": [
+      "/hero/img.jpg"
+    ],
+    "description": "Earth-toned tee with a heavy wash for a lived-in feel. 100% sustainable cotton.",
+    "colors": [
+      {
+        "name": "Sandstone",
+        "hex": "#C2B280"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "S": 8,
+      "M": 2,
+      "L": 0,
+      "XL": 5,
+      "low_stock_threshold": 3
+    },
+    "tabs": {
+      "description": "Sustainability meets high-end street aesthetics."
+    },
+    "highlights": [
+      {
+        "title": "ORGANIC",
+        "desc": "100% GOTS Certified Cotton",
+        "icon": "check-circle"
+      },
+      {
+        "title": "TEXTURE",
+        "desc": "Unique sand-washed finish",
+        "icon": "layers"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.7,
+      "review_count": 41,
+      "status": "Limited Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 10,
+        "name": "Minimalist Beanie",
+        "price": 22.00
+      }
+    ],
+    "upsell_ids": [
+      3,
+      10
+    ]
   },
   {
     "id": 13,
     "name": "PHANTOM ZIP-UP",
-    "subtext": "Double-lined / Stealth",
-    "price": "$125.00",
+    "slug": "phantom-zip-up",
+    "subtext": "Matte Zip / Stealth Black",
+    "price": {
+      "amount": 125.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "HOODIES",
+    "tag": "LIMITED",
     "mainImage": "/hero/img.jpg",
-    "hoverImage": "/hero/imgt.jpg",
-    "tag": "LIMITED"
+    "gallery": [
+      "/hero/img.jpg"
+    ],
+    "description": "Heavyweight full-zip hoodie with hidden pockets and custom matte-black zippers.",
+    "colors": [
+      {
+        "name": "Stealth Black",
+        "hex": "#0A0A0A"
+      }
+    ],
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "inventory": {
+      "M": 4,
+      "L": 2,
+      "XL": 2,
+      "XXL": 1,
+      "low_stock_threshold": 2
+    },
+    "tabs": {
+      "description": "Stealthy design for high-performance layering."
+    },
+    "highlights": [
+      {
+        "title": "ZIP-UP",
+        "desc": "Premium matte metal hardware",
+        "icon": "lock"
+      },
+      {
+        "title": "STEALTH",
+        "desc": "Tonal black-on-black logo",
+        "icon": "eye-off"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.9,
+      "review_count": 28,
+      "status": "In Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 8,
+        "name": "Distorted Vision Tee",
+        "price": 46.00
+      }
+    ],
+    "upsell_ids": [
+      14,
+      8
+    ]
   },
   {
     "id": 14,
     "name": "ARCHIVE CARGO PACK",
-    "subtext": "Limited Edition Bundle",
-    "price": "$150.00",
+    "slug": "archive-cargo-pack",
+    "subtext": "Limited Collector's Set",
+    "price": {
+      "amount": 150.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "BUNDLES",
-    "mainImage": "/hero/image.png",
-    "hoverImage": "/hero/imgt.jpg",
-    "tag": null
+    "tag": "ULTRA LIMITED",
+    "mainImage": "/hero/img.jpg",
+    "gallery": [
+      "/hero/img.jpg",
+      "/hero/img.jpg"
+    ],
+    "description": "A curated archive box including a limited hoodie, tote bag, and signed lookbook.",
+    "colors": [
+      {
+        "name": "Archive",
+        "hex": "#121212"
+      }
+    ],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "M": 2,
+      "L": 3,
+      "XL": 1,
+      "low_stock_threshold": 1
+    },
+    "tabs": {
+      "description": "Our legacy in a single box. Only 50 units ever produced."
+    },
+    "highlights": [
+      {
+        "title": "COLLECTOR'S",
+        "desc": "Each unit is hand-numbered",
+        "icon": "hash"
+      },
+      {
+        "title": "ARCHIVE",
+        "desc": "Includes 100-page signed book",
+        "icon": "book"
+      }
+    ],
+    "social_proof": {
+      "rating": 5.0,
+      "review_count": 8,
+      "status": "Rare"
+    },
+    "style_it_with": [
+      {
+        "id": 9,
+        "name": "Cyberpunk Hoodie",
+        "price": 110.00
+      }
+    ],
+    "upsell_ids": [
+      9,
+      13
+    ]
   },
   {
     "id": 15,
     "name": "SPECTRUM TEE",
-    "subtext": "Multi-color Print",
-    "price": "$48.00",
+    "slug": "spectrum-tee",
+    "subtext": "12-Color Print / Heavyweight",
+    "price": {
+      "amount": 48.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "TEES",
-    "mainImage": "/hero/img1.png",
-    "hoverImage": "/hero/image.png",
-    "tag": "NEW"
+    "tag": "NEW",
+    "mainImage": "/hero/img.jpg",
+    "gallery": [
+      "/hero/img.jpg"
+    ],
+    "description": "Vibrant multi-color screen print on our classic heavyweight black tee base.",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#000000"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "inventory": {
+      "S": 10,
+      "M": 20,
+      "L": 15,
+      "XL": 10,
+      "low_stock_threshold": 5
+    },
+    "tabs": {
+      "description": "The most complex print we've ever achieved."
+    },
+    "highlights": [
+      {
+        "title": "COLORFUL",
+        "desc": "12-color high-def screen print",
+        "icon": "aperture"
+      },
+      {
+        "title": "DENSE",
+        "desc": "High stitch count premium cotton",
+        "icon": "info"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.6,
+      "review_count": 19,
+      "status": "In Stock"
+    },
+    "style_it_with": [
+      {
+        "id": 6,
+        "name": "Metro Trucker Hat",
+        "price": 29.00
+      }
+    ],
+    "upsell_ids": [
+      6,
+      16
+    ]
   },
   {
     "id": 16,
     "name": "ULTRA LOGO SOCKS",
+    "slug": "ultra-logo-socks",
     "subtext": "3-Pack Essentials",
-    "price": "$18.00",
+    "price": {
+      "amount": 18.00,
+      "currency": "USD",
+      "sale_price": null
+    },
     "category": "ACCESSORIES",
-    "mainImage": "/hero/imgt.jpg",
-    "hoverImage": "/hero/img.jpg",
-    "tag": null
+    "tag": null,
+    "mainImage": "/hero/image.png",
+    "gallery": [
+      "/hero/image.png"
+    ],
+    "description": "Cushioned crew socks with jacquard knit logos. Reinforced heel and toe.",
+    "colors": [
+      {
+        "name": "Black/White",
+        "hex": "#FFFFFF"
+      }
+    ],
+    "sizes": [
+      "One Size"
+    ],
+    "inventory": {
+      "One Size": 100,
+      "low_stock_threshold": 20
+    },
+    "tabs": {
+      "description": "Comfort for the modern nomad."
+    },
+    "highlights": [
+      {
+        "title": "COMFORT",
+        "desc": "Double-layered terry padding",
+        "icon": "cloud"
+      },
+      {
+        "title": "3-PACK",
+        "desc": "Great value everyday essentials",
+        "icon": "grid"
+      }
+    ],
+    "social_proof": {
+      "rating": 4.9,
+      "review_count": 210,
+      "status": "Best Seller"
+    },
+    "style_it_with": [
+      {
+        "id": 1,
+        "name": "Nocturnal Vibe Tee",
+        "price": 48.00
+      }
+    ],
+    "upsell_ids": [
+      1,
+      7
+    ]
   }
 ]

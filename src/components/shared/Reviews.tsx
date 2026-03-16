@@ -35,7 +35,6 @@ const Reviews = () => {
 
   if (loading) return <div className="text-zinc-500 animate-pulse py-10 font-inter uppercase text-[10px] tracking-widest text-center">Loading Reviews...</div>;
 
-  // স্লাইডারটি লুপ করার জন্য রিভিউ লিস্ট ট্রিপল করা হয়েছে
   const duplicatedReviews = [...reviews, ...reviews, ...reviews];
 
   return (
@@ -68,7 +67,7 @@ const Reviews = () => {
             x: [0, -3000], 
           }}
           transition={{
-            duration: 35, // স্পিড আপনার পছন্দমতো এখান থেকে অ্যাডজাস্ট করতে পারেন
+            duration: 35, 
             repeat: Infinity,
             ease: "linear",
           }}

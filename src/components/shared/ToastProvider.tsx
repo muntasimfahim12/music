@@ -23,7 +23,6 @@ export const showCartToast = (productName: string) => {
             </div>
           </div>
 
-          {/* টেক্সট সেকশন */}
           <div className="flex-1">
             <h3 className="text-[11px] font-black text-[#FF2E2E] uppercase tracking-[0.2em]">
               System Update
