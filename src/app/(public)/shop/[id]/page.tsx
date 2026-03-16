@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { showCartToast } from '@/src/components/shared/ToastProvider';
 import Reviews from '@/src/components/shared/Reviews';
-import RelatedMusic from '@/src/components/shared/RelatedMusic';
+import RelatedProduct from '@/src/components/shared/RelatedProduct';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -356,7 +356,7 @@ const ProductDetails = () => {
 
       <div className="w-full border-t border-white/5 bg-black/20 backdrop-blur-sm">
         <div className="max-w-[1300px] mx-auto px-6 md:px-10">
-          <RelatedMusic />
+          <RelatedProduct/>
         </div>
       </div>
 

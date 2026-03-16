@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "NOCTURNAL Vibe Tee",
+    "name": "Nocturnal Vibe Tee",
     "slug": "nocturnal-vibe-tee",
     "subtext": "Stone Washed Black / Boxy Fit",
     "price": {
@@ -108,7 +108,7 @@
   },
   {
     "id": 2,
-    "name": "OFFICIAL LOGO HOODIE",
+    "name": "Official Logo Hoodie",
     "slug": "official-logo-hoodie-crimson",
     "subtext": "Crimson Red / Oversized",
     "price": {
@@ -202,7 +202,7 @@
   },
   {
     "id": 3,
-    "name": "URBAN SIGNATURE CAP",
+    "name": "Urban Stgnature Cap",
     "slug": "urban-signature-cap",
     "subtext": "Matte Black Edition",
     "price": {
@@ -280,7 +280,7 @@
   },
   {
     "id": 4,
-    "name": "SONIC REVOLUTION VINYL",
+    "name": "Sonic Revolutton Vinyl",
     "slug": "sonic-revolution-vinyl",
     "subtext": "12\" Translucent Red / Limited Edition",
     "price": {
@@ -358,7 +358,7 @@
   },
   {
     "id": 5,
-    "name": "VOID HOODIE",
+    "name": " Void Hoddie",
     "slug": "void-hoodie",
     "subtext": "Signature Series / Oversized",
     "price": {

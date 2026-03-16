@@ -1,213 +1,169 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from 'react';
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from "framer-motion";
+import { ArrowRight } from 'lucide-react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
-
-interface Product {
-    id: number;
-    name: string;
-    color: string;
-    price: string;
-    mainImage: string;
-    hoverImage: string;
-    tag: string | null;
-}
-
-const productData: Product[] = [
-    {
-        id: 1,
-        name: 'NOCTURNAL VIBE TEE',
-        color: 'Stone Washed Black',
-        price: '$48.00',
-        mainImage: '/hero/image.png',
-        hoverImage: '/hero/img1.png',
-        tag: 'NEW ARRIVAL'
-    },
-    {
-        id: 2,
-        name: 'OFFICIAL LOGO HOODIE',
-        color: 'Crimson Red / Oversized',
-        price: '$89.00',
-        mainImage: '/hero/img.jpg',
-        hoverImage: '/hero/imgt.jpg',
-        tag: 'LIMITED'
-    },
-    {
-        id: 3,
-        name: 'URBAN SIGNATURE CAP',
-        color: 'Matte Black Edition',
-        price: '$32.00',
-        mainImage: '/hero/img.jpg',
-        hoverImage: '/hero/image.png',
-        tag: 'SOLD OUT'
-    },
-    {
-        id: 4,
-        name: 'SONIC REVOLUTION VINYL',
-        color: '12" Translucent Red',
-        price: '$45.00',
-        mainImage: '/hero/imgt.jpg',
-        hoverImage: '/hero/image.png',
-        tag: null
-    }
-];
-
-const ModernAnimatedButton = ({ children, disabled }: { children: React.ReactNode, disabled?: boolean }) => {
-    return (
-        <div className={`relative group/btn p-[1px] overflow-hidden rounded-sm bg-zinc-800 ${disabled ? 'opacity-50' : 'cursor-pointer'}`}>
-            <motion.div
-                animate={{
-                    background: [
-                        "radial-gradient(circle at 0% 0%, #FF2E2E 0%, transparent 50%)",
-                        "radial-gradient(circle at 100% 0%, #FF2E2E 0%, transparent 50%)",
-                        "radial-gradient(circle at 100% 100%, #FF2E2E 0%, transparent 50%)",
-                        "radial-gradient(circle at 0% 100%, #FF2E2E 0%, transparent 50%)",
-                        "radial-gradient(circle at 0% 0%, #FF2E2E 0%, transparent 50%)",
-                    ],
-                }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-[-100%] opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500"
-            />
-            
-            <div className="relative z-10 bg-black py-3 px-6 rounded-[inherit] flex items-center justify-center gap-2 text-white text-[10px] font-black uppercase tracking-[0.2em]">
-                {children}
-            </div>
-        </div>
-    );
-};
-
-const ProductCard = ({ product }: { product: Product }) => {
+// --- Single Product Card Component ---
+const ProductCard = ({ product }: { product: any }) => {
     const [isHovered, setIsHovered] = useState(false);
+    const router = useRouter();
+
+    const mainImg = product.mainImage;
+    const hoverImg = product.hoverImage || product.mainImage;
+
+    const displayPrice = typeof product.price === 'object'
+        ? (product.price.sale_price || product.price.amount)
+        : product.price;
 
     return (
         <motion.div
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="group relative flex flex-col w-full"
+            onClick={() => router.push(`/shop/${product.id}`)}
+            className="group relative flex flex-col w-full cursor-pointer"
         >
-            {/* Image Container */}
+            {/* Image Box */}
             <div className="relative aspect-[4/5] bg-[#0F0F0F] overflow-hidden rounded-sm border border-white/5">
                 {product.tag && (
-                    <div className={`absolute top-4 left-4 z-30 px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] shadow-xl ${
+                    <div className={`absolute top-3 left-3 z-30 px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest ${
                         product.tag === 'SOLD OUT' ? 'bg-zinc-800 text-zinc-400' : 'bg-[#FF2E2E] text-white'
                     }`}>
                         {product.tag}
                     </div>
                 )}
 
-                <div className="relative w-full h-full overflow-hidden">
+                <div className="relative w-full h-full">
                     <motion.img
-                        src={product.mainImage}
+                        src={mainImg}
                         alt={product.name}
-                        animate={{ opacity: isHovered ? 0 : 1, scale: isHovered ? 1.08 : 1 }}
-                        transition={{ duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+                        animate={{ opacity: isHovered && product.hoverImage ? 0 : 1, scale: isHovered ? 1.05 : 1 }}
+                        transition={{ duration: 0.6, ease: "circOut" }}
                         className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <motion.img
-                        src={product.hoverImage}
-                        alt={product.name}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: isHovered ? 1 : 0, scale: isHovered ? 1 : 1.1 }}
-                        transition={{ duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                </div>
-
-                {/* Animated Quick Buy Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-6">
-                    <div className="w-[85%]">
-                        <AnimatePresence>
-                            {isHovered && (
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    exit={{ y: 20, opacity: 0 }}
-                                >
-                                    <ModernAnimatedButton disabled={product.tag === 'SOLD OUT'}>
-                                        <Plus size={14} strokeWidth={3} />
-                                        <span>Quick Buy</span>
-                                    </ModernAnimatedButton>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+                    {product.hoverImage && (
+                        <motion.img
+                            src={hoverImg}
+                            alt={product.name}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: isHovered ? 1 : 0, scale: isHovered ? 1 : 1.05 }}
+                            transition={{ duration: 0.6, ease: "circOut" }}
+                            className="absolute inset-0 w-full h-full object-cover"
+                        />
+                    )}
                 </div>
             </div>
 
-            {/* Info */}
-            <div className="mt-6 flex flex-col gap-2 px-1">
-                <div className="flex justify-between items-start">
-                    <h3 className="text-zinc-100 text-[13px] md:text-[15px] font-bold uppercase tracking-tight group-hover:text-[#FF2E2E] transition-colors duration-300">
-                        {product.name}
-                    </h3>
-                    <span className="text-white text-[14px] md:text-[16px] font-black tracking-tighter">
-                        {product.price}
+            {/* Product Info */}
+            <div className="mt-4 flex flex-col items-center text-center">
+                <h3 className="text-zinc-100 text-[13px] md:text-[14px] font-semibold tracking-tight group-hover:text-[#FF2E2E] transition-colors duration-300">
+                    {product.name}
+                </h3>
+                <div className="flex items-center gap-2 mt-1">
+                    <span className="text-zinc-500 text-[10px] uppercase tracking-wider">
+                        {product.color || "Original"}
+                    </span>
+                    <span className="text-white text-[13px] font-bold">
+                        ${displayPrice}
                     </span>
                 </div>
-                <p className="text-zinc-500 text-[10px] md:text-[11px] font-medium uppercase tracking-[0.2em]">
-                    {product.color}
-                </p>
             </div>
         </motion.div>
     );
 };
 
+// --- Main Products Component ---
 const Products = () => {
+    const [products, setProducts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get('/data/product.json');
+                setProducts(response.data.slice(0, 4));
+                setLoading(false);
+            } catch (error) {
+                console.error("Error loading products:", error);
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
+
+    if (loading) return null;
+
     return (
-        <section className="w-full bg-[#050505] py-24 md:py-32 px-6 md:px-12 lg:px-20">
-            <div className="max-w-[1600px] mx-auto">
-                {/* Modern Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 border-b border-white/5 pb-8 gap-6">
-                    <div className="max-w-2xl">
-                        <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            className="flex items-center gap-2 mb-3"
-                        >
-                            <span className="w-6 h-[1px] bg-[#FF2E2E]"></span>
-                            <span className="text-[#FF2E2E] text-[9px] md:text-[10px] font-bold tracking-[0.5em] uppercase">
-                                Season 01 Collection
-                            </span>
-                        </motion.div>
-                        <h2 className="text-white text-4xl judson-bold md:text-5xl font-[1000] uppercase tracking-tighter leading-[1]">
-                            HUMAN <span className="text-zinc-600">ARCHIVE</span> <br />
-                            <span className="text-[14px] md:text-[16px] font-medium tracking-[0.1em] text-zinc-500 uppercase">
-                                Designed for the modern movement
-                            </span>
-                        </h2>
-                    </div>
-                    
-                    <motion.button 
-                        whileHover={{ x: 5 }}
-                        className="group flex items-center gap-3 text-zinc-400 hover:text-white transition-all duration-300 py-1"
-                    >
-                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] border-b border-zinc-800 group-hover:border-[#FF2E2E] pb-1">
-                            Browse All
+        /* pt-0 ব্যবহার করা হয়েছে যাতে উপরের সেকশনের সাথে লেগে থাকে এবং গ্যাপ না থাকে */
+        <section className="w-full bg-[#050505] pt-0 pb-16 px-6 lg:px-20">
+            <div className="max-w-[1300px] mx-auto">
+
+                {/* --- Compact Centered Header --- */}
+                <div className="flex flex-col items-center text-center mb-10">
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="w-6 h-[1px] bg-[#FF2E2E]"></span>
+                        <span className="text-[#FF2E2E] text-[9px] font-bold tracking-[0.4em] uppercase">
+                            New Arrival
                         </span>
-                        <ArrowRight size={14} className="group-hover:text-[#FF2E2E] transition-colors" />
-                    </motion.button>
+                        <span className="w-6 h-[1px] bg-[#FF2E2E]"></span>
+                    </div>
+
+                    <h2 className="text-white text-3xl md:text-5xl font-bold judson-bold tracking-tighter leading-tight">
+                        Human Archive
+                    </h2>
+
+                    <p className="text-zinc-500 text-[10px] md:text-xs font-medium tracking-widest uppercase mt-3">
+                        Designed for the modern movement
+                    </p>
                 </div>
 
-                {/* Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-                    {productData.map((product) => (
+                {/* --- Grid Layout --- */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                    {products.map((product: any) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
 
-                {/* View All Collection Button for Mobile */}
-                <div className="mt-20 md:hidden flex justify-center px-4">
-                    <div className="w-full">
-                        <ModernAnimatedButton>
-                            View All Collection
-                        </ModernAnimatedButton>
-                    </div>
+                {/* --- Modern Premium Explore Button --- */}
+                <div className="mt-12 flex justify-center">
+                    <motion.button
+                        onClick={() => router.push('/shop')}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="group relative flex items-center justify-center px-10 py-4 cursor-pointer overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-zinc-900/50 group-hover:bg-white transition-colors duration-500 ease-in-out" />
+
+                        <motion.div
+                            className="absolute bottom-0 left-0 h-[1px] bg-[#FF2E2E]"
+                            initial={{ width: "20%" }}
+                            whileHover={{ width: "100%" }}
+                            transition={{ duration: 0.4 }}
+                        />
+
+                        <div className="relative z-10 flex items-center gap-3">
+                            <span className="text-white group-hover:text-black text-[10px] font-black uppercase tracking-[0.4em] transition-colors duration-500">
+                                View Collection
+                            </span>
+                            <div className="relative flex items-center justify-center">
+                                <ArrowRight
+                                    size={14}
+                                    className="text-[#FF2E2E] group-hover:text-black group-hover:translate-x-1 transition-all duration-500 ease-out"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-[#FF2E2E] blur-2xl transition-opacity duration-500" />
+                    </motion.button>
                 </div>
+
             </div>
         </section>
     );

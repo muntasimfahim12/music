@@ -2,9 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { AnimatePresence, motion } from "framer-motion";
-import { Plus } from 'lucide-react';
-import { showCartToast } from './ToastProvider'; // পাথটি ঠিকভাবে চেক করে নিও
+import { motion } from "framer-motion";
 
 export interface ProductProps {
     id: number | string;
@@ -16,120 +14,90 @@ export interface ProductProps {
     tag?: string | null;
 }
 
-const QuickBuyButton = ({ disabled, onClick }: { disabled?: boolean, onClick?: () => void }) => (
-    <div 
-        onClick={(e) => {
-            e.stopPropagation();
-            if(!disabled && onClick) onClick();
-        }}
-        className={`relative group/btn p-[1px] overflow-hidden rounded-sm bg-zinc-900 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-    >
-        <motion.div
-            animate={{
-                background: [
-                    "radial-gradient(circle at 0% 0%, #FF2E2E 0%, transparent 55%)",
-                    "radial-gradient(circle at 100% 0%, #FF2E2E 0%, transparent 55%)",
-                    "radial-gradient(circle at 100% 100%, #FF2E2E 0%, transparent 55%)",
-                    "radial-gradient(circle at 0% 100%, #FF2E2E 0%, transparent 55%)",
-                ],
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-[-100%] opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500"
-        />
-        <div className="relative z-10 bg-black py-3.5 px-6 rounded-[inherit] flex items-center justify-center gap-2 text-white text-[10px] font-black uppercase tracking-[0.2em] font-inter">
-            <Plus size={14} strokeWidth={3} />
-            <span>Quick Buy</span>
-        </div>
-    </div>
-);
-
 const ProductCard = (product: ProductProps) => {
     const [isHovered, setIsHovered] = useState(false);
-
-    const handleAddToCart = () => {
-        if (product.tag !== 'SOLD OUT') {
-            showCartToast(product.name);
-        }
-    };
 
     return (
         <motion.div
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="group relative flex flex-col w-full"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="group relative flex flex-col w-full bg-transparent"
         >
-            {/* Image Container - Fixed Image Loading */}
-            <div className="relative aspect-[4/5] bg-[#0A0A0A] overflow-hidden rounded-sm border border-white/5">
+            {/* Image Container - No Rounded Corners for High-End Look */}
+            <div className="relative aspect-[4/5] bg-[#080808] overflow-hidden border border-white/[0.05] transition-colors duration-700 group-hover:border-white/10">
+                
+                {/* Luxury Tag - Inter Bold */}
                 {product.tag && (
-                    <div className={`absolute top-4 left-4 z-30 px-3 py-1 text-[9px] font-inter font-black uppercase tracking-[0.2em] shadow-2xl ${
-                        product.tag === 'SOLD OUT' ? 'bg-zinc-800 text-zinc-500' : 'bg-[#FF2E2E] text-white'
-                    }`}>
-                        {product.tag}
+                    <div className="absolute top-0 left-0 z-30">
+                        <div className={`px-5 py-2 text-[9px] inter-bold uppercase tracking-[0.3em] backdrop-blur-md ${
+                            product.tag === 'SOLD OUT' 
+                            ? 'bg-zinc-900/90 text-zinc-500' 
+                            : 'bg-[#FF2E2E] text-white shadow-2xl'
+                        }`}>
+                            {product.tag}
+                        </div>
                     </div>
                 )}
 
-                {/* Main Images with Smooth Transition */}
-                <div className="absolute inset-0 w-full h-full">
+                {/* Slow-Motion Image Transition */}
+                <div className="absolute inset-0 z-10">
                     <img
                         src={product.mainImage}
                         alt={product.name}
-                        style={{
-                            opacity: isHovered ? 0 : 0.8,
-                            transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-                            transition: 'all 0.6s cubic-bezier(0.19, 1, 0.22, 1)'
-                        }}
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0"
+                        className={`w-full h-full object-cover transition-all duration-[1.8s] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                            isHovered ? 'scale-110 opacity-0' : 'scale-100 opacity-100'
+                        }`}
                     />
                     <img
                         src={product.hoverImage}
                         alt={product.name}
-                        style={{
-                            opacity: isHovered ? 1 : 0,
-                            transform: isHovered ? 'scale(1)' : 'scale(1.05)',
-                            transition: 'all 0.6s cubic-bezier(0.19, 1, 0.22, 1)'
-                        }}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1.8s] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                            isHovered ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
+                        }`}
                     />
                 </div>
 
-                {/* Quick Buy Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-6 px-4 z-20">
-                    <div className="w-full">
-                        <AnimatePresence>
-                            {isHovered && (
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    exit={{ y: 15, opacity: 0 }}
-                                    transition={{ duration: 0.4, ease: "circOut" }}
-                                >
-                                    <QuickBuyButton 
-                                        disabled={product.tag === 'SOLD OUT'} 
-                                        onClick={handleAddToCart}
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                </div>
+                {/* Premium Dark Overlay on Hover */}
+                <div className="absolute inset-0 z-20 bg-gradient-to-b from-transparent via-transparent to-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                
+                {/* Red Accent Line - Bottom Animated */}
+                <div className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#FF2E2E] z-30 group-hover:w-full transition-all duration-1000 ease-in-out" />
             </div>
 
-            {/* Info Section */}
-            <div className="mt-6 flex flex-col gap-1.5 px-1">
-                <div className="flex justify-between items-start gap-4">
-                    <h3 className="text-zinc-100 text-[14px] md:text-[15px] font-judson font-bold uppercase tracking-tight group-hover:text-[#FF2E2E] transition-colors duration-300 leading-tight">
+            {/* Info Section - Using Provided Custom Classes */}
+            <div className="mt-6 flex flex-col gap-2 px-1">
+                <div className="flex justify-between items-start">
+                    <h3 className="text-zinc-100 text-[14px] md:text-[16px] judson-bold uppercase tracking-[0.05em] group-hover:text-white transition-colors duration-300 leading-tight max-w-[70%]">
                         {product.name}
                     </h3>
-                    <span className="text-white text-[14px] md:text-[15px] font-inter font-black tracking-tighter italic shrink-0">
-                        {product.price}
+                    
+                    {/* Price with Dollar Sign - Inter Semibold */}
+                    <span className="text-white text-[14px] md:text-[16px] inter-semibold tracking-tighter">
+                        ${product.price}
                     </span>
                 </div>
-                <p className="text-zinc-500 text-[10px] md:text-[11px] font-inter font-bold uppercase tracking-[0.2em]">
-                    {product.subtext}
-                </p>
+                
+                <div className="flex items-center justify-between">
+                    {/* Subtext - Inter Medium */}
+                    <p className="text-zinc-500 text-[10px] inter-medium uppercase tracking-[0.25em]">
+                        {product.subtext}
+                    </p>
+                    
+                    {/* View Collection - Hidden by default, slides in on hover */}
+                    <div className="overflow-hidden">
+                        <motion.span 
+                            animate={{ y: isHovered ? 0 : 25 }}
+                            transition={{ duration: 0.5, ease: "circOut" }}
+                            className="text-[#FF2E2E] text-[9px] inter-bold uppercase tracking-[0.2em] flex items-center gap-1"
+                        >
+                            Explore →
+                        </motion.span>
+                    </div>
+                </div>
             </div>
         </motion.div>
     );
