@@ -33,100 +33,111 @@ const Reviews = () => {
     fetchReviews();
   }, []);
 
-  if (loading) return <div className="text-zinc-500 animate-pulse py-10 font-inter uppercase text-[10px] tracking-widest text-center">Loading Reviews...</div>;
+  if (loading) return (
+    <div className="w-full h-[323px] flex items-center justify-center text-zinc-700 font-inter uppercase text-[9px] tracking-widest">
+      Loading Manifesto...
+    </div>
+  );
 
-  const duplicatedReviews = [...reviews, ...reviews, ...reviews];
+  const duplicatedReviews = [...reviews, ...reviews, ...reviews, ...reviews];
 
   return (
-    <section className="py-20 overflow-hidden relative bg-transparent">
-      
-      {/* Header Section */}
-      <div className="max-w-[1400px] mx-auto flex items-end justify-between mb-12 px-6">
+    <section className="relative overflow-hidden bg-transparent mx-auto" style={{ maxWidth: '794.67px', height: '323px' }}>
+
+      {/* Header - Compact version to save space */}
+      <div className="flex items-end justify-between mb-6 px-2">
         <div>
-          <h3 className="text-white text-4xl md:text-5xl judson-bold italic tracking-tight mb-2">Reviews</h3>
-          <p className="text-zinc-600 text-[10px] uppercase tracking-[0.2em] font-bold">What our listeners say</p>
+          <h3 className="text-white text-3xl judson-bold tracking-tight leading-none mb-1 ">Reviews</h3>
+          <p className="text-zinc-600 text-[8px] uppercase tracking-[0.2em] font-black">Community Feedback</p>
         </div>
-        
-        <div className="flex flex-col items-end gap-1">
-          <div className="flex text-[#FF4D3D] gap-0.5">
+
+        <div className="flex flex-col items-end">
+          <div className="flex text-[#FF4D3D] gap-0.5 mb-1">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} size={14} fill="currentColor" />
+              <Star key={i} size={10} fill="currentColor" strokeWidth={0} />
             ))}
           </div>
-          <span className="text-[11px] font-medium text-zinc-500 tracking-wider font-inter">
-            (4.8/5 • {reviews.length} Reviews)
+          <span className="text-[9px] font-bold text-zinc-700 tracking-tighter font-inter uppercase">
+            {reviews.length} Verified Logs
           </span>
         </div>
       </div>
 
       {/* --- Infinite Sliding Row --- */}
-      <div className="relative flex items-center">
-        <motion.div 
-          className="flex gap-4 pointer-events-auto cursor-grab active:cursor-grabbing px-4"
+      <div className="relative flex items-center mt-2">
+        <motion.div
+          className="flex gap-3 cursor-grab active:cursor-grabbing"
           animate={{
-            x: [0, -3000], 
+            x: [0, -2000],
           }}
           transition={{
-            duration: 35, 
+            duration: 25,
             repeat: Infinity,
             ease: "linear",
           }}
           style={{ width: "fit-content" }}
         >
           {duplicatedReviews.map((review, index) => (
-            <div 
-              key={`${review.id}-${index}`} 
-              className="w-[340px] md:w-[420px] flex-shrink-0 bg-[#111111]/60 border border-white/5 p-7 rounded-[12px] hover:border-white/10 transition-all duration-300 backdrop-blur-sm"
+            <div
+              key={`${review.id}-${index}`}
+              className="w-[280px] flex-shrink-0 bg-[#0A0A0A] border border-zinc-900/50 p-5 rounded-[8px] hover:bg-[#0E0E0E] transition-all duration-500"
             >
-              {/* Card Header: User Info */}
-              <div className="flex items-center justify-between mb-6">
+              {/* User Info */}
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full overflow-hidden border border-white/5">
-                    <img 
-                      src={review.image} 
-                      alt={review.name} 
-                      className="w-full h-full object-cover"
+                  <div className="w-9 h-9 rounded-full overflow-hidden border border-zinc-800 p-[1px]">
+                    <img
+                      src={review.image}
+                      alt={review.name}
+                      className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
                     />
                   </div>
                   <div>
-                    <h4 className="text-[15px] font-bold text-white leading-none mb-1 font-inter">{review.name}</h4>
-                    <p className="text-[11px] text-zinc-500 font-medium italic font-inter">
-                      Verified Purchase
+                    <h4 className="text-[13px] font-bold text-zinc-200 leading-none mb-1 font-inter">{review.name}</h4>
+                    <p className="text-[9px] text-[#FF4D3D] font-black uppercase tracking-tighter opacity-70">
+                      Verified User
                     </p>
                   </div>
                 </div>
-                <span className="text-[11px] text-zinc-600 font-medium font-inter">{review.date}</span>
+                <span className="text-[9px] text-zinc-700 font-mono">{review.date}</span>
               </div>
-              
-              {/* Card Body: Comment */}
-              <p className="text-zinc-400 text-[14px] leading-[1.7] font-normal tracking-wide font-inter">
+
+              {/* Comment - Line Clamp for consistency */}
+              <p className="text-zinc-500 text-[12px] leading-[1.6] font-medium tracking-tight font-inter h-[60px] overflow-hidden line-clamp-3">
                 {review.comment}
               </p>
 
-              {/* Bottom Stars */}
-              <div className="mt-6 flex text-[#FF4D3D]/40 gap-0.5">
-                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={10} fill="currentColor" />
-                ))}
+              {/* Bottom Decoration */}
+              <div className="mt-4 pt-4 border-t border-zinc-900/50 flex justify-between items-center">
+                <div className="flex text-zinc-800 gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={8} fill="currentColor" strokeWidth={0} />
+                  ))}
+                </div>
+                <div className="w-8 h-[1px] bg-zinc-900"></div>
               </div>
             </div>
           ))}
         </motion.div>
 
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black/20 to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black/20 to-transparent z-10 pointer-events-none" />
+        {/* Shadow Overlays for smooth fade */}
+        <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none" />
       </div>
 
-      {/* Footer Button */}
-      <div className="mt-16 px-6 max-w-[1400px] mx-auto">
-        <button className="w-full py-4 border border-zinc-800/50 rounded-[4px] text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-all duration-500 font-inter">
-          Read All Reviews
+      {/* Action Line */}
+      <div className="mt-8 flex justify-center">
+        <button className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-700 hover:text-[#FF4D3D] transition-colors duration-500 py-2 border-b border-zinc-900 hover:border-[#FF4D3D]/30">
+          Access Full Archive
         </button>
       </div>
 
       <style jsx>{`
-        .cursor-grab:active {
-          cursor: grabbing;
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;  
+          overflow: hidden;
         }
       `}</style>
     </section>

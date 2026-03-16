@@ -8,7 +8,8 @@ import axios from 'axios';
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Star, Truck, Heart, Plus, Minus,
-  Loader2, AlertCircle, Maximize2, ShoppingBag
+  Loader2, AlertCircle, Maximize2, ShoppingBag,
+  X
 } from 'lucide-react';
 import { showCartToast } from '@/src/components/shared/ToastProvider';
 import Reviews from '@/src/components/shared/Reviews';
@@ -17,6 +18,8 @@ import RelatedMusic from '@/src/components/shared/RelatedMusic';
 const ProductDetails = () => {
   const { id } = useParams();
   const router = useRouter();
+  
+  // --- States ---
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState('');
@@ -24,6 +27,7 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('DESCRIPTION');
   const [mainDisplayImg, setMainDisplayImg] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false); // Fixed State
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -87,35 +91,51 @@ const ProductDetails = () => {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-
-          {/* --- LEFT: Slimmer Image Gallery --- */}
-          <div className="lg:col-span-6 space-y-4 md:sticky md:top-24">
+          
+          {/* --- LEFT: Image Gallery --- */}
+          <div className="lg:col-span-6 space-y-6 md:sticky md:top-24">
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative group overflow-hidden rounded-xl bg-zinc-900 border border-white/5 max-w-[500px] mx-auto"
+              className="relative group overflow-hidden rounded-[4px] bg-[#0A0A0A] border border-white/[0.05] max-w-[500px] mx-auto shadow-2xl"
             >
               {product.tag && (
-                <div className="absolute top-4 left-4 z-20 bg-[#E63946] text-white text-[8px] md:text-[9px] font-black px-2.5 py-1 uppercase tracking-tighter shadow-lg transform -skew-x-12">
+                <div className="absolute top-5 left-0 z-20 bg-[#E63946] text-white text-[9px] font-black px-4 py-1.5 uppercase tracking-[0.2em] shadow-xl">
                   {product.tag}
                 </div>
               )}
-              <img
-                src={mainDisplayImg}
-                className="w-full aspect-[4/5] object-cover transition-transform duration-1000 group-hover:scale-105"
-                alt={product.name}
-              />
-              <button className="absolute bottom-4 right-4 p-2.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full hover:bg-white hover:text-black transition-all">
-                <Maximize2 size={14} />
+
+              <div className="relative aspect-[4/5] overflow-hidden cursor-zoom-in" onClick={() => setIsFullscreen(true)}>
+                <motion.img
+                  key={mainDisplayImg}
+                  initial={{ opacity: 0, filter: 'blur(10px)' }}
+                  animate={{ opacity: 1, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.5 }}
+                  src={mainDisplayImg}
+                  className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+                  alt={product.name}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+
+              <button 
+                onClick={() => setIsFullscreen(true)}
+                className="absolute bottom-6 right-6 p-4 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-black shadow-2xl z-10"
+              >
+                <Maximize2 size={18} strokeWidth={1.5} />
               </button>
             </motion.div>
 
-            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 justify-center lg:justify-start">
+            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 justify-center lg:justify-start max-w-[500px] mx-auto">
               {productGallery.map((img: string, i: number) => (
                 <button
                   key={i}
                   onClick={() => setMainDisplayImg(img)}
-                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 rounded-lg border-2 overflow-hidden transition-all duration-300 ${mainDisplayImg === img ? 'border-[#E63946]' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 transition-all duration-500 overflow-hidden ${
+                    mainDisplayImg === img 
+                    ? 'ring-1 ring-[#E63946] ring-offset-4 ring-offset-black opacity-100' 
+                    : 'opacity-30 hover:opacity-70 grayscale hover:grayscale-0'
+                  }`}
                 >
                   <img src={img} className="w-full h-full object-cover" alt={`view-${i}`} />
                 </button>
@@ -196,7 +216,7 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            {/* --- Action Buttons: Soft Red (#E63946) --- */}
+            {/* Actions */}
             <div className="flex flex-col gap-3 mb-10">
               <div className="flex items-center gap-3">
                 <div className="flex items-center bg-zinc-900 border border-white/5 rounded-lg h-14 px-2">
@@ -230,96 +250,143 @@ const ProductDetails = () => {
         </div>
 
         {/* --- BOTTOM: Detail Tabs --- */}
-        <div className="mt-20 md:mt-32">
-          <div className="flex gap-8 md:gap-10 border-b border-white/5 mb-8 overflow-x-auto no-scrollbar whitespace-nowrap scroll-smooth">
+        <div className="mt-16 mb-4 md:mt-32 max-w-[1216px] mx-auto px-4 lg:px-0">
+          <div className="flex gap-12 border-b border-white/[0.03] mb-12 overflow-x-auto no-scrollbar relative">
             {['DESCRIPTION', 'SPECIFICATIONS', 'LOGISTICS'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-4 text-[9px] font-black tracking-[0.2em] transition-all relative ${activeTab === tab ? 'text-[#E63946]' : 'text-white/20 hover:text-white'}`}
+                className={`pb-5 text-[10px] font-black tracking-[0.3em] transition-all duration-500 relative group ${
+                  activeTab === tab ? 'text-white' : 'text-white/20 hover:text-white/50'
+                }`}
               >
-                {tab}
+                <span className="relative z-10">{tab}</span>
                 {activeTab === tab && (
-                  <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#E63946]" />
+                  <motion.div
+                    layoutId="activeTabUnderline"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#E63946] shadow-[0_0_15px_rgba(230,57,70,0.5)]"
+                  />
                 )}
               </button>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <div className="lg:col-span-8">
-              <h3 className="text-2xl judson-bold uppercase mb-6">Manifesto</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            <div className="lg:col-span-8 space-y-10">
+              <div>
+                <h3 className="text-3xl judson-bold text-white mb-8 tracking-tight">Manifesto</h3>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.4 }}
+                    className="min-h-[180px]"
+                  >
+                    {activeTab === 'DESCRIPTION' && (
+                      <p className="text-zinc-400 font-inter text-[14px] leading-[1.8] max-w-2xl">
+                        {product.tabs?.description || product.description}
+                      </p>
+                    )}
+                    {activeTab === 'SPECIFICATIONS' && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+                        {product.tabs?.specifications?.map((spec: any, i: number) => (
+                          <div key={i} className="flex justify-between items-center border-b border-white/[0.03] py-4">
+                            <span className="text-[11px] text-zinc-500 uppercase font-bold tracking-widest">{spec.label}</span>
+                            <span className="text-[12px] text-white font-medium">{spec.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {activeTab === 'LOGISTICS' && (
+                      <div className="space-y-6">
+                        {[{ label: 'Delivery', value: product.tabs?.logistics?.delivery }, { label: 'Returns', value: product.tabs?.logistics?.returns }].map((item, idx) => (
+                          <div key={idx} className="bg-white/[0.02] p-5 border border-white/[0.05] rounded-sm">
+                            <h5 className="text-[#E63946] text-[9px] font-black uppercase mb-2">{item.label}</h5>
+                            <p className="text-zinc-400 text-[13px]">{item.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="min-h-[150px]"
-                >
-                  {activeTab === 'DESCRIPTION' && (
-                    <p className="text-white/40 inter-medium text-[13px] leading-relaxed mb-8">
-                      {product.tabs?.description || product.description}
-                    </p>
-                  )}
-
-                  {activeTab === 'SPECIFICATIONS' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-1 mb-8">
-                      {product.tabs?.specifications?.map((spec: any, i: number) => (
-                        <div key={i} className="flex justify-between border-b border-white/5 py-3">
-                          <span className="text-[10px] text-white/30 uppercase font-black">{spec.label}</span>
-                          <span className="text-[10px] text-white/80 font-bold inter-semibold">{spec.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {activeTab === 'LOGISTICS' && (
-                    <div className="space-y-4 text-white/40 text-[13px] mb-8 inter-medium">
-                      <p>Delivery: {product.tabs?.logistics?.delivery}</p>
-                      <p>Returns: {product.tabs?.logistics?.returns}</p>
-                    </div>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 {product.highlights?.map((item: any, i: number) => (
-                  <div key={i} className="bg-white/[0.02] border border-white/5 p-4 rounded-lg group hover:border-[#E63946]/20 transition-all">
-                    <p className="text-[8px] text-[#E63946] uppercase mb-1 font-black tracking-tighter">{item.title}</p>
-                    <p className="text-[10px] inter-medium text-white/60 leading-tight">{item.desc}</p>
+                  <div key={i} className="relative overflow-hidden bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.05] p-6 group hover:border-[#E63946]/30 transition-all duration-700">
+                    <div className="absolute top-0 left-0 w-[1px] h-0 bg-[#E63946] group-hover:h-full transition-all duration-700" />
+                    <p className="text-[9px] text-[#E63946] uppercase mb-3 font-black tracking-[0.2em]">{item.title}</p>
+                    <p className="text-[11px] text-zinc-400 leading-relaxed group-hover:text-zinc-200 transition-colors">{item.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="lg:col-span-4 bg-white/[0.01] p-6 rounded-xl border border-white/5 h-fit">
-              <h4 className="text-[9px] font-black uppercase tracking-widest mb-6 text-white/40 inter-medium">Care Protocol</h4>
-              <ul className="text-[10px] space-y-3 font-black text-white/60 uppercase inter-bold">
-                <li className="flex gap-2">• <span>Reverse wash only</span></li>
-                <li className="flex gap-2">• <span>Cold water cycle (30°C)</span></li>
-                <li className="flex gap-2">• <span>Neutralize pH detergents</span></li>
-                <li className="flex gap-2">• <span>Air dry in shaded environment</span></li>
-              </ul>
+            <div className="lg:col-span-4 lg:sticky lg:top-32">
+              <div className="relative p-8 rounded-[2px] bg-[#0A0A0A] border border-white/[0.05] overflow-hidden">
+                <div className="absolute -right-4 -bottom-4 opacity-[0.02] pointer-events-none italic judson-bold text-7xl select-none">Care</div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="h-[1px] w-8 bg-[#E63946]" />
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Care Protocol</h4>
+                  </div>
+                  <ul className="space-y-5">
+                    {['Reverse wash only', 'Cold water cycle (30°C)', 'Neutralize pH detergents', 'Air dry in shaded environment'].map((instruction, index) => (
+                      <li key={index} className="flex items-start gap-4 group">
+                        <span className="text-[#E63946] text-[12px]">0{index + 1}</span>
+                        <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider group-hover:text-white transition-colors">{instruction}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-         {/* Related Music Section - Full Width Background but Centered Content */}
-            <div className="w-full -mb-12 border-t border-white/5 bg-black/20 backdrop-blur-sm">
-                <div className="max-w-[1300px] mx-auto px-6 md:px-10 py-20">
-                    <Reviews />
-                </div>
-            </div>
 
-            {/* Related Music Section - Full Width Background but Centered Content */}
-            <div className="w-full m border-t border-white/5 bg-black/20 backdrop-blur-sm">
-                <div className="max-w-[1300px] mx-auto px-6 md:px-10 ">
-                    <RelatedMusic />
-                </div>
+      {/* --- EXTRA SECTIONS --- */}
+      <div className="w-full mt-20 border-t border-white/5 bg-black/20 backdrop-blur-sm">
+        <div className="max-w-[1300px] mx-auto px-6 md:px-10 py-20">
+          <Reviews />
+        </div>
+      </div>
+
+      <div className="w-full border-t border-white/5 bg-black/20 backdrop-blur-sm">
+        <div className="max-w-[1300px] mx-auto px-6 md:px-10">
+          <RelatedMusic />
+        </div>
+      </div>
+
+      {/* --- FULLSCREEN LIGHTBOX PORTAL --- */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
+            onClick={() => setIsFullscreen(false)}
+          >
+            <button className="absolute top-10 right-10 text-white/40 hover:text-white transition-all group">
+              <X size={40} strokeWidth={1} className="group-hover:rotate-90 transition-transform duration-500" />
+            </button>
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              src={mainDisplayImg}
+              className="max-w-full max-h-full object-contain shadow-2xl"
+              alt="Full view"
+            />
+            <div className="absolute bottom-10 text-white/20 text-[10px] font-black tracking-[0.5em] uppercase">
+              {product.name} — Perspective {(productGallery.indexOf(mainDisplayImg) + 1).toString().padStart(2, '0')}
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 };
