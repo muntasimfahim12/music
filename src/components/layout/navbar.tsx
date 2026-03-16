@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconMenu2, IconX, IconSearch, IconShoppingBag } from "@tabler/icons-react";
 import Link from "next/link";
+import { useCart } from "../../../src/context/CartContext"; 
 
 /* NAV LINKS */
 const navLinks = [
@@ -17,6 +18,9 @@ const navLinks = [
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { cart } = useCart(); 
+
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <>
@@ -77,9 +81,20 @@ const Navbar = () => {
                 className="text-zinc-300 group-hover:text-white transition-colors"
               />
 
-              <span className="absolute -top-1 -right-2 bg-[#FF2E2E] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(255,46,46,0.5)]">
-                2
-              </span>
+              {/* ডায়নামিক কাউন্টার (যখন ০ এর বেশি হবে তখনই দেখাবে) */}
+              <AnimatePresence>
+                {cartItemCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    key="cart-badge"
+                    className="absolute -top-1 -right-2 bg-[#FF2E2E] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(255,46,46,0.5)]"
+                  >
+                    {cartItemCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </Link>
 
             {/* MOBILE MENU BUTTON */}

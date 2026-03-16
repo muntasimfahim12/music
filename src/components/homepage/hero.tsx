@@ -8,7 +8,7 @@ import Button from '../ui/button';
 
 const Hero = () => {
   return (
-    <section className="relative w-full h-screen md:h-[800px] bg-[#050505] flex items-center justify-center overflow-hidden">
+    <section className="relative mt-18 w-full h-screen md:h-[800px] bg-[#050505] flex items-center justify-center overflow-hidden">
       
    
       <div

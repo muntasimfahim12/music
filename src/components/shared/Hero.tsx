@@ -84,7 +84,7 @@ const UniversalHero = ({
 
                 {/* LEFT SIDE: CONTENT */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 md:space-y-8 order-2 lg:order-1">
-                    
+
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -120,8 +120,8 @@ const UniversalHero = ({
                         <TimerBlock value={timeLeft.mins} label="MINS" />
                     </div>
 
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }} 
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         className="pt-4"
                     >
@@ -145,13 +145,13 @@ const UniversalHero = ({
                     >
                         {/* Glass Container */}
                         <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-[2rem] border border-white/10 shadow-[0_0_100px_rgba(255,46,46,0.1)] transition-transform duration-700 group-hover:scale-[1.02]" />
-                        
+
                         <img
                             src={imageProduct}
                             alt="featured product"
                             className="relative z-10 w-full h-full object-contain p-8 md:p-12 drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-3"
                         />
-                        
+
                         {/* Background Floating Element */}
                         <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#FF2E2E]/20 blur-[80px] rounded-full animate-pulse" />
                     </motion.div>

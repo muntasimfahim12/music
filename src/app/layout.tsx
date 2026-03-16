@@ -51,10 +51,11 @@ export default function RootLayout({
           }}
         />
 
-        <Navbar />
+        
 
         <main className="flex-grow">
         <CartProvider> 
+          <Navbar />
              {children}
         </CartProvider>
         </main>
