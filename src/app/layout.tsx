@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import Navbar from "../components/layout/navbar";
-import Footer from "../components/layout/footer";
-import { CartProvider } from "../context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,7 +9,7 @@ const geistSans = Geist({
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -34,7 +31,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#050505] text-white min-h-screen flex flex-col selection:bg-[#FF2E2E] selection:text-white`}
       >
-        {/* Toast Notifications */}
         <Toaster
           position="top-center"
           reverseOrder={false}
@@ -51,16 +47,9 @@ export default function RootLayout({
           }}
         />
 
-        
-
         <main className="flex-grow">
-        <CartProvider> 
-          <Navbar />
-             {children}
-        </CartProvider>
+          {children}
         </main>
-
-        <Footer />
       </body>
     </html>
   );
