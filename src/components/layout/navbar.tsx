@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconMenu2, IconX, IconSearch, IconShoppingBag } from "@tabler/icons-react";
+import { IconMenu2, IconX, IconSearch, IconShoppingBag, IconUserCircle } from "@tabler/icons-react";
 import Link from "next/link";
 import { useCart } from "../../../src/context/CartContext"; 
 
@@ -19,6 +21,8 @@ const navLinks = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { cart } = useCart(); 
+  
+  const [user, setUser] = useState<any>(null); 
 
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -36,17 +40,16 @@ const Navbar = () => {
             >
               <img
                 src="/logo/logo2.png"
-                alt="DEEBZLENÜZ Logo"
+                alt="Logo Symbol"
                 className="h-15 md:h-25 w-auto object-contain transition-all duration-300 filter brightness-110 group-hover:drop-shadow-[0_0_8px_rgba(212,175,87,0.5)]"
               />
 
               <img
                 src="/logo/logo.png"
-                alt="DEEBZLENÜZ Logo"
+                alt="DEEBZLENÜZ"
                 className="h-8 md:h-10 w-auto object-contain transition-all duration-300 filter brightness-110 group-hover:drop-shadow-[0_0_8px_rgba(212,175,87,0.5)]"
               />
 
-              {/* গ্লো ইফেক্ট */}
               <div className="absolute inset-0 bg-[#D4AF37]/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
             </motion.div>
           </Link>
@@ -74,6 +77,7 @@ const Navbar = () => {
               <IconSearch size={22} stroke={1.5} />
             </button>
 
+            {/* CART */}
             <Link href="/cart" className="relative cursor-pointer group">
               <IconShoppingBag
                 size={22}
@@ -81,7 +85,6 @@ const Navbar = () => {
                 className="text-zinc-300 group-hover:text-white transition-colors"
               />
 
-              {/* ডায়নামিক কাউন্টার (যখন ০ এর বেশি হবে তখনই দেখাবে) */}
               <AnimatePresence>
                 {cartItemCount > 0 && (
                   <motion.span
@@ -96,6 +99,24 @@ const Navbar = () => {
                 )}
               </AnimatePresence>
             </Link>
+
+            {/* --- LOGIN / ACCOUNT BUTTON --- */}
+            <div className="hidden sm:block">
+              {user ? (
+                <Link href="/dashboard" className="flex items-center gap-2 group transition-all">
+                  <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-white/5 group-hover:border-[#FF2E2E]/50 transition-all">
+                    <IconUserCircle size={20} stroke={1.2} className="text-zinc-400 group-hover:text-white" />
+                  </div>
+                </Link>
+              ) : (
+                <Link 
+                  href="/login" 
+                  className="text-[11px] font-black uppercase tracking-[0.2em] px-5 py-2.5 rounded-full border border-white/10 hover:border-[#FF2E2E] hover:bg-[#FF2E2E] hover:text-white transition-all duration-500 text-zinc-300"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
 
             {/* MOBILE MENU BUTTON */}
             <button
@@ -155,6 +176,32 @@ const Navbar = () => {
                     </Link>
                   </motion.div>
                 ))}
+
+                {/* MOBILE LOGIN LOGIC */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * navLinks.length }}
+                  className="pt-6 border-t border-white/5"
+                >
+                  {user ? (
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setOpen(false)}
+                      className="text-xl font-black uppercase tracking-tighter text-[#FF2E2E]"
+                    >
+                      My Account
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/login"
+                      onClick={() => setOpen(false)}
+                      className="text-xl font-black uppercase tracking-tighter text-white"
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                </motion.div>
               </nav>
 
               <div className="mt-auto space-y-6">

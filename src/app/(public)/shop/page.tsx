@@ -37,7 +37,6 @@ const ShopPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentTime, setCurrentTime] = useState("");
 
-    // রিয়েল-টাইম ক্লক
     useEffect(() => {
         const timer = setInterval(() => {
             const now = new Date();
@@ -65,7 +64,6 @@ const ShopPage = () => {
         fetchProducts();
     }, []);
 
-    // ফিল্টারিং লজিক (Category অনুযায়ী)
     const filteredProducts = useMemo(() => {
         return selectedCategory === "ALL"
             ? products
@@ -74,7 +72,6 @@ const ShopPage = () => {
 
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
     
-    // পেজিনেশন লজিক
     const currentData = useMemo(() => {
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
         return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
@@ -172,12 +169,10 @@ const ShopPage = () => {
                                                 id={product.id}
                                                 name={product.name}
                                                 subtext={product.subtext}
-                                                // Error fix: price কে string হিসেবে পাঠানো হচ্ছে
                                                 price={product.price.sale_price ? product.price.sale_price.toString() : product.price.amount.toString()}
                                                 mainImage={product.mainImage}
                                                 hoverImage={product.hoverImage || product.mainImage}
                                                 tag={product.tag as any} 
-                                                // যদি ProductCard এ category না থাকে, তবে নিচের লাইনটি রিমুভ করুন অথবা ProductCard এ category যোগ করুন।
                                                 {...({ category: product.category } as any)}
                                             />
                                         </Link>

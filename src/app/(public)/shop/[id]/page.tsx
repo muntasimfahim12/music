@@ -249,7 +249,7 @@ const ProductDetails = () => {
                 className="w-full bg-[#E63946] text-white font-black uppercase tracking-[0.2em] text-[10px] h-14 rounded-lg hover:brightness-110 transition-all duration-500 flex items-center justify-center gap-4 group shadow-xl active:scale-[0.98]"
               >
                 <ShoppingBag size={16} className="group-hover:rotate-12 transition-transform" />
-                <span>Initialize Acquisition</span>
+                <span>Add To Cart</span>
                 <span className="opacity-20">|</span>
                 <span className="text-[11px]">${((product.price.sale_price || product.price.amount) * quantity).toFixed(2)}</span>
               </button>
