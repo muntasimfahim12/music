@@ -12,7 +12,6 @@ import {
   History
 } from "lucide-react";
 
-// Mock Data: আপনার backend logic অনুযায়ী এগুলো fetch হবে
 const stats = [
   { name: "Total Paid", value: "$4,250", icon: CheckCircle, color: "text-emerald-500", bg: "bg-emerald-500/10" },
   { name: "Unpaid Milestones", value: "02", icon: Clock, color: "text-amber-500", bg: "bg-amber-500/10" },
