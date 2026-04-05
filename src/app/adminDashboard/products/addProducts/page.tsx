@@ -1,186 +1,177 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { 
-  Upload, 
-  X, 
-  DollarSign, 
-  Package, 
-  Tag, 
-  Layers, 
-  ArrowLeft,
-  Save,
-  Info
-} from 'lucide-react';
-import Link from 'next/link';
+    IconPlus, 
+    IconPhotoPlus, 
+    IconTag, 
+    IconCurrencyDollar, 
+    IconPackage, 
+    IconCategory, 
+    IconChevronLeft,
+    IconDeviceFloppy
+} from "@tabler/icons-react";
+import Link from "next/link";
 
-const AddProductPage = () => {
-  const [images, setImages] = useState<string[]>([]);
+export default function AddProductPage() {
+    const [images, setImages] = useState<File[]>([]);
 
-  // ডামি ইমেজ প্রিভিউ হ্যান্ডলার
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setImages([...images, event.target.result as string]);
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImages([...images, ...Array.from(e.target.files)]);
         }
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
+    };
 
-  return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
-      {/* --- Top Action Bar --- */}
-      <div className="flex justify-between items-center">
-        <Link 
-          href="/adminDashboard/products" 
-          className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors text-[13px] font-bold inter-bold group"
-        >
-          <div className="p-2 bg-white rounded-xl border border-slate-100 group-hover:bg-slate-50 transition-all">
-            <ArrowLeft size={16} />
-          </div>
-          Back to Inventory
-        </Link>
+    const inputClasses = `
+        w-full px-5 py-4 rounded-2xl bg-white border border-slate-200 
+        text-slate-700 font-medium text-sm transition-all duration-300
+        focus:outline-none focus:ring-4 focus:ring-[#4177BC]/5 focus:border-[#4177BC]
+        placeholder:text-slate-400
+    `;
 
-        <button className="flex items-center gap-2 px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-[13px] font-bold hover:bg-slate-800 transition-all active:scale-95 shadow-xl shadow-slate-200 inter-bold cursor-pointer">
-          <Save size={18} />
-          Publish Product
-        </button>
-      </div>
+    const labelClasses = "text-[13px] font-black text-slate-500 uppercase tracking-wider mb-2 ml-1 flex items-center gap-2";
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* --- Left Column: Info & Details --- */}
-        <div className="lg:col-span-2 space-y-8">
-          
-          {/* General Information */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-            <div className="flex items-center gap-3 pb-2 border-b border-slate-50">
-              <Info size={18} className="text-slate-400" />
-              <h2 className="text-lg font-bold text-slate-900 inter-bold uppercase tracking-tight">General Info</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest pl-1">Product Name</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g. Void Oversized Hoodie" 
-                  className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-[14px] outline-none focus:ring-2 focus:ring-slate-900/5 transition-all inter-medium"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest pl-1">Description</label>
-                <textarea 
-                  rows={5}
-                  placeholder="Describe the aesthetic, material, and fit of this piece..." 
-                  className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-[14px] outline-none focus:ring-2 focus:ring-slate-900/5 transition-all inter-medium resize-none"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Pricing & Stock */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-            <div className="flex items-center gap-3 pb-2 border-b border-slate-50">
-              <DollarSign size={18} className="text-slate-400" />
-              <h2 className="text-lg font-bold text-slate-900 inter-bold uppercase tracking-tight">Pricing & Inventory</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest pl-1">Price (USD)</label>
-                <div className="relative">
-                  <DollarSign className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                  <input type="number" placeholder="0.00" className="w-full pl-12 pr-6 py-4 bg-slate-50 border-none rounded-2xl text-[14px] outline-none focus:ring-2 focus:ring-slate-900/5 transition-all" />
+    return (
+        <div className="max-w-6xl mx-auto pb-20 font-sans">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+                <div className="space-y-1">
+                    <Link href="/adminDashboard/products" className="flex items-center gap-2 text-slate-400 hover:text-[#4177BC] transition-all text-sm font-bold mb-4 group">
+                        <IconChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back to Products
+                    </Link>
+                    <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                        Add New <span className="text-[#4177BC]">Product</span>
+                    </h1>
+                    <p className="text-slate-400 font-medium">Create a new entry in your global inventory</p>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest pl-1">Stock Quantity</label>
-                <div className="relative">
-                  <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                  <input type="number" placeholder="e.g. 50" className="w-full pl-12 pr-6 py-4 bg-slate-50 border-none rounded-2xl text-[14px] outline-none focus:ring-2 focus:ring-slate-900/5 transition-all" />
-                </div>
-              </div>
+                
+                <button className="flex items-center justify-center gap-2 bg-[#4177BC] hover:bg-[#34629d] text-white px-8 py-4 rounded-2xl font-black text-sm transition-all shadow-lg shadow-blue-200 active:scale-95 group">
+                    <IconDeviceFloppy size={20} className="group-hover:rotate-12 transition-transform" />
+                    Publish Product
+                </button>
             </div>
-          </div>
-        </div>
 
-        {/* --- Right Column: Media & Org --- */}
-        <div className="space-y-8">
-          
-          {/* Image Upload Area */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-            <div className="flex items-center gap-3 pb-2 border-b border-slate-50">
-              <Upload size={18} className="text-slate-400" />
-              <h2 className="text-lg font-bold text-slate-900 inter-bold uppercase tracking-tight">Media</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <label className="group relative w-full h-48 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer overflow-hidden">
-                <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" />
-                <div className="flex flex-col items-center gap-2">
-                  <div className="p-3 bg-slate-100 rounded-full text-slate-400 group-hover:scale-110 transition-transform">
-                    <Upload size={20} />
-                  </div>
-                  <span className="text-[12px] font-bold text-slate-500 inter-bold">Click to Upload Image</span>
-                </div>
-              </label>
-
-              {/* Preview Grid */}
-              <div className="grid grid-cols-2 gap-3 mt-4">
-                {images.map((img, i) => (
-                  <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-slate-100 group">
-                    <img src={img} className="w-full h-full object-cover" alt="Preview" />
-                    <button 
-                      onClick={() => setImages(images.filter((_, idx) => idx !== i))}
-                      className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-md rounded-lg text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Side: Main Details */}
+                <div className="lg:col-span-2 space-y-8">
+                    {/* General Information Card */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                        className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
                     >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="p-3 bg-blue-50 text-[#4177BC] rounded-xl"><IconPackage size={24} /></div>
+                            <h2 className="text-xl font-black text-slate-800">General Information</h2>
+                        </div>
 
-          {/* Organization */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-            <div className="flex items-center gap-3 pb-2 border-b border-slate-50">
-              <Layers size={18} className="text-slate-400" />
-              <h2 className="text-lg font-bold text-slate-900 inter-bold uppercase tracking-tight">Category</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest pl-1">Primary Category</label>
-                <select className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-[14px] outline-none focus:ring-2 focus:ring-slate-900/5 transition-all appearance-none inter-medium cursor-pointer">
-                  <option>Apparel</option>
-                  <option>Accessories</option>
-                  <option>Digital Assets</option>
-                  <option>Collectibles</option>
-                </select>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-widest pl-1">Tags (Comma separated)</label>
-                <div className="relative">
-                  <Tag className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                  <input type="text" placeholder="streetwear, dark, limited" className="w-full pl-12 pr-6 py-4 bg-slate-50 border-none rounded-2xl text-[14px] outline-none focus:ring-2 focus:ring-slate-900/5 transition-all" />
+                        <div className="space-y-6">
+                            <div>
+                                <label className={labelClasses}><IconTag size={16} /> Product Name</label>
+                                <input type="text" placeholder="e.g. Premium Leather Headphones" className={inputClasses} />
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Description</label>
+                                <textarea rows={6} placeholder="Describe the features and benefits..." className={`${inputClasses} resize-none`} />
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Pricing & Inventory Card */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                        className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
+                    >
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><IconCurrencyDollar size={24} /></div>
+                            <h2 className="text-xl font-black text-slate-800">Pricing & Stock</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className={labelClasses}>Regular Price ($)</label>
+                                <input type="number" placeholder="0.00" className={inputClasses} />
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Sale Price ($)</label>
+                                <input type="number" placeholder="0.00" className={inputClasses} />
+                            </div>
+                            <div>
+                                <label className={labelClasses}>SKU Code</label>
+                                <input type="text" placeholder="GH-990-LP" className={inputClasses} />
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Stock Quantity</label>
+                                <input type="number" placeholder="100" className={inputClasses} />
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
-              </div>
+
+                {/* Right Side: Media & Categories */}
+                <div className="space-y-8">
+                    {/* Media Upload Card */}
+                    <motion.div 
+                        initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                        className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
+                    >
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-3 bg-purple-50 text-purple-600 rounded-xl"><IconPhotoPlus size={24} /></div>
+                            <h2 className="text-lg font-black text-slate-800">Media</h2>
+                        </div>
+
+                        <div className="border-2 border-dashed border-slate-200 rounded-[24px] p-8 text-center group hover:border-[#4177BC] transition-all cursor-pointer bg-slate-50/50">
+                            <input type="file" multiple onChange={handleImageUpload} className="hidden" id="file-upload" />
+                            <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
+                                <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-[#4177BC] mb-4 transition-all">
+                                    <IconPlus size={32} />
+                                </div>
+                                <p className="text-sm font-bold text-slate-600">Click to upload images</p>
+                                <p className="text-[11px] text-slate-400 mt-2 uppercase tracking-widest font-black">PNG, JPG up to 10MB</p>
+                            </label>
+                        </div>
+
+                        {/* Image Preview Grid */}
+                        {images.length > 0 && (
+                            <div className="grid grid-cols-3 gap-2 mt-4">
+                                {images.map((_, i) => (
+                                    <div key={i} className="aspect-square bg-slate-100 rounded-xl animate-pulse" />
+                                ))}
+                            </div>
+                        )}
+                    </motion.div>
+
+                    {/* Taxonomy Card */}
+                    <motion.div 
+                        initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}
+                        className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
+                    >
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-3 bg-orange-50 text-orange-600 rounded-xl"><IconCategory size={24} /></div>
+                            <h2 className="text-lg font-black text-slate-800">Organization</h2>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div>
+                                <label className={labelClasses}>Category</label>
+                                <select className={inputClasses}>
+                                    <option>Electronics</option>
+                                    <option>Fashion</option>
+                                    <option>Software</option>
+                                    <option>Music Assets</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Status</label>
+                                <div className="flex items-center gap-2 p-1 bg-slate-50 rounded-2xl">
+                                    <button className="flex-1 py-2 bg-white text-[#4177BC] shadow-sm rounded-xl text-xs font-black uppercase tracking-wider">Draft</button>
+                                    <button className="flex-1 py-2 text-slate-400 hover:text-slate-600 text-xs font-black uppercase tracking-wider transition-all">Live</button>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
-          </div>
-
         </div>
-      </div>
-    </div>
-  );
-};
-
-export default AddProductPage;
+    );
+}

@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/static-components */
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -18,7 +17,6 @@ import {
     IconLogout,
     IconChevronRight,
     IconMenu2,
-    IconX,
     IconCircleFilled
 } from "@tabler/icons-react";
 
@@ -51,7 +49,7 @@ const links = [
         isDropdown: true,
         subItems: [
             { label: "All Clips", href: "/adminDashboard/videos" },
-            { label: "New Upload", href: "/adminDashboard/videos/new" },
+            { label: "New Upload", href: "/adminDashboard/videos/addVideos" },
         ]
     },
     { label: "Orders", href: "/adminDashboard/orders", icon: IconClipboardList },
@@ -73,7 +71,6 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
 
     const SidebarContent = ({ isMobile = false }) => (
         <div className="flex flex-col h-full bg-[#F8FAFC] select-none">
-            {/* Logo Section */}
             <div className={`flex items-center px-10 ${isMobile ? "py-8" : "h-32"}`}>
                 <Link href="/adminDashboard" className="relative transition-transform active:scale-95 duration-200">
                     <Image
@@ -87,7 +84,6 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
                 </Link>
             </div>
 
-            {/* Nav Links */}
             <nav className="flex-1 px-6 space-y-1 overflow-y-auto custom-scrollbar scroll-smooth">
                 <p className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mb-4 opacity-70">
                     Main Menu
@@ -162,7 +158,7 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
                                     {isActive && (
                                         <motion.div 
                                             layoutId="activeBackground"
-                                            className="absolute inset-0 bg-white border border-slate-200/50 shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-xl z-0"
+                                            className="absolute inset-0 bg-white border border-slate-200/50 shadow-[0_4px_12_rgba(0,0,0,0.03)] rounded-xl z-0"
                                             transition={{ type: "tween", duration: 0.2 }}
                                         />
                                     )}
@@ -173,7 +169,6 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
                 })}
             </nav>
 
-            {/* Bottom Profile */}
             <div className="p-6 mt-auto">
                 <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-3 flex items-center justify-between border border-white shadow-sm">
                     <div className="flex items-center gap-3">
@@ -195,12 +190,11 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="flex h-screen w-full bg-white overflow-hidden font-sans selection:bg-black selection:text-white antialiased">
-            {/* Desktop Sidebar */}
             <aside className="hidden md:block w-[280px] flex-shrink-0 z-50 border-r border-slate-100">
                 <SidebarContent />
             </aside>
 
-            {/* Mobile Header */}
+            {/* Mobile Header (No change needed) */}
             <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 flex items-center justify-between z-40">
                 <Image src="/logo/logo.png" alt="Logo" width={90} height={35} className="object-contain" />
                 <button 
@@ -211,7 +205,7 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
                 </button>
             </header>
 
-            {/* Mobile Nav */}
+            {/* Mobile Nav Overlay (No change needed) */}
             <AnimatePresence>
                 {isMobileOpen && (
                     <>
@@ -231,14 +225,15 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
                 )}
             </AnimatePresence>
 
-            {/* Main Content Area */}
+            {/* --- MAIN CONTENT AREA UPDATED --- */}
             <main className="flex-1 min-w-0 flex flex-col relative overflow-hidden bg-[#FDFDFD]">
-                <div className="flex-1 overflow-y-auto p-4 md:p-10 mt-16 md:mt-0 custom-scrollbar scroll-smooth">
-                    <div className="max-w-6xl mx-auto">
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 mt-16 md:mt-0 custom-scrollbar scroll-smooth">
+                    {/* এখানে max-w-6xl mx-auto সরিয়ে শুধু w-full এবং padding ঠিক করা হয়েছে */}
+                    <div className="w-full h-full">
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.3 }}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
                         >
                             {children}
                         </motion.div>
@@ -250,8 +245,6 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
                 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
-                
-                /* ল্যাগ কমানোর জন্য এনিমেশন অপ্টিমাইজেশন */
                 * {
                     -webkit-font-smoothing: antialiased;
                     -moz-osx-font-smoothing: grayscale;

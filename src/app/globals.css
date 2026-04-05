@@ -40,6 +40,25 @@
 }
 
 
+
+/* src/app/globals.css ফাইলে এটি বসান */
+
+.miranda-sans {
+  font-family: "Miranda Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* এখানে ৫০০ বা ৭০০ দিতে পারেন আপনার প্রয়োজন মতো */
+  font-style: normal;
+}
+
+/* যদি আপনি বোল্ড ভার্সন চান তবে এটিও যোগ করতে পারেন */
+.miranda-sans-bold {
+  font-family: "Miranda Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+
 @import "tailwindcss";
 
 :root {

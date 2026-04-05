@@ -63,7 +63,7 @@ const ProductsPage = () => {
           </p>
         </div>
         
-        <Link href="/addProducts">
+        <Link href="products/addProducts" className="self-stretch md:self-auto">
           <button className="flex items-center gap-2 px-6 py-3.5 bg-slate-900 text-white rounded-2xl text-[13px] font-bold hover:bg-slate-800 transition-all active:scale-95 shadow-xl shadow-slate-200 inter-bold cursor-pointer">
             <Plus size={18} />
             Add New Product
