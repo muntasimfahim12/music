@@ -39,7 +39,7 @@ const links = [
         isDropdown: true,
         subItems: [
             { label: "Collections", href: "/adminDashboard/music" },
-            { label: "Upload Track", href: "/adminDashboard/music/addMusic" },
+            { label: "Upload Music", href: "/adminDashboard/music/addMusic" },
         ]
     },
     { 
@@ -49,7 +49,7 @@ const links = [
         isDropdown: true,
         subItems: [
             { label: "All Clips", href: "/adminDashboard/videos" },
-            { label: "New Upload", href: "/adminDashboard/videos/addVideos" },
+            { label: "Upload Video", href: "/adminDashboard/videos/addVideos" },
         ]
     },
     { label: "Orders", href: "/adminDashboard/orders", icon: IconClipboardList },
