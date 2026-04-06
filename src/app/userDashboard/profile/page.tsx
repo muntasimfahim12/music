@@ -30,7 +30,7 @@ const ProfilePage = () => {
             Profile
           </h1>
           <Link 
-            href="/dashboard/account" 
+            href="/userDashboard/account" 
             className="flex items-center gap-2 text-blue-600 hover:underline transition-all"
           >
             <PencilLine size={18} />
