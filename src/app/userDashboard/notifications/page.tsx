@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bell, 
   Check, 
@@ -11,29 +13,29 @@ import {
   Settings, 
   Trash2,
   MoreVertical,
-  Circle
+  Circle,
+  Archive
 } from 'lucide-react';
 
 const NotificationsPage = () => {
-  // Mock Data: আপনার ইনভয়েস এবং পেমেন্ট সিস্টেমের লজিক অনুযায়ী [cite: 2026-02-26]
   const [notifications, setNotifications] = useState([
     {
       id: 1,
       type: 'payment',
       title: 'Payment Successful',
-      description: 'Your payment of $65.00 for Void Hoodie has been confirmed. [cite: 2026-02-26]',
+      description: 'Your payment of $65.00 for Void Hoodie has been confirmed.',
       time: '2 mins ago',
       isRead: false,
-      icon: <CreditCard className="text-emerald-500" size={20} />
+      icon: <CreditCard className="text-emerald-500" size={18} />
     },
     {
       id: 2,
       type: 'invoice',
       title: 'Invoice Issued',
-      description: 'A new professional PDF invoice for Milestone #2 is ready for download. [cite: 2026-02-26]',
+      description: 'A new professional PDF invoice for Milestone #2 is ready for download.',
       time: '1 hour ago',
       isRead: false,
-      icon: <FileText className="text-blue-500" size={20} />
+      icon: <FileText className="text-blue-500" size={18} />
     },
     {
       id: 3,
@@ -42,7 +44,7 @@ const NotificationsPage = () => {
       description: 'Your premium dashboard has been updated with the latest security protocols.',
       time: '5 hours ago',
       isRead: true,
-      icon: <Check className="text-slate-900" size={20} />
+      icon: <Check className="text-black" size={18} />
     },
     {
       id: 4,
@@ -51,7 +53,7 @@ const NotificationsPage = () => {
       description: 'Admin has sent a response regarding your project retrieval request.',
       time: '1 day ago',
       isRead: true,
-      icon: <MessageSquare className="text-purple-500" size={20} />
+      icon: <MessageSquare className="text-purple-500" size={18} />
     }
   ]);
 
@@ -59,100 +61,132 @@ const NotificationsPage = () => {
     setNotifications(notifications.map(n => ({ ...n, isRead: true })));
   };
 
+  const deleteNotification = (id: number) => {
+    setNotifications(notifications.filter(n => n.id !== id));
+  };
+
   return (
-    <div className="min-h-screen bg-[#FFFFFF] pb-20">
-      <div className="max-w-4xl mx-auto pt-16 px-6">
+    <div className="min-h-screen bg-[#FFFFFF] pb-20 px-4 font-sans -mt-18 md:px-6">
+      <div className="max-w-4xl mx-auto pt-16 space-y-10">
         
-        {/* --- Header Section --- */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+        {/* --- HEADER SECTION --- */}
+        <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-gray-100 pb-10">
+         
           <div className="space-y-1">
-            <h1 className="text-4xl font-bold text-slate-900 tracking-tight inter-bold">
-              Notifications <span className="text-slate-400 font-medium inter-medium">Center</span>
-            </h1>
-            <p className="text-[14px] text-slate-500 font-medium inter-medium">
-              Stay updated with your project milestones and payment status [cite: 2026-02-26].
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900"> Activity <span className="text-gray-400 font-light">Center</span></h1>
+            <p className="text-[14px] text-slate-500"> Stay updated with your vault events</p>
           </div>
-          
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
             <button 
               onClick={markAllAsRead}
-              className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition-all inter-bold flex items-center gap-2 cursor-pointer shadow-sm"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-white border border-gray-100 rounded-xl text-[11px] inter-bold uppercase tracking-widest text-gray-600 hover:bg-gray-50 transition-all cursor-pointer shadow-sm active:scale-95"
             >
-              <Check size={16} />
-              Mark all as read
+              <Check size={14} strokeWidth={3} />
+              Mark All Read
             </button>
-            <button className="p-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all cursor-pointer shadow-lg shadow-slate-200">
+            <button className="p-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-all cursor-pointer shadow-xl shadow-black/10 active:scale-95">
               <Settings size={18} />
             </button>
           </div>
-        </div>
+        </section>
 
-        {/* --- Notifications List --- */}
-        <div className="space-y-4">
-          {notifications.map((notification) => (
-            <div 
-              key={notification.id}
-              className={`group relative flex items-start gap-6 p-6 rounded-[2rem] border transition-all duration-300 ${
-                notification.isRead 
-                ? 'bg-white border-slate-100 opacity-80' 
-                : 'bg-white border-blue-100 shadow-md shadow-blue-50/50 scale-[1.01]'
-              }`}
-            >
-              {/* Icon Container */}
-              <div className={`p-4 rounded-2xl flex-shrink-0 ${
-                notification.isRead ? 'bg-slate-50' : 'bg-blue-50'
-              }`}>
-                {notification.icon}
-              </div>
+        {/* --- NOTIFICATIONS LIST --- */}
+        <div className="space-y-3">
+          <AnimatePresence mode="popLayout">
+            {notifications.map((notification) => (
+              <motion.div 
+                key={notification.id}
+                layout
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className={`group relative flex items-start gap-4 md:gap-6 p-5 md:p-6 rounded-2xl border transition-all duration-500 ${
+                  notification.isRead 
+                  ? 'bg-white border-gray-50' 
+                  : 'bg-white border-black/[0.03] shadow-xl shadow-black/[0.02] ring-1 ring-black/[0.01]'
+                }`}
+              >
+                {/* Status Indicator (Mobile) */}
+                {!notification.isRead && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-black rounded-r-full md:hidden" />
+                )}
 
-              {/* Content */}
-              <div className="flex-1 space-y-1 pr-8">
-                <div className="flex items-center gap-2">
-                  <h3 className={`text-[16px] font-bold inter-bold ${
-                    notification.isRead ? 'text-slate-700' : 'text-slate-900'
+                {/* Icon Container */}
+                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-500 ${
+                  notification.isRead ? 'bg-gray-50 text-gray-400' : 'bg-gray-50 text-black'
+                }`}>
+                  {notification.icon}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 pr-4 md:pr-10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className={`text-[15px] md:text-[16px] inter-bold truncate ${
+                      notification.isRead ? 'text-gray-500' : 'text-black'
+                    }`}>
+                      {notification.title}
+                    </h3>
+                    {!notification.isRead && (
+                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse flex-shrink-0" />
+                    )}
+                  </div>
+                  
+                  <p className={`text-[13px] md:text-[14px] leading-relaxed inter-medium ${
+                    notification.isRead ? 'text-gray-400' : 'text-gray-600'
                   }`}>
-                    {notification.title}
-                  </h3>
-                  {!notification.isRead && (
-                    <Circle size={8} className="fill-blue-500 text-blue-500" />
-                  )}
-                </div>
-                <p className="text-[14px] text-slate-500 leading-relaxed inter-medium">
-                  {notification.description}
-                </p>
-                <div className="flex items-center gap-1.5 pt-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest inter-bold">
-                  <Clock size={12} />
-                  {notification.time}
-                </div>
-              </div>
+                    {notification.description}
+                  </p>
 
-              {/* Actions */}
-              <div className="absolute top-6 right-6 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 hover:text-red-500 transition-colors cursor-pointer">
-                  <Trash2 size={16} />
-                </button>
-                <button className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">
-                  <MoreVertical size={16} />
-                </button>
-              </div>
-            </div>
-          ))}
+                  <div className="flex items-center gap-2 pt-3">
+                    <Clock size={12} className="text-gray-300" />
+                    <span className="text-[10px] inter-bold text-gray-300 uppercase tracking-widest">
+                      {notification.time}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions (Desktop: Hover, Mobile: More Menu) */}
+                <div className="absolute top-4 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => deleteNotification(notification.id)}
+                    className="p-2 hover:bg-red-50 rounded-lg text-gray-300 hover:text-red-500 transition-colors cursor-pointer"
+                    title="Delete"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <button className="p-2 hover:bg-gray-50 rounded-lg text-gray-300 hover:text-black transition-colors cursor-pointer">
+                    <Archive size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
 
-        {/* --- Empty State Placeholder --- */}
+        {/* --- EMPTY STATE --- */}
         {notifications.length === 0 && (
-          <div className="text-center py-20 space-y-4">
-            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
-              <Bell size={40} />
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="py-32 text-center bg-gray-50/30 border border-dashed border-gray-100 rounded-3xl"
+          >
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+              <Bell size={24} className="text-gray-200" />
             </div>
-            <div className="space-y-1">
-              <h3 className="text-xl font-bold text-slate-900 inter-bold">All caught up!</h3>
-              <p className="text-slate-400 inter-medium">No new notifications at the moment.</p>
-            </div>
-          </div>
+            <h3 className="judson-bold text-xl text-black mb-1">Silence is golden</h3>
+            <p className="inter-bold text-gray-400 text-[10px] uppercase tracking-[0.2em]">
+              Your vault is fully up to date
+            </p>
+          </motion.div>
         )}
 
+        {/* --- BRAND FOOTER --- */}
+        <div className="pt-24 text-center">
+           <p className="judson-regular text-[10px] text-gray-300 uppercase tracking-[0.6em]">
+              DEEBZLENÜZ VAULT • GLOBAL ALERTS
+           </p>
+        </div>
       </div>
     </div>
   );
