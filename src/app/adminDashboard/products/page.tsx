@@ -32,9 +32,9 @@ export default function ProductsPage() {
     <div className="max-w-[1300px] mx-auto pb-20 px-4 sm:px-8 bg-[#FBFBFE] selection:bg-[#4177BC]/10">
       
       {/* --- HEADER SECTION --- */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-12 pb-10">
+      <div className="flex flex-col md:flex-row  md:items-center justify-between gap-6 pt-12 pb-10">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight inter-bold">
+          <h1 className="text-3xl font-sans font-bold text-slate-900 tracking-tight inter-bold">
             Products <span className="text-slate-400 font-medium text-2xl">Inventory</span>
           </h1>
           <p className="text-[14px] text-slate-500 font-medium inter-medium">
