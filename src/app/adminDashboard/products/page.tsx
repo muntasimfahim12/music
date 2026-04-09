@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IconPlus, IconSearch, IconTrash, IconEdit, IconX,
-  IconDeviceFloppy, IconLoader2, IconPackage, 
+  IconDeviceFloppy, IconLoader2, IconPackage,
   IconPhotoEdit, IconLayoutGrid, IconArrowRight
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -46,10 +46,12 @@ export default function ProductsPage() {
 
   const openEditModal = (product: any) => {
     setEditingProduct(product);
+    
+    // ✅ ডাইনামিক গ্যালারি লজিক: মেইন ইমেজ, হোভার ইমেজ এবং গ্যালারি অ্যারের সব ছবি যোগ করা হয়েছে
     const images = [
       `${BASE_URL}${product.mainImage}`,
       product.hoverImage ? `${BASE_URL}${product.hoverImage}` : null,
-      ...(product.images || []).map((img: string) => `${BASE_URL}${img}`)
+      ...(product.gallery || []).map((img: string) => `${BASE_URL}${img}`)
     ].filter(Boolean);
 
     setGalleryImages(images);
@@ -98,8 +100,8 @@ export default function ProductsPage() {
     }
   };
 
-  const filteredProducts = products.filter(p => 
-    p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredProducts = products.filter(p =>
+    p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.category?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -108,7 +110,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-[#FDFDFD] font-sans text-[#1a1a1a]">
       <div className="max-w-[1600px] mx-auto px-6 lg:px-16 pt-8 pb-24">
-        
+
         {/* --- COMPACT PROFESSIONAL HEADER --- */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-gray-100 pb-8">
           <div className="space-y-2">
@@ -116,20 +118,27 @@ export default function ProductsPage() {
               <span className="w-8 h-[2px] bg-[#4177BC]"></span>
               <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#4177BC]">Inventory</p>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none text-slate-900 ">
-              All <span className="text-[#]">Products</span>
+            <h1 className="text-3xl md:text-4xl font-black tracking-tighter leading-none text-slate-900 ">
+              All <span className="text-[#556156]">Products</span>
             </h1>
             <div className="flex items-center gap-2">
-               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  {products.length} Masterpieces Live
-               </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                {products.length} Masterpieces Live
+              </span>
             </div>
           </div>
 
           <Link href="/adminDashboard/products/addProducts">
-            <button className="flex items-center gap-3 bg-black text-white px-7 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:bg-[#4177BC] active:scale-95 shadow-lg">
-              <IconPlus size={16} stroke={4} />
+            <button
+              className="flex items-center gap-3 bg-black text-white px-8 py-4 rounded-md font-bold text-[11px]  tracking-[0.25em] transition-all duration-300  hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 active:scale-95 cursor-pointer group"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              <IconPlus
+                size={16}
+                stroke={3}
+                className="group-hover:rotate-90 transition-transform duration-300"
+              />
               <span>Add New Product</span>
             </button>
           </Link>
@@ -156,18 +165,18 @@ export default function ProductsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => (
-                <motion.div 
-                  key={product._id} 
+                <motion.div
+                  key={product._id}
                   layout
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="group"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-gray-100 border border-gray-50">
-                    <img 
-                      src={`${BASE_URL}${product.mainImage}`} 
-                      alt={product.name} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    <img
+                      src={`${BASE_URL}${product.mainImage}`}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-sm">
                       <button onClick={() => openEditModal(product)} className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:bg-[#4177BC] hover:text-white transition-all">
@@ -178,12 +187,12 @@ export default function ProductsPage() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="mt-5 px-1">
                     <p className="text-[9px] font-black text-[#4177BC] uppercase tracking-widest mb-1">{product.category}</p>
                     <h3 className="text-[14px] font-bold text-gray-900 uppercase truncate mb-1">{product.name}</h3>
                     <p className="text-[16px] font-medium text-gray-500 tracking-tighter">
-                        ${typeof product.price === 'object' ? product.price.amount : product.price}
+                      ${typeof product.price === 'object' ? product.price.amount : product.price}
                     </p>
                   </div>
                 </motion.div>
@@ -197,8 +206,8 @@ export default function ProductsPage() {
           {editingProduct && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingProduct(null)} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
-              
-              <motion.div 
+
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
                 className="relative w-full max-w-4xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[90vh]"
               >
@@ -207,7 +216,8 @@ export default function ProductsPage() {
                   <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg bg-white mb-4">
                     <img src={galleryImages[activeImageIndex]} className="w-full h-full object-cover" alt="Preview" />
                   </div>
-                  <div className="grid grid-cols-4 gap-2">
+                  {/* থাম্বনেইল গ্রিড - এখানে সব ছবি দেখা যাবে */}
+                  <div className="grid grid-cols-4 gap-2 overflow-y-auto max-h-[160px]">
                     {galleryImages.map((img, idx) => (
                       <button key={idx} onClick={() => setActiveImageIndex(idx)} className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${activeImageIndex === idx ? 'border-[#4177BC]' : 'border-transparent opacity-50'}`}>
                         <img src={img} className="w-full h-full object-cover" alt="thumb" />
@@ -226,22 +236,22 @@ export default function ProductsPage() {
                   <form onSubmit={handleUpdate} className="space-y-6">
                     <div>
                       <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Product Name</label>
-                      <input type="text" value={editingProduct.name} onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})} className={inputClasses} />
+                      <input type="text" value={editingProduct.name} onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })} className={inputClasses} />
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Price ($)</label>
-                        <input 
-                          type="number" 
-                          value={typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price} 
-                          onChange={(e) => setEditingProduct({...editingProduct, price: { ...editingProduct.price, amount: e.target.value }})} 
-                          className={inputClasses} 
+                        <input
+                          type="number"
+                          value={typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price}
+                          onChange={(e) => setEditingProduct({ ...editingProduct, price: { ...editingProduct.price, amount: e.target.value } })}
+                          className={inputClasses}
                         />
                       </div>
                       <div>
                         <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Category</label>
-                        <select value={editingProduct.category} onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})} className={inputClasses}>
+                        <select value={editingProduct.category} onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })} className={inputClasses}>
                           <option value="TEES">TEES</option>
                           <option value="HOODIES">HOODIES</option>
                           <option value="ACCESSORIES">ACCESSORIES</option>
@@ -251,12 +261,12 @@ export default function ProductsPage() {
 
                     <div>
                       <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Description</label>
-                      <textarea rows={3} value={editingProduct.description} onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})} className={`${inputClasses} resize-none`} />
+                      <textarea rows={3} value={editingProduct.description} onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })} className={`${inputClasses} resize-none`} />
                     </div>
 
-                    <button 
-                      disabled={isUpdating} 
-                      type="submit" 
+                    <button
+                      disabled={isUpdating}
+                      type="submit"
                       className="w-full bg-black hover:bg-[#4177BC] text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
                     >
                       {isUpdating ? <IconLoader2 className="animate-spin" size={16} /> : <IconDeviceFloppy size={16} />}

@@ -309,7 +309,7 @@ export default function AddProductPage() {
                 </div>
             </div>
             {/* Mobile Fixed/Centered Button */}
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center mt-6 md:hidden">
                 <button
                     onClick={handleCompleteListing}
                     className="px-4 py-2 rounded-md border border-black bg-black text-white text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md cursor-pointer"
