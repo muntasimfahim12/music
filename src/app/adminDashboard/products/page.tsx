@@ -3,203 +3,272 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  IconPlus, IconSearch, IconPackage, 
-  IconTrash, IconEdit, IconX, 
-  IconDeviceFloppy, IconPhoto,
-  IconChevronRight, IconArrowRight
+import {
+  IconPlus, IconSearch, IconTrash, IconEdit, IconX,
+  IconDeviceFloppy, IconLoader2, IconPackage, 
+  IconPhotoEdit, IconLayoutGrid, IconArrowRight
 } from "@tabler/icons-react";
 import Link from "next/link";
+import api from "../../../lib/axios";
+import { toast } from "react-hot-toast";
 
-const productData = [
-  { id: "PROD-001", name: "Void Hoodie", category: "Apparel", price: "$65.00", stock: 24, status: "In Stock", image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=400&auto=format&fit=crop", sku: "VH-001", description: "Premium heavyweight cotton hoodie with minimalist design." },
-  { id: "PROD-002", name: "Logo Dad Hat", category: "Accessories", price: "$25.00", stock: 0, status: "Out of Stock", image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=400&auto=format&fit=crop", sku: "DH-992", description: "Classic 6-panel dad hat with embroidered logo." },
-];
+const BASE_URL = "http://localhost:5000";
 
 export default function ProductsPage() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const inputClasses = `
-    w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 
-    text-slate-700 font-medium text-sm transition-all duration-300
-    focus:outline-none focus:ring-4 focus:ring-[#4177BC]/5 focus:border-[#4177BC]
-  `;
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [mainImageFile, setMainImageFile] = useState<File | null>(null);
+  const [hoverImageFile, setHoverImageFile] = useState<File | null>(null);
+
+  const mainInputRef = useRef<HTMLInputElement>(null);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/products");
+      if (response.data?.success) setProducts(response.data.data);
+    } catch (error: any) {
+      toast.error("Vault synchronization failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchProducts(); }, []);
+
+  const openEditModal = (product: any) => {
+    setEditingProduct(product);
+    const images = [
+      `${BASE_URL}${product.mainImage}`,
+      product.hoverImage ? `${BASE_URL}${product.hoverImage}` : null,
+      ...(product.images || []).map((img: string) => `${BASE_URL}${img}`)
+    ].filter(Boolean);
+
+    setGalleryImages(images);
+    setActiveImageIndex(0);
+    setMainImageFile(null);
+    setHoverImageFile(null);
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    const toastId = toast.loading("Updating Archive...");
+
+    try {
+      const formData = new FormData();
+      formData.append("name", editingProduct.name);
+      const priceValue = typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price;
+      formData.append("price", priceValue.toString());
+      formData.append("category", editingProduct.category);
+      formData.append("description", editingProduct.description);
+
+      if (mainImageFile) formData.append("mainImage", mainImageFile);
+      if (hoverImageFile) formData.append("hoverImage", hoverImageFile);
+
+      const response = await api.put(`/products/${editingProduct._id}`, formData);
+      if (response.data.success) {
+        toast.success("Vault updated", { id: toastId });
+        setEditingProduct(null);
+        fetchProducts();
+      }
+    } catch (error) {
+      toast.error("Update failed", { id: toastId });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Archive this item?")) return;
+    try {
+      await api.delete(`/products/${id}`);
+      setProducts(products.filter(p => p._id !== id));
+      toast.success("Item archived");
+    } catch (error) {
+      toast.error("Archive failed");
+    }
+  };
+
+  const filteredProducts = products.filter(p => 
+    p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    p.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const inputClasses = `w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 font-sans font-medium text-[13px] transition-all focus:outline-none focus:ring-2 focus:ring-[#4177BC]/10 focus:border-[#4177BC] focus:bg-white`;
 
   return (
-    <div className="max-w-[1300px] mx-auto pb-20 px-4 sm:px-8 bg-[#FBFBFE] selection:bg-[#4177BC]/10">
-      
-      {/* --- HEADER SECTION --- */}
-      <div className="flex flex-col md:flex-row  md:items-center justify-between gap-6 pt-12 pb-10">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-sans font-bold text-slate-900 tracking-tight inter-bold">
-            Products <span className="text-slate-400 font-medium text-2xl">Inventory</span>
-          </h1>
-          <p className="text-[14px] text-slate-500 font-medium inter-medium">
-            Manage your high-end merchandise and stock levels.
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#FDFDFD] font-sans text-[#1a1a1a]">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-16 pt-8 pb-24">
+        
+        {/* --- COMPACT PROFESSIONAL HEADER --- */}
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-gray-100 pb-8">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-[2px] bg-[#4177BC]"></span>
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#4177BC]">Inventory</p>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none text-slate-900 ">
+              All <span className="text-[#]">Products</span>
+            </h1>
+            <div className="flex items-center gap-2">
+               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  {products.length} Masterpieces Live
+               </span>
+            </div>
+          </div>
 
-        <Link href="/products/addProducts">
-          <button className="w-full md:w-auto flex items-center justify-center gap-2 bg-slate-900 hover:bg-[#4177BC] text-white px-6 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
-            <IconPlus size={18} stroke={3} />
-            Add New Product
-          </button>
-        </Link>
-      </div>
+          <Link href="/adminDashboard/products/addProducts">
+            <button className="flex items-center gap-3 bg-black text-white px-7 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:bg-[#4177BC] active:scale-95 shadow-lg">
+              <IconPlus size={16} stroke={4} />
+              <span>Add New Product</span>
+            </button>
+          </Link>
+        </header>
 
-      {/* --- SEARCH BOX --- */}
-      <div className="flex items-center mb-10 py-3 border-b border-slate-100">
-        <div className="relative w-full lg:max-w-xs group">
-          <IconSearch size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#4177BC] transition-colors" />
+        {/* --- SEARCH BAR --- */}
+        <div className="relative max-w-xl mb-12 group">
+          <IconSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#4177BC] transition-colors" size={18} />
           <input
-            type="text" 
-            placeholder="Search Products..."
-            className="w-full pl-7 pr-4 py-2 bg-transparent border-none outline-none focus:ring-0 text-sm font-bold text-slate-700 placeholder:text-slate-300 uppercase tracking-wider"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search products..."
+            className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-2xl shadow-sm outline-none focus:border-[#4177BC] transition-all text-[13px] font-medium"
           />
         </div>
-      </div>
 
-      {/* --- PRODUCT GRID --- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {productData.map((product) => (
-          <motion.div 
-            key={product.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="group bg-white rounded-[32px] border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
-          >
-            {/* Image Area */}
-            <div className="relative aspect-[4/5] bg-slate-100 overflow-hidden">
-              <img 
-                src={product.image} 
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
-              />
-              <div className="absolute top-4 left-4">
-                <span className={`backdrop-blur-md text-white text-[8px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest ${product.status === "In Stock" ? "bg-emerald-500/80" : "bg-rose-500/80"}`}>
-                  {product.status}
-                </span>
-              </div>
-            </div>
-
-            {/* Content Area */}
-            <div className="p-6 space-y-4">
-              <div className="space-y-1">
-                <p className="text-[10px] text-[#4177BC] font-black uppercase tracking-[0.15em]">{product.category}</p>
-                <h3 className="text-sm font-black text-slate-900 leading-tight uppercase line-clamp-1 group-hover:text-[#4177BC] transition-colors">
-                  {product.name}
-                </h3>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <p className="text-lg font-black text-slate-900 tracking-tighter">{product.price}</p>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Qty: {product.stock}</p>
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <button 
-                  onClick={() => setEditingProduct(product)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-900 hover:text-white text-slate-600 py-3.5 rounded-xl transition-all font-black text-[9px] uppercase tracking-widest"
+        {/* --- PRODUCT GRID --- */}
+        {loading ? (
+          <div className="flex justify-center py-32">
+            <IconLoader2 className="animate-spin text-[#4177BC]" size={32} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <AnimatePresence mode="popLayout">
+              {filteredProducts.map((product) => (
+                <motion.div 
+                  key={product._id} 
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="group"
                 >
-                  <IconEdit size={14} stroke={2.5} /> Edit
-                </button>
-                <button className="w-12 flex items-center justify-center bg-slate-50 hover:bg-red-500 hover:text-white text-slate-400 py-3 rounded-xl transition-all">
-                  <IconTrash size={14} stroke={2.5} />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* --- EDIT MODAL --- */}
-      <AnimatePresence>
-        {editingProduct && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setEditingProduct(null)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-3xl bg-white rounded-[40px] overflow-hidden shadow-2xl border border-slate-100"
-            >
-              <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
-                
-                {/* Left: Image Preview */}
-                <div className="w-full md:w-2/5 bg-slate-50 relative p-6 flex flex-col items-center justify-center border-r border-slate-100">
-                   <div className="w-full aspect-[4/5] rounded-[24px] overflow-hidden shadow-xl">
-                      <img src={editingProduct.image} className="w-full h-full object-cover" alt="Preview" />
-                   </div>
-                   <button className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#4177BC] hover:text-slate-900 transition-colors">
-                      <IconPhoto size={16} /> Change Image
-                   </button>
-                </div>
-
-                {/* Right: Form */}
-                <div className="flex-1 flex flex-col h-full overflow-hidden">
-                  <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <h2 className="text-lg font-bold text-slate-800 inter-bold">Product Settings</h2>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Update SKU: {editingProduct.sku}</p>
-                    </div>
-                    <button onClick={() => setEditingProduct(null)} className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400">
-                      <IconX size={20} />
-                    </button>
-                  </div>
-
-                  <div className="p-8 space-y-6 overflow-y-auto">
-                    <div className="space-y-5">
-                      <div>
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Product Name</label>
-                        <input type="text" defaultValue={editingProduct.name} className={inputClasses} />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Price</label>
-                          <input type="text" defaultValue={editingProduct.price} className={inputClasses} />
-                        </div>
-                        <div>
-                          <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Stock Qty</label>
-                          <input type="number" defaultValue={editingProduct.stock} className={inputClasses} />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Description</label>
-                        <textarea rows={3} defaultValue={editingProduct.description} className={`${inputClasses} resize-none`} />
-                      </div>
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-gray-100 border border-gray-50">
+                    <img 
+                      src={`${BASE_URL}${product.mainImage}`} 
+                      alt={product.name} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-sm">
+                      <button onClick={() => openEditModal(product)} className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:bg-[#4177BC] hover:text-white transition-all">
+                        <IconEdit size={18} />
+                      </button>
+                      <button onClick={() => handleDelete(product._id)} className="w-10 h-10 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-rose-500 transition-all">
+                        <IconTrash size={18} />
+                      </button>
                     </div>
                   </div>
-
-                  <div className="p-8 pt-4 border-t border-slate-50 flex items-center justify-end gap-3 bg-slate-50/30">
-                    <button 
-                      onClick={() => setEditingProduct(null)}
-                      className="px-6 py-3.5 rounded-xl font-bold text-xs text-slate-500 hover:bg-slate-100 transition-all uppercase tracking-widest"
-                    >
-                      Cancel
-                    </button>
-                    <button className="flex items-center gap-2 bg-slate-900 hover:bg-[#4177BC] text-white px-8 py-3.5 rounded-xl font-bold text-xs transition-all shadow-xl active:scale-95 uppercase tracking-widest">
-                      <IconDeviceFloppy size={18} />
-                      Save Changes
-                    </button>
+                  
+                  <div className="mt-5 px-1">
+                    <p className="text-[9px] font-black text-[#4177BC] uppercase tracking-widest mb-1">{product.category}</p>
+                    <h3 className="text-[14px] font-bold text-gray-900 uppercase truncate mb-1">{product.name}</h3>
+                    <p className="text-[16px] font-medium text-gray-500 tracking-tighter">
+                        ${typeof product.price === 'object' ? product.price.amount : product.price}
+                    </p>
                   </div>
-                </div>
-              </div>
-            </motion.div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
-      </AnimatePresence>
 
+        {/* --- REFINED MODAL --- */}
+        <AnimatePresence>
+          {editingProduct && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingProduct(null)} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
+              
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+                className="relative w-full max-w-4xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[90vh]"
+              >
+                {/* Modal Gallery */}
+                <div className="md:w-[320px] bg-gray-50 p-6 border-r border-gray-100">
+                  <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg bg-white mb-4">
+                    <img src={galleryImages[activeImageIndex]} className="w-full h-full object-cover" alt="Preview" />
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {galleryImages.map((img, idx) => (
+                      <button key={idx} onClick={() => setActiveImageIndex(idx)} className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${activeImageIndex === idx ? 'border-[#4177BC]' : 'border-transparent opacity-50'}`}>
+                        <img src={img} className="w-full h-full object-cover" alt="thumb" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Modal Form */}
+                <div className="flex-1 p-8 overflow-y-auto">
+                  <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-xl font-black uppercase tracking-tight">Update Item</h2>
+                    <button onClick={() => setEditingProduct(null)} className="text-gray-400 hover:text-black transition-colors"><IconX size={20} /></button>
+                  </div>
+
+                  <form onSubmit={handleUpdate} className="space-y-6">
+                    <div>
+                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Product Name</label>
+                      <input type="text" value={editingProduct.name} onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})} className={inputClasses} />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Price ($)</label>
+                        <input 
+                          type="number" 
+                          value={typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price} 
+                          onChange={(e) => setEditingProduct({...editingProduct, price: { ...editingProduct.price, amount: e.target.value }})} 
+                          className={inputClasses} 
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Category</label>
+                        <select value={editingProduct.category} onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})} className={inputClasses}>
+                          <option value="TEES">TEES</option>
+                          <option value="HOODIES">HOODIES</option>
+                          <option value="ACCESSORIES">ACCESSORIES</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Description</label>
+                      <textarea rows={3} value={editingProduct.description} onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})} className={`${inputClasses} resize-none`} />
+                    </div>
+
+                    <button 
+                      disabled={isUpdating} 
+                      type="submit" 
+                      className="w-full bg-black hover:bg-[#4177BC] text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
+                    >
+                      {isUpdating ? <IconLoader2 className="animate-spin" size={16} /> : <IconDeviceFloppy size={16} />}
+                      Save Changes
+                    </button>
+                  </form>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
