@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,48 +29,89 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('DESCRIPTION');
   const [mainDisplayImg, setMainDisplayImg] = useState("");
-  const [isFullscreen, setIsFullscreen] = useState(false); // Fixed State
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+  const IMAGE_ROOT = BASE_URL.replace('/api/v1', '');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const fetchProduct = async () => {
+      if (!id) return;
       try {
         setLoading(true);
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        const response = await axios.get(`${baseUrl}/data/product.json`);
-        const foundProduct = response.data.find((p: any) => p.id.toString() === id);
+        const response = await axios.get(`${BASE_URL}/products/${id}`);
+        const foundProduct = response.data?.data || response.data;
 
         if (foundProduct) {
           setProduct(foundProduct);
-          setMainDisplayImg(foundProduct.mainImage);
-          if (foundProduct.sizes && foundProduct.sizes.length > 0) {
+          
+          // Initial main image setup
+          const initialImg = foundProduct.mainImage?.startsWith('http')
+            ? foundProduct.mainImage
+            : `${IMAGE_ROOT}${foundProduct.mainImage}`;
+          setMainDisplayImg(initialImg);
+
+          if (foundProduct.sizes?.length > 0) {
             setSelectedSize(foundProduct.sizes[0]);
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Fetch Error:", err);
+        setProduct(null);
       } finally {
         setLoading(false);
       }
     };
+
     fetchProduct();
-  }, [id]);
+  }, [id, BASE_URL, IMAGE_ROOT]);
+
+  // --- logic: 100% All Images Retrieval ---
+  const productGallery = useMemo(() => {
+    if (!product) return [];
+
+    const allImages: string[] = [];
+
+    // 1. Add Main Image
+    if (product.mainImage) allImages.push(product.mainImage);
+    
+    // 2. Add Hover Image
+    if (product.hoverImage) allImages.push(product.hoverImage);
+    
+    // 3. Add Gallery Array images
+    if (product.gallery && Array.isArray(product.gallery)) {
+      product.gallery.forEach((img: string) => {
+        if (img && !allImages.includes(img)) {
+          allImages.push(img);
+        }
+      });
+    }
+
+    // Convert all to full URLs
+    return allImages.map(img => 
+      img.startsWith('http') ? img : `${IMAGE_ROOT}${img}`
+    );
+  }, [product, IMAGE_ROOT]);
 
   const handleAddToCart = () => {
     if (!product) return;
+    const currentPrice = product.price?.sale_price || product.price?.amount || 0;
 
     const itemToCart: CartItem = {
-      id: `${product.id}-${selectedSize || 'default'}`,
-      name: product.name || product.title,
-      price: product.price?.sale_price || product.price?.amount || product.price || 0,
-      image: product.mainImage || product.cover_image,
+      id: `${product._id}-${selectedSize || 'default'}`,
+      name: product.name,
+      price: Number(currentPrice),
+      image: mainDisplayImg,
       quantity: quantity,
       size: selectedSize,
-      color: product.colors ? product.colors[selectedColor]?.name : undefined,
+      color: product.colors?.[selectedColor]?.name,
       type: product.category === 'HOODIES' ? 'physical' : 'digital'
     };
 
     addToCart(itemToCart);
-    showCartToast(product.name || product.title);
+    showCartToast(product.name);
   };
 
   if (loading) return (
@@ -87,17 +128,13 @@ const ProductDetails = () => {
     </div>
   );
 
-  const productGallery = product.gallery && product.gallery.length > 0
-    ? product.gallery
-    : [product.mainImage, product.hoverImage].filter(Boolean);
-
   return (
     <main className="bg-[#050505] text-white min-h-screen pt-12 md:pt-24 pb-20 selection:bg-[#E63946] overflow-x-hidden">
       <div className="max-w-[1250px] mx-auto px-5 md:px-10">
 
-        {/* --- Breadcrumb --- */}
+        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-[8px] md:text-[9px] inter-medium text-white/30 uppercase tracking-[0.2em] mb-8 md:mb-10 overflow-x-auto no-scrollbar whitespace-nowrap">
-          <button onClick={() => router.push('/shop')} className="group flex items-center gap-1 cursor-pointer">
+          <button onClick={() => router.push('/shop')} className="group flex items-center gap-1 cursor-pointer bg-transparent border-none outline-none">
             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500 group-hover:text-[#E63946] transition-colors">Go Back</span>
           </button>
           <span className="text-zinc-700">/</span>
@@ -108,7 +145,7 @@ const ProductDetails = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
 
-          {/* --- LEFT: Image Gallery --- */}
+          {/* LEFT: Image Gallery */}
           <div className="lg:col-span-6 space-y-6 md:sticky md:top-24">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -136,21 +173,23 @@ const ProductDetails = () => {
 
               <button
                 onClick={() => setIsFullscreen(true)}
-                className="absolute bottom-6 right-6 p-4 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-black shadow-2xl z-10"
+                className="absolute bottom-6 right-6 p-4 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-black shadow-2xl z-10 cursor-pointer"
               >
                 <Maximize2 size={18} strokeWidth={1.5} />
               </button>
             </motion.div>
 
+            {/* Thumbnail List - Shows ALL Images */}
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 justify-center lg:justify-start max-w-[500px] mx-auto">
               {productGallery.map((img: string, i: number) => (
                 <button
                   key={i}
                   onClick={() => setMainDisplayImg(img)}
-                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 transition-all duration-500 overflow-hidden ${mainDisplayImg === img
-                    ? 'ring-1 ring-[#E63946] ring-offset-4 ring-offset-black opacity-100'
-                    : 'opacity-30 hover:opacity-70 grayscale hover:grayscale-0'
-                    }`}
+                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 transition-all duration-500 overflow-hidden rounded-sm cursor-pointer ${
+                    mainDisplayImg === img
+                      ? 'ring-1 ring-[#E63946] ring-offset-4 ring-offset-black opacity-100'
+                      : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'
+                  }`}
                 >
                   <img src={img} className="w-full h-full object-cover" alt={`view-${i}`} />
                 </button>
@@ -158,7 +197,7 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* --- RIGHT: Product Info --- */}
+          {/* RIGHT: Product Info */}
           <div className="lg:col-span-6 flex flex-col">
             <div className="mb-6">
               <h1 className="text-[clamp(1.75rem,5vw,3rem)] md:text-4xl lg:text-5xl judson-bold tracking-tighter leading-[0.95] mb-4">
@@ -168,11 +207,11 @@ const ProductDetails = () => {
               <div className="flex items-center justify-between border-y border-white/5 py-5 md:py-4">
                 <div className="flex items-center gap-3">
                   <p className="text-2xl font-black tracking-tighter text-white">
-                    ${Number(product.price.sale_price || product.price.amount).toFixed(2)}
+                    ${Number(product.price?.sale_price || product.price?.amount || 0).toFixed(2)}
                   </p>
-                  {product.price.sale_price && (
+                  {product.price?.sale_price && (
                     <p className="text-sm text-white/30 line-through tracking-tighter">
-                      ${Number(product.price.amount).toFixed(2)}
+                      ${Number(product.price?.amount).toFixed(2)}
                     </p>
                   )}
                 </div>
@@ -189,7 +228,7 @@ const ProductDetails = () => {
                   <Star key={i} size={10} fill={i < Math.floor(product.social_proof?.rating || 5) ? "currentColor" : "none"} strokeWidth={1} />
                 ))}
               </div>
-              <span className="text-[9px] inter-medium text-white/20 uppercase tracking-widest whitespace-nowrap">
+              <span className="text-[9px] inter-medium text-white/20 uppercase tracking-widest">
                 Authenticated Reviews ({product.social_proof?.review_count || 0})
               </span>
             </div>
@@ -200,64 +239,68 @@ const ProductDetails = () => {
 
             {/* Options */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 mb-4">Tone:</p>
-                <div className="flex gap-3">
-                  {product.colors?.map((color: any, i: number) => (
-                    <button
-                      key={i}
-                      onClick={() => setSelectedColor(i)}
-                      className={`w-7 h-7 rounded-full border-2 p-0.5 transition-all ${selectedColor === i ? 'border-[#E63946]' : 'border-transparent'}`}
-                    >
-                      <div className="w-full h-full rounded-full" style={{ backgroundColor: color.hex }}></div>
-                    </button>
-                  ))}
+              {product.colors?.length > 0 && (
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 mb-4">Tone:</p>
+                  <div className="flex gap-3">
+                    {product.colors.map((color: any, i: number) => (
+                      <button
+                        key={i}
+                        onClick={() => setSelectedColor(i)}
+                        className={`w-7 h-7 rounded-full border-2 p-0.5 transition-all cursor-pointer ${selectedColor === i ? 'border-[#E63946]' : 'border-transparent'}`}
+                      >
+                        <div className="w-full h-full rounded-full" style={{ backgroundColor: color.hex }}></div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 mb-4">Measurement:</p>
-                <div className="flex flex-wrap gap-2">
-                  {product.sizes?.map((size: string) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`w-11 h-9 flex items-center justify-center rounded text-[10px] font-black border transition-all ${selectedSize === size ? 'bg-white text-black border-white' : 'bg-transparent border-white/10 text-white/40 hover:border-white/30'}`}
-                    >
-                      {size}
-                    </button>
-                  ))}
+              {product.sizes?.length > 0 && (
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 mb-4">Measurement:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizes.map((size: string) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`w-11 h-9 flex items-center justify-center rounded text-[10px] font-black border transition-all cursor-pointer ${selectedSize === size ? 'bg-white text-black border-white' : 'bg-transparent border-white/10 text-white/40 hover:border-white/30'}`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Actions */}
             <div className="flex flex-col gap-3 mb-10">
               <div className="flex items-center gap-3">
                 <div className="flex items-center bg-zinc-900 border border-white/5 rounded-lg h-14 px-2">
-                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white/5 transition-all active:scale-90"><Minus size={14} /></button>
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white/5 transition-all bg-transparent border-none text-white cursor-pointer"><Minus size={14} /></button>
                   <span className="w-10 text-center font-black text-sm">{quantity}</span>
-                  <button onClick={() => setQuantity(q => q + 1)} className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white/5 transition-all active:scale-90"><Plus size={14} /></button>
+                  <button onClick={() => setQuantity(q => q + 1)} className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white/5 transition-all bg-transparent border-none text-white cursor-pointer"><Plus size={14} /></button>
                 </div>
-                <button className="h-14 w-14 bg-zinc-900 border border-white/5 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all active:scale-95 group">
+                <button className="h-14 w-14 bg-zinc-900 border border-white/5 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all group cursor-pointer">
                   <Heart size={18} className="group-hover:fill-current" />
                 </button>
               </div>
 
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-[#E63946] text-white font-black uppercase tracking-[0.2em] text-[10px] h-14 rounded-lg hover:brightness-110 transition-all duration-500 flex items-center justify-center gap-4 group shadow-xl active:scale-[0.98]"
+                className="w-full bg-[#E63946] text-white font-black uppercase tracking-[0.2em] text-[10px] h-14 rounded-lg hover:brightness-110 transition-all duration-500 flex items-center justify-center gap-4 group shadow-xl active:scale-[0.98] border-none cursor-pointer"
               >
                 <ShoppingBag size={16} className="group-hover:rotate-12 transition-transform" />
                 <span>Add To Cart</span>
                 <span className="opacity-20">|</span>
-                <span className="text-[11px]">${((product.price.sale_price || product.price.amount) * quantity).toFixed(2)}</span>
+                <span className="text-[11px]">${(Number(product.price?.sale_price || product.price?.amount || 0) * quantity).toFixed(2)}</span>
               </button>
             </div>
 
             <div className="flex items-center gap-3 p-4 bg-white/[0.02] border border-white/5 rounded-xl">
               <Truck size={16} className="text-[#E63946]" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-white/60 inter-medium">
+              <span className="text-[9px] font-black uppercase tracking-widest text-white/60">
                 {product.tabs?.logistics?.shipping || "Standard Shipping Available"}
               </span>
             </div>
@@ -271,8 +314,7 @@ const ProductDetails = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-5 text-[10px] font-black tracking-[0.3em] transition-all duration-500 relative group ${activeTab === tab ? 'text-white' : 'text-white/20 hover:text-white/50'
-                  }`}
+                className={`pb-5 text-[10px] font-black tracking-[0.3em] transition-all duration-500 relative group bg-transparent border-none cursor-pointer ${activeTab === tab ? 'text-white' : 'text-white/20 hover:text-white/50'}`}
               >
                 <span className="relative z-10">{tab}</span>
                 {activeTab === tab && (
@@ -361,7 +403,6 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* --- EXTRA SECTIONS --- */}
       <div className="w-full mt-20 border-t border-white/5 bg-black/20 backdrop-blur-sm">
         <div className="max-w-[1300px] mx-auto px-6 md:px-10 py-20">
           <Reviews />
@@ -384,7 +425,7 @@ const ProductDetails = () => {
             className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
             onClick={() => setIsFullscreen(false)}
           >
-            <button className="absolute top-10 right-10 text-white/40 hover:text-white transition-all group">
+            <button className="absolute top-10 right-10 text-white/40 hover:text-white transition-all group bg-transparent border-none cursor-pointer">
               <X size={40} strokeWidth={1} className="group-hover:rotate-90 transition-transform duration-500" />
             </button>
             <motion.img

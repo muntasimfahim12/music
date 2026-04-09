@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     IconPlus, IconPhotoPlus, IconCurrencyDollar,
     IconPackage, IconCategory, IconChevronLeft, IconDeviceFloppy,
-    IconRulerMeasure, IconX, IconBolt, IconUpload, IconCheck
+    IconRulerMeasure, IconX, IconBolt, IconUpload, IconCheck, IconPalette
 } from "@tabler/icons-react";
 import Link from "next/link";
 import api from "../../../../lib/axios";
@@ -27,6 +27,10 @@ export default function AddProductPage() {
     const [inventory, setInventory] = useState({ S: 0, M: 0, L: 0, XL: 0, XXL: 0 });
     const [lowStockWarning, setLowStockWarning] = useState(5);
     const [highlights, setHighlights] = useState([{ title: "", desc: "" }]);
+
+    // --- New Color States ---
+    const [colors, setColors] = useState<string[]>([]);
+    const [currentColor, setCurrentColor] = useState("#000000");
 
     // --- Image States ---
     const [mainImage, setMainImage] = useState<File | null>(null);
@@ -93,7 +97,20 @@ export default function AddProductPage() {
         setGalleryPreviews(galleryPreviews.filter((_, i) => i !== index));
     };
 
-    // --- Backend Submission Logic (Fixed to ensure all data is sent) ---
+    // --- Color Handlers ---
+    const addColor = () => {
+        if (!colors.includes(currentColor)) {
+            setColors([...colors, currentColor]);
+        } else {
+            toast.error("Color already added");
+        }
+    };
+
+    const removeColor = (colorToRemove: string) => {
+        setColors(colors.filter(c => c !== colorToRemove));
+    };
+
+    // --- Backend Submission Logic ---
     const handleCompleteListing = async () => {
         if (!name || !price || !mainImage) {
             return toast.error("Required: Name, Price, and Main Image");
@@ -113,18 +130,20 @@ export default function AddProductPage() {
             formData.append("tag", tag);
             formData.append("lowStockWarning", lowStockWarning.toString());
 
-            // 2. Critical Number & JSON Fields (Matching Controller Parsing)
-            formData.append("price", price); // Controller converts to Number
+            // 2. Critical Number & JSON Fields
+            formData.append("price", price);
             if (salePrice) formData.append("salePrice", salePrice);
 
             formData.append("inventory", JSON.stringify(inventory));
             formData.append("highlights", JSON.stringify(highlights));
 
-            // 3. Image Files (Matching upload.fields names)
+            // --- Send Colors to Backend ---
+            formData.append("colors", JSON.stringify(colors));
+
+            // 3. Image Files
             if (mainImage) formData.append("mainImage", mainImage);
             if (hoverImage) formData.append("hoverImage", hoverImage);
 
-            // Gallery append (multi-file)
             gallery.forEach(file => {
                 formData.append("gallery", file);
             });
@@ -136,7 +155,6 @@ export default function AddProductPage() {
             if (response.data.success) {
                 toast.dismiss(loadingToast);
                 showSuccessToast();
-                // Clear Form after success
                 setTimeout(() => window.location.reload(), 2000);
             }
         } catch (error: any) {
@@ -150,7 +168,7 @@ export default function AddProductPage() {
     const cardClasses = "bg-white p-6 md:p-8 rounded-none md:rounded-[32px] border-b md:border border-slate-100 shadow-none md:shadow-sm";
 
     return (
-        <div className="max-w-[1400px] mx-auto pb-32 md:pb-20 px-0 md:px-6 font-sans selection:bg-[#4177BC]/10 bg-[#FBFCFD] min-h-screen inter-medium">
+        <div className="max-w-[1400px] mx-auto pb-32 md:pb-20 px-0 md:px-6 font-sans selection:bg-[#4177BC]/10  min-h-screen inter-medium">
 
             {/* --- HEADER --- */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-8 pb-10 px-6 md:px-0">
@@ -191,6 +209,66 @@ export default function AddProductPage() {
                                 <div><label className={labelClasses}>Slug (URL)</label><input value={slug} onChange={(e) => setSlug(e.target.value)} type="text" placeholder="nocturnal-vibe-tee" className={inputClasses} /></div>
                             </div>
                             <div><label className={labelClasses}>Main Description</label><textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className={`${inputClasses} resize-none`} /></div>
+                        </div>
+                    </motion.div>
+
+                    {/* Color Selection Card - NEW FEATURE */}
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className={cardClasses}>
+                        <div className="flex items-center gap-3 mb-8 border-b border-slate-50 pb-5">
+                            <IconPalette size={22} className="text-[#4177BC]" />
+                            <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest">Available Colors</h2>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+                            <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                <div className="relative">
+                                    <input
+                                        type="color"
+                                        value={currentColor}
+                                        onChange={(e) => setCurrentColor(e.target.value)}
+                                        className="w-12 h-12 rounded-xl cursor-pointer border-2 border-white shadow-sm"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Hex Code</p>
+                                    <p className="text-sm font-bold text-slate-700 uppercase">{currentColor}</p>
+                                </div>
+                                <button
+                                    onClick={addColor}
+                                    type="button"
+                                    className="ml-4 p-2.5 bg-black text-white rounded-xl hover:scale-105 transition-transform"
+                                >
+                                    <IconPlus size={20} stroke={3} />
+                                </button>
+                            </div>
+
+                            <div className="flex flex-wrap gap-3">
+                                <AnimatePresence>
+                                    {colors.map((col) => (
+                                        <motion.div
+                                            key={col}
+                                            initial={{ scale: 0, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            exit={{ scale: 0, opacity: 0 }}
+                                            className="relative group"
+                                        >
+                                            <div
+                                                className="w-12 h-12 rounded-full border-4 border-white shadow-md"
+                                                style={{ backgroundColor: col }}
+                                            />
+                                            <button
+                                                onClick={() => removeColor(col)}
+                                                className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                            >
+                                                <IconX size={12} stroke={3} />
+                                            </button>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                                {colors.length === 0 && (
+                                    <p className="text-xs font-medium text-slate-400 italic">No colors added yet...</p>
+                                )}
+                            </div>
                         </div>
                     </motion.div>
 
@@ -317,9 +395,6 @@ export default function AddProductPage() {
                     Publish
                 </button>
             </div>
-
-
-
         </div>
     );
 }

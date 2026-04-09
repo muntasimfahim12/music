@@ -10,11 +10,12 @@ export interface ProductProps {
     subtext: string; 
     price: string;
     mainImage: string;
-    hoverImage: string;
+    hoverImage?: string; // এটি অপশনাল করা হয়েছে যাতে এরর না দেয়
     tag?: string | null;
+    category?: string;
 }
 
-const ProductCard = (product: ProductProps) => {
+const ProductCard = ({ name, subtext, price, mainImage, hoverImage, tag, category }: ProductProps) => {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -25,79 +26,97 @@ const ProductCard = (product: ProductProps) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="group relative flex flex-col w-full bg-transparent"
+            className="group relative flex flex-col w-full bg-transparent cursor-pointer"
         >
-            {/* Image Container - No Rounded Corners for High-End Look */}
-            <div className="relative aspect-[4/5] bg-[#080808] overflow-hidden border border-white/[0.05] transition-colors duration-700 group-hover:border-white/10">
+            {/* --- Image Container (Luxury Square/Rectangular Look) --- */}
+            <div className="relative aspect-[4/5] bg-[#0A0A0A] overflow-hidden border border-white/[0.03] transition-colors duration-700 group-hover:border-white/10">
                 
-                {/* Luxury Tag - Inter Bold */}
-                {product.tag && (
+                {/* Status Tag (Top-Left) */}
+                {tag && (
                     <div className="absolute top-0 left-0 z-30">
                         <div className={`px-5 py-2 text-[9px] inter-bold uppercase tracking-[0.3em] backdrop-blur-md ${
-                            product.tag === 'SOLD OUT' 
+                            tag.toUpperCase() === 'SOLD OUT' 
                             ? 'bg-zinc-900/90 text-zinc-500' 
-                            : 'bg-[#FF2E2E] text-white shadow-2xl'
+                            : 'bg-[#FF2E2E] text-white shadow-[0_5px_15px_rgba(255,46,46,0.3)]'
                         }`}>
-                            {product.tag}
+                            {tag}
                         </div>
                     </div>
                 )}
 
                 {/* Slow-Motion Image Transition */}
                 <div className="absolute inset-0 z-10">
+                    {/* Main Image */}
                     <img
-                        src={product.mainImage}
-                        alt={product.name}
-                        className={`w-full h-full object-cover transition-all duration-[1.8s] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                            isHovered ? 'scale-110 opacity-0' : 'scale-100 opacity-100'
+                        src={mainImage}
+                        alt={name}
+                        className={`w-full h-full object-cover transition-all duration-[1.5s] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                            isHovered && hoverImage ? 'scale-110 opacity-0' : 'scale-100 opacity-100'
                         }`}
+                        loading="lazy"
                     />
-                    <img
-                        src={product.hoverImage}
-                        alt={product.name}
-                        className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1.8s] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                            isHovered ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
-                        }`}
-                    />
+                    
+                    {/* Hover Image (If exists) */}
+                    {hoverImage && (
+                        <img
+                            src={hoverImage}
+                            alt={`${name} alternative view`}
+                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1.5s] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                                isHovered ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
+                            }`}
+                            loading="lazy"
+                        />
+                    )}
                 </div>
 
                 {/* Premium Dark Overlay on Hover */}
-                <div className="absolute inset-0 z-20 bg-gradient-to-b from-transparent via-transparent to-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 
-                {/* Red Accent Line - Bottom Animated */}
-                <div className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#FF2E2E] z-30 group-hover:w-full transition-all duration-1000 ease-in-out" />
+                {/* Red Accent Animated Border (Bottom) */}
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#FF2E2E] z-30 group-hover:w-full transition-all duration-1000 ease-in-out shadow-[0_0_10px_#FF2E2E]" />
             </div>
 
-            {/* Info Section - Using Provided Custom Classes */}
-            <div className="mt-6 flex flex-col gap-2 px-1">
-                <div className="flex justify-between items-start">
-                    <h3 className="text-zinc-100 text-[14px] md:text-[16px] judson-bold uppercase tracking-[0.05em] group-hover:text-white transition-colors duration-300 leading-tight max-w-[70%]">
-                        {product.name}
+            {/* --- Info Section --- */}
+            <div className="mt-6 flex flex-col gap-2.5 px-0.5">
+                <div className="flex justify-between items-start gap-4">
+                    {/* Product Name - Judson Bold */}
+                    <h3 className="text-zinc-100 text-[15px] md:text-[17px] judson-bold uppercase tracking-[0.03em] group-hover:text-white transition-colors duration-300 leading-tight flex-1">
+                        {name}
                     </h3>
                     
-                    {/* Price with Dollar Sign - Inter Semibold */}
-                    <span className="text-white text-[14px] md:text-[16px] inter-semibold tracking-tighter">
-                        ${product.price}
+                    {/* Price - Inter Semibold */}
+                    <span className="text-white text-[15px] md:text-[17px] inter-semibold tracking-tighter shrink-0">
+                        ${price}
                     </span>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                    {/* Subtext - Inter Medium */}
-                    <p className="text-zinc-500 text-[10px] inter-medium uppercase tracking-[0.25em]">
-                        {product.subtext}
-                    </p>
+                <div className="flex items-center justify-between min-h-[20px]">
+                    {/* Subtext & Category info */}
+                    <div className="flex flex-col">
+                        <p className="text-zinc-500 text-[9px] inter-medium uppercase tracking-[0.25em]">
+                            {subtext}
+                        </p>
+                    </div>
                     
-                    {/* View Collection - Hidden by default, slides in on hover */}
+                    {/* View Collection - Slides up on Hover */}
                     <div className="overflow-hidden">
                         <motion.span 
+                            initial={{ y: 25 }}
                             animate={{ y: isHovered ? 0 : 25 }}
-                            transition={{ duration: 0.5, ease: "circOut" }}
-                            className="text-[#FF2E2E] text-[9px] inter-bold uppercase tracking-[0.2em] flex items-center gap-1"
+                            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                            className="text-[#FF2E2E] text-[9px] inter-bold uppercase tracking-[0.2em] flex items-center gap-1.5"
                         >
-                            Explore →
+                            Explore <span className="text-[12px] translate-y-[0.5px]">→</span>
                         </motion.span>
                     </div>
                 </div>
+            </div>
+
+            {/* Subtle Category Label (Optional, for SEO/UX) */}
+            <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <span className="text-[8px] inter-bold text-zinc-700 tracking-[0.4em] uppercase">
+                    Vault // {category || "Collection"}
+                </span>
             </div>
         </motion.div>
     );

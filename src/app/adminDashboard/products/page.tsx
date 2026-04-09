@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   IconPlus, IconSearch, IconTrash, IconEdit, IconX,
   IconDeviceFloppy, IconLoader2, IconPackage,
-  IconPhotoEdit, IconLayoutGrid, IconArrowRight
+  IconPhotoEdit, IconLayoutGrid, IconArrowRight, IconPalette
 } from "@tabler/icons-react";
 import Link from "next/link";
 import api from "../../../lib/axios";
@@ -23,12 +23,12 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // --- Image & Color States ---
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [mainImageFile, setMainImageFile] = useState<File | null>(null);
   const [hoverImageFile, setHoverImageFile] = useState<File | null>(null);
-
-  const mainInputRef = useRef<HTMLInputElement>(null);
+  const [currentColor, setCurrentColor] = useState("#000000");
 
   const fetchProducts = async () => {
     try {
@@ -45,9 +45,12 @@ export default function ProductsPage() {
   useEffect(() => { fetchProducts(); }, []);
 
   const openEditModal = (product: any) => {
-    setEditingProduct(product);
+    // কালার এবং ইমেজ লজিক সেট করা
+    setEditingProduct({
+        ...product,
+        colors: product.colors || [] // ব্যাকেন্ড থেকে কালার না থাকলে এম্পটি অ্যারে
+    });
     
-    // ✅ ডাইনামিক গ্যালারি লজিক: মেইন ইমেজ, হোভার ইমেজ এবং গ্যালারি অ্যারের সব ছবি যোগ করা হয়েছে
     const images = [
       `${BASE_URL}${product.mainImage}`,
       product.hoverImage ? `${BASE_URL}${product.hoverImage}` : null,
@@ -58,6 +61,25 @@ export default function ProductsPage() {
     setActiveImageIndex(0);
     setMainImageFile(null);
     setHoverImageFile(null);
+  };
+
+  // --- Color Handlers ---
+  const addColor = () => {
+    if (!editingProduct.colors.includes(currentColor)) {
+      setEditingProduct({
+        ...editingProduct,
+        colors: [...editingProduct.colors, currentColor]
+      });
+    } else {
+      toast.error("Color already exists");
+    }
+  };
+
+  const removeColor = (colorToRemove: string) => {
+    setEditingProduct({
+      ...editingProduct,
+      colors: editingProduct.colors.filter((c: string) => c !== colorToRemove)
+    });
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -72,6 +94,9 @@ export default function ProductsPage() {
       formData.append("price", priceValue.toString());
       formData.append("category", editingProduct.category);
       formData.append("description", editingProduct.description);
+      
+      // ✅ কালারগুলো JSON স্ট্রিং হিসেবে পাঠানো হচ্ছে
+      formData.append("colors", JSON.stringify(editingProduct.colors));
 
       if (mainImageFile) formData.append("mainImage", mainImageFile);
       if (hoverImageFile) formData.append("hoverImage", hoverImageFile);
@@ -111,7 +136,7 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-[#FDFDFD] font-sans text-[#1a1a1a]">
       <div className="max-w-[1600px] mx-auto px-6 lg:px-16 pt-8 pb-24">
 
-        {/* --- COMPACT PROFESSIONAL HEADER --- */}
+        {/* --- HEADER --- */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-gray-100 pb-8">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -130,15 +155,8 @@ export default function ProductsPage() {
           </div>
 
           <Link href="/adminDashboard/products/addProducts">
-            <button
-              className="flex items-center gap-3 bg-black text-white px-8 py-4 rounded-md font-bold text-[11px]  tracking-[0.25em] transition-all duration-300  hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 active:scale-95 cursor-pointer group"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              <IconPlus
-                size={16}
-                stroke={3}
-                className="group-hover:rotate-90 transition-transform duration-300"
-              />
+            <button className="flex items-center gap-3 bg-black text-white px-8 py-4 rounded-md font-bold text-[11px] tracking-[0.25em] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 active:scale-95 cursor-pointer group">
+              <IconPlus size={16} stroke={3} className="group-hover:rotate-90 transition-transform duration-300" />
               <span>Add New Product</span>
             </button>
           </Link>
@@ -165,19 +183,20 @@ export default function ProductsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => (
-                <motion.div
-                  key={product._id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="group"
-                >
-                  <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-gray-100 border border-gray-50">
+                <motion.div key={product._id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="group">
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-gray-100 border border-gray-50 shadow-sm">
                     <img
                       src={`${BASE_URL}${product.mainImage}`}
                       alt={product.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
+                    {/* কালার ডট প্রিভিউ কার্ডের ওপরে */}
+                    <div className="absolute top-4 left-4 flex gap-1.5 bg-white/20 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                      {product.colors?.slice(0, 3).map((col: string, i: number) => (
+                        <div key={i} className="w-3 h-3 rounded-full border border-white" style={{ backgroundColor: col }} />
+                      ))}
+                    </div>
+
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-sm">
                       <button onClick={() => openEditModal(product)} className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:bg-[#4177BC] hover:text-white transition-all">
                         <IconEdit size={18} />
@@ -201,7 +220,7 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {/* --- REFINED MODAL --- */}
+        {/* --- EDIT MODAL --- */}
         <AnimatePresence>
           {editingProduct && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
@@ -209,54 +228,94 @@ export default function ProductsPage() {
 
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-                className="relative w-full max-w-4xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[90vh]"
+                className="relative w-full max-w-5xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[90vh]"
               >
                 {/* Modal Gallery */}
-                <div className="md:w-[320px] bg-gray-50 p-6 border-r border-gray-100">
+                <div className="md:w-[350px] bg-gray-50 p-6 border-r border-gray-100 flex flex-col">
                   <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg bg-white mb-4">
                     <img src={galleryImages[activeImageIndex]} className="w-full h-full object-cover" alt="Preview" />
                   </div>
-                  {/* থাম্বনেইল গ্রিড - এখানে সব ছবি দেখা যাবে */}
-                  <div className="grid grid-cols-4 gap-2 overflow-y-auto max-h-[160px]">
+                  <div className="grid grid-cols-4 gap-2 overflow-y-auto max-h-[160px] mb-6">
                     {galleryImages.map((img, idx) => (
                       <button key={idx} onClick={() => setActiveImageIndex(idx)} className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${activeImageIndex === idx ? 'border-[#4177BC]' : 'border-transparent opacity-50'}`}>
                         <img src={img} className="w-full h-full object-cover" alt="thumb" />
                       </button>
                     ))}
                   </div>
+
+                  {/* ✅ Modal-এর ভেতর কালার দেখার জায়গা */}
+                  <div className="mt-auto pt-6 border-t border-gray-200">
+                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-3">Managed Colors</label>
+                    <div className="flex flex-wrap gap-2">
+                      {editingProduct.colors?.map((col: string, i: number) => (
+                        <div key={i} className="group relative">
+                          <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: col }} />
+                          <button 
+                            type="button"
+                            onClick={() => removeColor(col)}
+                            className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <IconX size={10} stroke={3} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Modal Form */}
                 <div className="flex-1 p-8 overflow-y-auto">
                   <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-black uppercase tracking-tight">Update Item</h2>
+                    <h2 className="text-xl font-black uppercase tracking-tight">Update Release</h2>
                     <button onClick={() => setEditingProduct(null)} className="text-gray-400 hover:text-black transition-colors"><IconX size={20} /></button>
                   </div>
 
                   <form onSubmit={handleUpdate} className="space-y-6">
-                    <div>
-                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Product Name</label>
-                      <input type="text" value={editingProduct.name} onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })} className={inputClasses} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Product Name</label>
+                            <input type="text" value={editingProduct.name} onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })} className={inputClasses} />
+                        </div>
+                        
+                        <div>
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Price ($)</label>
+                            <input
+                            type="number"
+                            value={typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price}
+                            onChange={(e) => setEditingProduct({ ...editingProduct, price: { ...editingProduct.price, amount: e.target.value } })}
+                            className={inputClasses}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Category</label>
+                            <select value={editingProduct.category} onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })} className={inputClasses}>
+                            <option value="TEES">TEES</option>
+                            <option value="HOODIES">HOODIES</option>
+                            <option value="ACCESSORIES">ACCESSORIES</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Price ($)</label>
-                        <input
-                          type="number"
-                          value={typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price}
-                          onChange={(e) => setEditingProduct({ ...editingProduct, price: { ...editingProduct.price, amount: e.target.value } })}
-                          className={inputClasses}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Category</label>
-                        <select value={editingProduct.category} onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })} className={inputClasses}>
-                          <option value="TEES">TEES</option>
-                          <option value="HOODIES">HOODIES</option>
-                          <option value="ACCESSORIES">ACCESSORIES</option>
-                        </select>
-                      </div>
+                    {/* ✅ এডিট মোডালে নতুন কালার অ্যাড করার অপশন */}
+                    <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-3">Add More Colors</label>
+                        <div className="flex items-center gap-3">
+                            <input 
+                                type="color" 
+                                value={currentColor} 
+                                onChange={(e) => setCurrentColor(e.target.value)}
+                                className="w-10 h-10 rounded-lg cursor-pointer border-2 border-white shadow-sm"
+                            />
+                            <span className="text-xs font-bold text-gray-500 uppercase">{currentColor}</span>
+                            <button 
+                                type="button"
+                                onClick={addColor}
+                                className="ml-auto flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-sm"
+                            >
+                                <IconPlus size={14} stroke={3} /> Add
+                            </button>
+                        </div>
                     </div>
 
                     <div>
@@ -267,10 +326,10 @@ export default function ProductsPage() {
                     <button
                       disabled={isUpdating}
                       type="submit"
-                      className="w-full bg-black hover:bg-[#4177BC] text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
+                      className="w-full bg-black hover:bg-[#4177BC] text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg"
                     >
                       {isUpdating ? <IconLoader2 className="animate-spin" size={16} /> : <IconDeviceFloppy size={16} />}
-                      Save Changes
+                      Sync Changes to Vault
                     </button>
                   </form>
                 </div>
