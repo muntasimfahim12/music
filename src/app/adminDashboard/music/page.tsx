@@ -1,252 +1,293 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  IconPlus, IconSearch, IconDisc, 
-  IconClock, IconStarFilled, IconEdit, 
-  IconTrash, IconX, IconDeviceFloppy, 
-  IconPhotoPlus, IconMusic, IconCalendar
+import {
+  IconPlus, IconSearch, IconTrash, IconEdit, IconX,
+  IconDeviceFloppy, IconLoader2, IconDisc, IconStarFilled,
+  IconCalendar, IconMusic, IconMicrophone
 } from "@tabler/icons-react";
 import Link from "next/link";
+import api from "./../../../lib/axios";
+import { toast } from "react-hot-toast";
 
-const musicData = [
-  {
-    id: 5,
-    title: "STATIC DREAMS",
-    artist: "Frequency Studio",
-    cover_image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=2070&auto=format&fit=crop",
-    main_genre: "Industrial",
-    total_tracks: "9 Tracks",
-    duration: "40:30",
-    releaseDate: "2024-03-15",
-    price: 8.99,
-    rating: 4.6,
-    description: "The official visual journey for Static Dreams album with high fidelity audio."
-  },
-  {
-    id: 6,
-    title: "NEON HORIZON",
-    artist: "SynthWave Pro",
-    cover_image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop",
-    main_genre: "Synthwave",
-    total_tracks: "12 Tracks",
-    duration: "52:15",
-    releaseDate: "2024-02-10",
-    price: 9.99,
-    rating: 4.9,
-    description: "A deep dive into synth-heavy production and futuristic melodies."
-  }
-];
+const BASE_URL = "http://localhost:5000";
 
 export default function MusicStorePage() {
-  const [selectedGenre, setSelectedGenre] = useState("All");
-  const [editingMusic, setEditingMusic] = useState<any>(null);
+  const [albums, setAlbums] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingAlbum, setEditingAlbum] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const genres = ["All", "Industrial", "Synthwave", "Techno", "Ambient"];
-  const inputClasses = `w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-medium text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#4177BC]/5 focus:border-[#4177BC]`;
+  // এপিআই থেকে অ্যালবাম ফেচ করা
+  const fetchAlbums = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/album"); // আপনার এন্ডপয়েন্ট অনুযায়ী
+      if (response.data?.success) setAlbums(response.data.data);
+    } catch (error: any) {
+      toast.error("Music Vault synchronization failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchAlbums(); }, []);
+
+  const openEditModal = (album: any) => {
+    setEditingAlbum({ ...album });
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    const toastId = toast.loading("Updating Music Vault...");
+
+    try {
+      // এখানে সরাসরি অবজেক্ট পাঠানো হচ্ছে, যদি ফাইল না থাকে। 
+      // ফাইল থাকলে FormData ব্যবহার করবেন।
+      const response = await api.patch(`/album/${editingAlbum._id}`, editingAlbum);
+      if (response.data.success) {
+        toast.success("Album Updated", { id: toastId });
+        setEditingAlbum(null);
+        fetchAlbums();
+      }
+    } catch (error) {
+      toast.error("Update failed", { id: toastId });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Remove this masterpiece from vault?")) return;
+    try {
+      await api.delete(`/album/${id}`);
+      setAlbums(albums.filter(a => a._id !== id));
+      toast.success("Album Removed");
+    } catch (error) {
+      toast.error("Delete failed");
+    }
+  };
+
+  const filteredAlbums = albums.filter(a =>
+    a.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    a.artist?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const inputClasses = `w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 font-sans font-medium text-[13px] transition-all focus:outline-none focus:ring-2 focus:ring-[#4177BC]/10 focus:border-[#4177BC] focus:bg-white`;
 
   return (
-    <div className="max-w-[1300px] mx-auto pb-20 px-4 sm:px-8 bg-[#FBFBFE] selection:bg-[#4177BC]/10">
+    <div className="min-h-screen bg-[#FDFDFD] font-sans text-[#1a1a1a]">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-16 pt-8 pb-24">
 
-      {/* --- HEADER SECTION --- */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-12 pb-10">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight inter-bold">
-            Music <span className="text-slate-400 font-medium">Store</span>
-          </h1>
-          <p className="text-[14px] text-slate-500 font-medium inter-medium">
-            Professional music for your projects, royalty-free and ready to use.
-          </p>
-        </div>
+        {/* --- HEADER (Exactly like Products Page) --- */}
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-gray-100 pb-8">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-[2px] bg-[#4177BC]"></span>
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#4177BC]">Archive</p>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-black tracking-tighter leading-none text-slate-900 uppercase">
+              Music <span className="text-[#556156]">Vault</span>
+            </h1>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                {albums.length} Releases Synchronized
+              </span>
+            </div>
+          </div>
 
-        <button className="w-full md:w-auto flex items-center justify-center gap-2 bg-slate-900 hover:bg-[#4177BC] text-white px-6 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
-          <IconPlus size={18} stroke={3} />
-          New Release
-        </button>
-      </div>
+          <Link href="/adminDashboard/music/addMusic">
+            <button className="flex items-center gap-3 bg-black text-white px-8 py-4 rounded-md font-bold text-[11px] tracking-[0.25em] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 active:scale-95 cursor-pointer group uppercase">
+              <IconPlus size={16} stroke={3} className="group-hover:rotate-90 transition-transform duration-300" />
+              <span>Publish New Album</span>
+            </button>
+          </Link>
+        </header>
 
-      {/* --- SEARCH & FILTERS --- */}
-      <div className="flex flex-col lg:flex-row gap-6 items-center justify-between mb-12 py-3 border-b border-slate-100">
-        <div className="relative w-full lg:max-w-xs group">
-          <IconSearch size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#4177BC] transition-colors" />
+        {/* --- SEARCH BAR --- */}
+        <div className="relative max-w-xl mb-12 group">
+          <IconSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#4177BC] transition-colors" size={18} />
           <input
             type="text"
-            placeholder="Search assets..."
-            className="w-full pl-7 pr-4 py-2 bg-transparent border-none outline-none focus:ring-0 text-sm font-bold text-slate-700 placeholder:text-slate-300 uppercase"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by Title or Artist..."
+            className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-2xl shadow-sm outline-none focus:border-[#4177BC] transition-all text-[13px] font-medium"
           />
         </div>
 
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pb-2 lg:pb-0">
-          {genres.map((genre) => (
-            <button
-              key={genre}
-              onClick={() => setSelectedGenre(genre)}
-              className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap
-                ${selectedGenre === genre ? "bg-[#4177BC] text-white shadow-lg shadow-blue-100" : "bg-transparent text-slate-400 hover:text-slate-900"}`}
-            >
-              {genre}
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* --- ALBUM GRID (Product Card Style) --- */}
+        {loading ? (
+          <div className="flex justify-center py-32">
+            <IconLoader2 className="animate-spin text-[#4177BC]" size={32} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <AnimatePresence mode="popLayout">
+              {filteredAlbums.map((album) => (
+                <motion.div key={album._id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="group">
+                  <div className="relative aspect-square overflow-hidden rounded-3xl bg-gray-100 border border-gray-50 shadow-sm">
+                    <img
+                      src={`${BASE_URL}/${album.cover_image?.replace('\\', '/')}`}
+                      alt={album.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    
+                    {/* Status Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-white/90 backdrop-blur-md text-black text-[8px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-sm">
+                        {album.main_genre}
+                      </span>
+                    </div>
 
-      {/* --- MUSIC GRID (Video Card Style 100% Same) --- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-        {musicData.map((music) => (
-          <motion.div 
-            key={music.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="group bg-white rounded-[32px] border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
-          >
-            {/* Thumbnail Area */}
-            <div className="relative aspect-square bg-slate-900 overflow-hidden">
-              <img 
-                src={music.cover_image} 
-                alt={music.title}
-                className="w-full h-full object-cover opacity-90 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white scale-90 group-hover:scale-100 group-hover:bg-[#4177BC] transition-all duration-300 shadow-xl">
-                  <IconMusic size={20} />
-                </div>
-              </div>
-              <div className="absolute top-4 left-4">
-                <span className="bg-slate-900/80 backdrop-blur-md text-white text-[8px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest">
-                  {music.main_genre}
-                </span>
-              </div>
-              <div className="absolute bottom-4 right-4">
-                <span className="bg-white/90 backdrop-blur-md text-[#4177BC] text-[10px] font-black px-3 py-1.5 rounded-lg shadow-sm">
-                  ${music.price}
-                </span>
-              </div>
-            </div>
-
-            {/* Content Area */}
-            <div className="p-5 md:p-6 space-y-4">
-              <div className="space-y-1">
-                <h3 className="text-sm font-black text-slate-900 leading-tight uppercase line-clamp-1 group-hover:text-[#4177BC] transition-colors">
-                  {music.title}
-                </h3>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter flex items-center gap-2">
-                  <IconCalendar size={12} /> {music.releaseDate}
-                </p>
-              </div>
-
-              {/* Status Info Bar */}
-              <div className="flex items-center justify-between py-3 border-y border-slate-50">
-                <div className="flex items-center gap-1.5 text-[9px] font-bold text-slate-500 uppercase tracking-tighter">
-                  <IconDisc size={12} className="text-slate-300" /> {music.total_tracks.split(' ')[0]} Tracks
-                </div>
-                <div className="flex items-center gap-1 text-[9px] font-bold text-amber-500 uppercase tracking-tighter">
-                  <IconStarFilled size={10} /> {music.rating}
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-2 pt-2">
-                <button 
-                  onClick={() => setEditingMusic(music)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-900 hover:text-white text-slate-600 py-3 rounded-xl transition-all font-black text-[9px] uppercase tracking-widest"
-                >
-                  <IconEdit size={14} stroke={2.5} /> Edit
-                </button>
-                <button className="w-12 flex items-center justify-center bg-slate-50 hover:bg-red-500 hover:text-white text-slate-400 py-3 rounded-xl transition-all">
-                  <IconTrash size={14} stroke={2.5} />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* --- EDIT MODAL (100% Same as Video Page) --- */}
-      <AnimatePresence>
-        {editingMusic && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setEditingMusic(null)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl bg-white rounded-[32px] overflow-hidden shadow-2xl border border-slate-100"
-            >
-              {/* Modal Header */}
-              <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-[#4177BC] text-white rounded-xl shadow-lg shadow-blue-100">
-                    <IconMusic size={20} />
-                  </div>
-                  <h2 className="text-lg font-bold text-slate-800 inter-bold">Edit Release Details</h2>
-                </div>
-                <button onClick={() => setEditingMusic(null)} className="text-slate-400 hover:text-slate-600 transition-colors">
-                  <IconX size={24} />
-                </button>
-              </div>
-
-              {/* Modal Body */}
-              <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="md:col-span-2">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Album Title</label>
-                    <input type="text" defaultValue={editingMusic.title} className={inputClasses} />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-sm">
+                      <button onClick={() => openEditModal(album)} className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:bg-[#4177BC] hover:text-white transition-all shadow-lg">
+                        <IconEdit size={18} />
+                      </button>
+                      <button onClick={() => handleDelete(album._id)} className="w-10 h-10 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-rose-500 transition-all shadow-lg">
+                        <IconTrash size={18} />
+                      </button>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Artist Name</label>
-                    <input type="text" defaultValue={editingMusic.artist} className={inputClasses} />
+                  <div className="mt-5 px-1">
+                    <div className="flex justify-between items-start mb-1">
+                        <p className="text-[9px] font-black text-[#4177BC] uppercase tracking-widest">{album.artist}</p>
+                        <div className="flex items-center gap-1 text-[9px] font-bold text-amber-500">
+                            <IconStarFilled size={10} /> {album.rating || "5.0"}
+                        </div>
+                    </div>
+                    <h3 className="text-[14px] font-bold text-gray-900 uppercase truncate mb-1">{album.title}</h3>
+                    <div className="flex items-center justify-between">
+                        <p className="text-[14px] font-medium text-gray-500 tracking-tighter">
+                            ${album.bundle_deal?.price || "0.00"}
+                        </p>
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
+                            <IconDisc size={12} /> {album.total_tracks} Tracks
+                        </div>
+                    </div>
                   </div>
-
-                  <div>
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Price ($)</label>
-                    <input type="number" defaultValue={editingMusic.price} className={inputClasses} />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Main Genre</label>
-                    <select defaultValue={editingMusic.main_genre} className={inputClasses}>
-                      {genres.filter(g => g !== "All").map(g => <option key={g}>{g}</option>)}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Duration</label>
-                    <input type="text" defaultValue={editingMusic.duration} className={inputClasses} />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Description</label>
-                    <textarea rows={3} defaultValue={editingMusic.description} className={`${inputClasses} resize-none`} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Modal Footer */}
-              <div className="p-8 pt-4 border-t border-slate-50 flex items-center justify-end gap-3">
-                <button onClick={() => setEditingMusic(null)} className="px-6 py-3 rounded-xl font-bold text-xs text-slate-500 hover:bg-slate-100 transition-all uppercase tracking-widest">
-                  Cancel
-                </button>
-                <button className="flex items-center gap-2 bg-slate-900 hover:bg-[#4177BC] text-white px-8 py-3.5 rounded-xl font-bold text-xs transition-all shadow-xl active:scale-95 uppercase tracking-widest">
-                  <IconDeviceFloppy size={18} />
-                  Update Release
-                </button>
-              </div>
-            </motion.div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
-      </AnimatePresence>
 
+        {/* --- EDIT MODAL (Side-by-Side Product Style) --- */}
+        <AnimatePresence>
+          {editingAlbum && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingAlbum(null)} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+                className="relative w-full max-w-5xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[90vh]"
+              >
+                {/* Modal Art Side */}
+                <div className="md:w-[380px] bg-gray-50 p-8 border-r border-gray-100 flex flex-col">
+                  <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl bg-white mb-6">
+                    <img src={`${BASE_URL}/${editingAlbum.cover_image?.replace('\\', '/')}`} className="w-full h-full object-cover" alt="Preview" />
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Tracklist Preview</label>
+                        <div className="space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar">
+                            {editingAlbum.tracklist?.map((track: any, idx: number) => (
+                                <div key={idx} className="flex items-center justify-between text-[11px] font-bold text-gray-700 bg-gray-50 p-2 rounded-lg">
+                                    <span className="opacity-40">{track.position}.</span>
+                                    <span className="flex-1 ml-2 truncate uppercase">{track.title}</span>
+                                    <span className="text-gray-400">{track.duration}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-4 bg-[#4177BC]/5 rounded-xl border border-[#4177BC]/10">
+                        <IconCalendar size={18} className="text-[#4177BC]" />
+                        <div>
+                            <p className="text-[8px] font-black text-[#4177BC] uppercase tracking-widest">Release Year</p>
+                            <p className="text-xs font-bold text-gray-900">{editingAlbum.release_year}</p>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modal Form Side */}
+                <div className="flex-1 p-10 overflow-y-auto">
+                  <div className="flex justify-between items-center mb-8">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[#4177BC]"></div>
+                        <h2 className="text-xl font-black uppercase tracking-tight">Sync Release Info</h2>
+                    </div>
+                    <button onClick={() => setEditingAlbum(null)} className="text-gray-400 hover:text-black transition-colors"><IconX size={20} /></button>
+                  </div>
+
+                  <form onSubmit={handleUpdate} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Album Title</label>
+                            <input type="text" value={editingAlbum.title} onChange={(e) => setEditingAlbum({ ...editingAlbum, title: e.target.value })} className={inputClasses} />
+                        </div>
+                        
+                        <div>
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Artist / Collective</label>
+                            <input type="text" value={editingAlbum.artist} onChange={(e) => setEditingAlbum({ ...editingAlbum, artist: e.target.value })} className={inputClasses} />
+                        </div>
+
+                        <div>
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Price ($)</label>
+                            <input
+                              type="number"
+                              value={editingAlbum.bundle_deal?.price}
+                              onChange={(e) => setEditingAlbum({ ...editingAlbum, bundle_deal: { ...editingAlbum.bundle_deal, price: e.target.value } })}
+                              className={inputClasses}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Main Genre</label>
+                            <select value={editingAlbum.main_genre} onChange={(e) => setEditingAlbum({ ...editingAlbum, main_genre: e.target.value })} className={inputClasses}>
+                              <option value="Experimental">Experimental</option>
+                              <option value="Industrial">Industrial</option>
+                              <option value="Synthwave">Synthwave</option>
+                              <option value="Ambient">Ambient</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Total Duration</label>
+                            <input type="text" value={editingAlbum.duration} onChange={(e) => setEditingAlbum({ ...editingAlbum, duration: e.target.value })} className={inputClasses} />
+                        </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Liner Notes / Description</label>
+                      <textarea rows={4} value={editingAlbum.description} onChange={(e) => setEditingAlbum({ ...editingAlbum, description: e.target.value })} className={`${inputClasses} resize-none`} />
+                    </div>
+
+                    <button
+                      disabled={isUpdating}
+                      type="submit"
+                      className="w-full bg-black hover:bg-[#4177BC] text-white py-5 rounded-xl font-black text-[10px] uppercase tracking-[0.25em] transition-all flex items-center justify-center gap-3 shadow-xl disabled:bg-gray-400"
+                    >
+                      {isUpdating ? <IconLoader2 className="animate-spin" size={18} /> : <IconDeviceFloppy size={18} />}
+                      Update Masterpiece
+                    </button>
+                  </form>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
-  );
+  ); 
 }

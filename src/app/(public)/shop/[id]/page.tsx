@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Star, Truck, Heart, Plus, Minus,
   Loader2, AlertCircle, Maximize2, ShoppingBag,
-  X
+  X, Check
 } from 'lucide-react';
 import { showCartToast } from '@/src/components/shared/ToastProvider';
 import Reviews from '@/src/components/shared/Reviews';
@@ -25,7 +25,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(0); // Index of color array
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('DESCRIPTION');
   const [mainDisplayImg, setMainDisplayImg] = useState("");
@@ -46,7 +46,7 @@ const ProductDetails = () => {
 
         if (foundProduct) {
           setProduct(foundProduct);
-          
+
           // Initial main image setup
           const initialImg = foundProduct.mainImage?.startsWith('http')
             ? foundProduct.mainImage
@@ -71,28 +71,15 @@ const ProductDetails = () => {
   // --- logic: 100% All Images Retrieval ---
   const productGallery = useMemo(() => {
     if (!product) return [];
-
     const allImages: string[] = [];
-
-    // 1. Add Main Image
     if (product.mainImage) allImages.push(product.mainImage);
-    
-    // 2. Add Hover Image
     if (product.hoverImage) allImages.push(product.hoverImage);
-    
-    // 3. Add Gallery Array images
     if (product.gallery && Array.isArray(product.gallery)) {
       product.gallery.forEach((img: string) => {
-        if (img && !allImages.includes(img)) {
-          allImages.push(img);
-        }
+        if (img && !allImages.includes(img)) allImages.push(img);
       });
     }
-
-    // Convert all to full URLs
-    return allImages.map(img => 
-      img.startsWith('http') ? img : `${IMAGE_ROOT}${img}`
-    );
+    return allImages.map(img => img.startsWith('http') ? img : `${IMAGE_ROOT}${img}`);
   }, [product, IMAGE_ROOT]);
 
   const handleAddToCart = () => {
@@ -100,7 +87,7 @@ const ProductDetails = () => {
     const currentPrice = product.price?.sale_price || product.price?.amount || 0;
 
     const itemToCart: CartItem = {
-      id: `${product._id}-${selectedSize || 'default'}`,
+      id: `${product._id}-${selectedSize || 'default'}-${product.colors?.[selectedColor]?.name || 'default'}`,
       name: product.name,
       price: Number(currentPrice),
       image: mainDisplayImg,
@@ -143,14 +130,14 @@ const ProductDetails = () => {
           <span className="text-white/60">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-start">
 
           {/* LEFT: Image Gallery */}
-          <div className="lg:col-span-6 space-y-6 md:sticky md:top-24">
+          <div className="lg:col-span-6 space-y-6 md:sticky md:top-24 w-full">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative group overflow-hidden rounded-[4px] bg-[#0A0A0A] border border-white/[0.05] max-w-[500px] mx-auto shadow-2xl"
+              className="relative group overflow-hidden rounded-[4px] bg-[#0A0A0A] border border-white/[0.05] max-w-[550px] mx-auto shadow-2xl"
             >
               {product.tag && (
                 <div className="absolute top-5 left-0 z-20 bg-[#E63946] text-white text-[9px] font-black px-4 py-1.5 uppercase tracking-[0.2em] shadow-xl">
@@ -173,23 +160,22 @@ const ProductDetails = () => {
 
               <button
                 onClick={() => setIsFullscreen(true)}
-                className="absolute bottom-6 right-6 p-4 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-black shadow-2xl z-10 cursor-pointer"
+                className="absolute bottom-6 right-6 p-4 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-black shadow-2xl z-10 cursor-pointer hidden md:flex"
               >
                 <Maximize2 size={18} strokeWidth={1.5} />
               </button>
             </motion.div>
 
-            {/* Thumbnail List - Shows ALL Images */}
-            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 justify-center lg:justify-start max-w-[500px] mx-auto">
+            {/* Thumbnail List */}
+            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 justify-start lg:justify-start max-w-[550px] mx-auto">
               {productGallery.map((img: string, i: number) => (
                 <button
                   key={i}
                   onClick={() => setMainDisplayImg(img)}
-                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 transition-all duration-500 overflow-hidden rounded-sm cursor-pointer ${
-                    mainDisplayImg === img
-                      ? 'ring-1 ring-[#E63946] ring-offset-4 ring-offset-black opacity-100'
-                      : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'
-                  }`}
+                  className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 transition-all duration-500 overflow-hidden rounded-sm cursor-pointer ${mainDisplayImg === img
+                    ? 'ring-1 ring-[#E63946] ring-offset-4 ring-offset-black opacity-100'
+                    : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'
+                    }`}
                 >
                   <img src={img} className="w-full h-full object-cover" alt={`view-${i}`} />
                 </button>
@@ -198,7 +184,7 @@ const ProductDetails = () => {
           </div>
 
           {/* RIGHT: Product Info */}
-          <div className="lg:col-span-6 flex flex-col">
+          <div className="lg:col-span-6 flex flex-col w-full">
             <div className="mb-6">
               <h1 className="text-[clamp(1.75rem,5vw,3rem)] md:text-4xl lg:text-5xl judson-bold tracking-tighter leading-[0.95] mb-4">
                 {product.name}
@@ -238,18 +224,25 @@ const ProductDetails = () => {
             </p>
 
             {/* Options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
+              {/* Fully Backend-Driven Color Selection */}
               {product.colors?.length > 0 && (
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 mb-4">Tone:</p>
-                  <div className="flex gap-3">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Tone:</p>
+                    <span className="text-[9px] text-white/60 font-black uppercase tracking-widest">{product.colors[selectedColor]?.name}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
                     {product.colors.map((color: any, i: number) => (
                       <button
                         key={i}
+                        title={color.name}
                         onClick={() => setSelectedColor(i)}
-                        className={`w-7 h-7 rounded-full border-2 p-0.5 transition-all cursor-pointer ${selectedColor === i ? 'border-[#E63946]' : 'border-transparent'}`}
+                        className={`w-8 h-8 rounded-full border-2 p-0.5 transition-all duration-300 transform hover:scale-110 cursor-pointer flex items-center justify-center ${selectedColor === i ? 'border-[#E63946]' : 'border-white/10'}`}
                       >
-                        <div className="w-full h-full rounded-full" style={{ backgroundColor: color.hex }}></div>
+                        <div className="w-full h-full rounded-full flex items-center justify-center" style={{ backgroundColor: color.hex }}>
+                          {selectedColor === i && <Check size={12} className={color.hex?.toLowerCase() === '#ffffff' ? 'text-black' : 'text-white'} />}
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -275,7 +268,7 @@ const ProductDetails = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col gap-3 mb-10">
+            <div className="flex flex-col gap-4 mb-10">
               <div className="flex items-center gap-3">
                 <div className="flex items-center bg-zinc-900 border border-white/5 rounded-lg h-14 px-2">
                   <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white/5 transition-all bg-transparent border-none text-white cursor-pointer"><Minus size={14} /></button>
@@ -289,12 +282,22 @@ const ProductDetails = () => {
 
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-[#E63946] text-white font-black uppercase tracking-[0.2em] text-[10px] h-14 rounded-lg hover:brightness-110 transition-all duration-500 flex items-center justify-center gap-4 group shadow-xl active:scale-[0.98] border-none cursor-pointer"
+                className="w-full bg-[#E63946] text-white px-8 h-14 rounded-md font-bold text-[11px] uppercase tracking-[0.25em] transition-all duration-300 hover:brightness-110 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#E63946]/20 active:scale-[0.98] flex items-center justify-center gap-4 group cursor-pointer border-none"
+                style={{ fontFamily: "'Inter', sans-serif" }}
               >
-                <ShoppingBag size={16} className="group-hover:rotate-12 transition-transform" />
-                <span>Add To Cart</span>
-                <span className="opacity-20">|</span>
-                <span className="text-[11px]">${(Number(product.price?.sale_price || product.price?.amount || 0) * quantity).toFixed(2)}</span>
+                <ShoppingBag
+                  size={18}
+                  strokeWidth={2.5}
+                  className="group-hover:rotate-12 transition-transform duration-300"
+                />
+
+                <div className="flex items-center gap-3">
+                  <span className="relative z-10">Add To Cart</span>
+                  <span className="w-[1px] h-4 bg-white/20"></span>
+                  <span className="text-[12px] font-black tracking-normal">
+                    ${(Number(product.price?.sale_price || product.price?.amount || 0) * quantity).toFixed(2)}
+                  </span>
+                </div>
               </button>
             </div>
 
@@ -308,13 +311,13 @@ const ProductDetails = () => {
         </div>
 
         {/* --- BOTTOM: Detail Tabs --- */}
-        <div className="mt-16 mb-4 md:mt-32 max-w-[1216px] mx-auto px-4 lg:px-0">
-          <div className="flex gap-12 border-b border-white/[0.03] mb-12 overflow-x-auto no-scrollbar relative">
+        <div className="mt-20 mb-4 md:mt-32 max-w-[1216px] mx-auto">
+          <div className="flex gap-8 md:gap-12 border-b border-white/[0.03] mb-12 overflow-x-auto no-scrollbar relative">
             {['DESCRIPTION', 'SPECIFICATIONS', 'LOGISTICS'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-5 text-[10px] font-black tracking-[0.3em] transition-all duration-500 relative group bg-transparent border-none cursor-pointer ${activeTab === tab ? 'text-white' : 'text-white/20 hover:text-white/50'}`}
+                className={`pb-5 text-[10px] font-black tracking-[0.3em] whitespace-nowrap transition-all duration-500 relative group bg-transparent border-none cursor-pointer ${activeTab === tab ? 'text-white' : 'text-white/20 hover:text-white/50'}`}
               >
                 <span className="relative z-10">{tab}</span>
                 {activeTab === tab && (
@@ -327,10 +330,10 @@ const ProductDetails = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             <div className="lg:col-span-8 space-y-10">
               <div>
-                <h3 className="text-3xl judson-bold text-white mb-8 tracking-tight">Manifesto</h3>
+                <h3 className="text-2xl md:text-3xl judson-bold text-white mb-8 tracking-tight">Manifesto</h3>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeTab}
@@ -346,7 +349,7 @@ const ProductDetails = () => {
                       </p>
                     )}
                     {activeTab === 'SPECIFICATIONS' && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16">
                         {product.tabs?.specifications?.map((spec: any, i: number) => (
                           <div key={i} className="flex justify-between items-center border-b border-white/[0.03] py-4">
                             <span className="text-[11px] text-zinc-500 uppercase font-bold tracking-widest">{spec.label}</span>
@@ -380,8 +383,9 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <div className="lg:col-span-4 lg:sticky lg:top-32">
-              <div className="relative p-8 rounded-[2px] bg-[#0A0A0A] border border-white/[0.05] overflow-hidden">
+            {/* Protocol Card */}
+            <div className="lg:col-span-4 lg:sticky lg:top-32 w-full">
+              <div className="relative p-6 md:p-8 rounded-[2px] bg-[#0A0A0A] border border-white/[0.05] overflow-hidden">
                 <div className="absolute -right-4 -bottom-4 opacity-[0.02] pointer-events-none italic judson-bold text-7xl select-none">Care</div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-8">
@@ -415,28 +419,28 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* --- FULLSCREEN LIGHTBOX PORTAL --- */}
+      {/* --- FULLSCREEN LIGHTBOX --- */}
       <AnimatePresence>
         {isFullscreen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
+            className="fixed inset-0 z-[9999] bg-black/98 backdrop-blur-xl flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
             onClick={() => setIsFullscreen(false)}
           >
-            <button className="absolute top-10 right-10 text-white/40 hover:text-white transition-all group bg-transparent border-none cursor-pointer">
-              <X size={40} strokeWidth={1} className="group-hover:rotate-90 transition-transform duration-500" />
+            <button className="absolute top-5 right-5 md:top-10 md:right-10 text-white/40 hover:text-white transition-all group bg-transparent border-none cursor-pointer">
+              <X size={40} strokeWidth={1} className="group-hover:rotate-90 transition-transform duration-500 w-8 h-8 md:w-10 md:h-10" />
             </button>
             <motion.img
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               src={mainDisplayImg}
-              className="max-w-full max-h-full object-contain shadow-2xl"
+              className="max-w-full max-h-[85vh] object-contain shadow-2xl"
               alt="Full view"
             />
-            <div className="absolute bottom-10 text-white/20 text-[10px] font-black tracking-[0.5em] uppercase">
+            <div className="absolute bottom-10 text-white/20 text-[8px] md:text-[10px] font-black tracking-[0.5em] uppercase text-center px-4">
               {product.name} — Perspective {(productGallery.indexOf(mainDisplayImg) + 1).toString().padStart(2, '0')}
             </div>
           </motion.div>

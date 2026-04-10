@@ -52,6 +52,16 @@ const links = [
             { label: "Upload Video", href: "/adminDashboard/videos/addVideos" },
         ]
     },
+    { 
+        label: "Testimonials", 
+        href: "/adminDashboard/testimonials", 
+        icon: IconVideo, 
+        isDropdown: true,
+        subItems: [
+            { label: "All Testimonials", href: "/adminDashboard/testimonials" },
+            { label: "Add Testimonial", href: "/adminDashboard/testimonials/addTestimonials" },
+        ]
+    },
     { label: "Orders", href: "/adminDashboard/orders", icon: IconClipboardList },
     { label: "Settings", href: "/adminDashboard/settings", icon: IconSettings },
 ];

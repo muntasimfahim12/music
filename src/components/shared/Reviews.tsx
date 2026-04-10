@@ -2,31 +2,44 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../lib/axios'; 
 import { Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// API Response অনুযায়ী ইন্টারফেস আপডেট করা হয়েছে
 interface Review {
-  id: number;
+  _id: string; // MongoDB ID সাধারণত _id হয়
   name: string;
-  image: string;
+  avatar: string; // আপনার ব্যাকএন্ডে হয়তো avatar নাম আছে
   status: string;
-  date: string;
-  comment: string;
+  createdAt: string;
+  message: string;
 }
 
 const Reviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ইমেজ URL হ্যান্ডেল করার জন্য (Cloudinary বা Local Multer)
+  const getImageUrl = (path: string) => {
+    if (!path) return "/placeholder-avatar.png";
+    if (path.startsWith("http")) return path;
+    // যদি ব্যাকএন্ড লোকাল ফোল্ডারে ইমেজ রাখে তবে baseURL থেকে নিবে
+    const serverBase = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:5000';
+    return `${serverBase}/${path}`;
+  };
+
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('/data/reviews.json');
-        setReviews(response.data);
-        setLoading(false);
+        // আপনার ব্যাকএন্ড এন্ডপয়েন্ট অনুযায়ী পরিবর্তন করুন
+        const response = await api.get('/testimonials'); 
+        if (response.data.success) {
+          setReviews(response.data.data);
+        }
       } catch (error) {
         console.error("Error fetching reviews:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -34,17 +47,18 @@ const Reviews = () => {
   }, []);
 
   if (loading) return (
-    <div className="w-full h-[323px] flex items-center justify-center text-zinc-700 font-inter uppercase text-[9px] tracking-widest">
+    <div className="w-full h-[323px] flex items-center justify-center text-zinc-700 font-inter uppercase text-[9px] tracking-widest bg-transparent">
       Loading Manifesto...
     </div>
   );
 
+  // ইনফিনিট স্লাইডারের জন্য ডেটা ডুপ্লিকেট করা
   const duplicatedReviews = [...reviews, ...reviews, ...reviews, ...reviews];
 
   return (
     <section className="relative overflow-hidden bg-transparent mx-auto" style={{ maxWidth: '794.67px', height: '323px' }}>
 
-      {/* Header - Compact version to save space */}
+      {/* Header */}
       <div className="flex items-end justify-between mb-6 px-2">
         <div>
           <h3 className="text-white text-3xl judson-bold tracking-tight leading-none mb-1 ">Reviews</h3>
@@ -68,10 +82,10 @@ const Reviews = () => {
         <motion.div
           className="flex gap-3 cursor-grab active:cursor-grabbing"
           animate={{
-            x: [0, -2000],
+            x: reviews.length > 0 ? [0, -2000] : 0,
           }}
           transition={{
-            duration: 25,
+            duration: 35, // স্পিড একটু স্মুথ করার জন্য বাড়ানো হয়েছে
             repeat: Infinity,
             ease: "linear",
           }}
@@ -79,7 +93,7 @@ const Reviews = () => {
         >
           {duplicatedReviews.map((review, index) => (
             <div
-              key={`${review.id}-${index}`}
+              key={`${review._id}-${index}`}
               className="w-[280px] flex-shrink-0 bg-[#0A0A0A] border border-zinc-900/50 p-5 rounded-[8px] hover:bg-[#0E0E0E] transition-all duration-500"
             >
               {/* User Info */}
@@ -87,9 +101,9 @@ const Reviews = () => {
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full overflow-hidden border border-zinc-800 p-[1px]">
                     <img
-                      src={review.image}
+                      src={getImageUrl(review.avatar)}
                       alt={review.name}
-                      className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
+                      className="w-full h-full object-cover rounded-full transition-all duration-700"
                     />
                   </div>
                   <div>
@@ -99,12 +113,14 @@ const Reviews = () => {
                     </p>
                   </div>
                 </div>
-                <span className="text-[9px] text-zinc-700 font-mono">{review.date}</span>
+                <span className="text-[9px] text-zinc-700 font-mono">
+                   {new Date(review.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                </span>
               </div>
 
-              {/* Comment - Line Clamp for consistency */}
+              {/* Comment */}
               <p className="text-zinc-500 text-[12px] leading-[1.6] font-medium tracking-tight font-inter h-[60px] overflow-hidden line-clamp-3">
-                {review.comment}
+                {review.message}
               </p>
 
               {/* Bottom Decoration */}
@@ -120,7 +136,7 @@ const Reviews = () => {
           ))}
         </motion.div>
 
-        {/* Shadow Overlays for smooth fade */}
+        {/* Shadow Overlays */}
         <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none" />
       </div>

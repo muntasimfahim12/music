@@ -3,12 +3,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IconPlus, IconSearch, IconTrash, IconEdit, IconX,
-  IconDeviceFloppy, IconLoader2, IconPackage,
-  IconPhotoEdit, IconLayoutGrid, IconArrowRight, IconPalette
+  IconDeviceFloppy, IconLoader2, IconSearch as IconSearchLucide
 } from "@tabler/icons-react";
 import Link from "next/link";
 import api from "../../../lib/axios";
@@ -23,7 +22,6 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // --- Image & Color States ---
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [mainImageFile, setMainImageFile] = useState<File | null>(null);
@@ -45,10 +43,10 @@ export default function ProductsPage() {
   useEffect(() => { fetchProducts(); }, []);
 
   const openEditModal = (product: any) => {
-    // কালার এবং ইমেজ লজিক সেট করা
+    // ✅ এখানে অবজেক্ট ফরম্যাট নিশ্চিত করা হয়েছে
     setEditingProduct({
         ...product,
-        colors: product.colors || [] // ব্যাকেন্ড থেকে কালার না থাকলে এম্পটি অ্যারে
+        colors: Array.isArray(product.colors) ? product.colors : []
     });
     
     const images = [
@@ -59,26 +57,34 @@ export default function ProductsPage() {
 
     setGalleryImages(images);
     setActiveImageIndex(0);
-    setMainImageFile(null);
-    setHoverImageFile(null);
   };
 
-  // --- Color Handlers ---
+  // --- Fixed Color Handlers ---
   const addColor = () => {
-    if (!editingProduct.colors.includes(currentColor)) {
+    // চেক করা হচ্ছে কালারটি অলরেডি আছে কিনা (hex দিয়ে চেক করছি)
+    const exists = editingProduct.colors.some((c: any) => 
+      (typeof c === 'string' ? c : c.hex) === currentColor
+    );
+
+    if (!exists) {
+      // নতুন কালার অবজেক্ট আকারে অ্যাড হচ্ছে
+      const newColorObj = { name: currentColor, hex: currentColor };
       setEditingProduct({
         ...editingProduct,
-        colors: [...editingProduct.colors, currentColor]
+        colors: [...editingProduct.colors, newColorObj]
       });
     } else {
       toast.error("Color already exists");
     }
   };
 
-  const removeColor = (colorToRemove: string) => {
+  const removeColor = (colorToBtn: any) => {
+    const hexToRemove = typeof colorToBtn === 'string' ? colorToBtn : colorToBtn.hex;
     setEditingProduct({
       ...editingProduct,
-      colors: editingProduct.colors.filter((c: string) => c !== colorToRemove)
+      colors: editingProduct.colors.filter((c: any) => 
+        (typeof c === 'string' ? c : c.hex) !== hexToRemove
+      )
     });
   };
 
@@ -95,7 +101,7 @@ export default function ProductsPage() {
       formData.append("category", editingProduct.category);
       formData.append("description", editingProduct.description);
       
-      // ✅ কালারগুলো JSON স্ট্রিং হিসেবে পাঠানো হচ্ছে
+      // ✅ ডাটাবেজের জন্য সঠিক ফরম্যাট (JSON Stringify)
       formData.append("colors", JSON.stringify(editingProduct.colors));
 
       if (mainImageFile) formData.append("mainImage", mainImageFile);
@@ -136,7 +142,7 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-[#FDFDFD] font-sans text-[#1a1a1a]">
       <div className="max-w-[1600px] mx-auto px-6 lg:px-16 pt-8 pb-24">
 
-        {/* --- HEADER --- */}
+        {/* --- HEADER (No Changes) --- */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-gray-100 pb-8">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -164,7 +170,7 @@ export default function ProductsPage() {
 
         {/* --- SEARCH BAR --- */}
         <div className="relative max-w-xl mb-12 group">
-          <IconSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#4177BC] transition-colors" size={18} />
+          <IconSearchLucide className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#4177BC] transition-colors" size={18} />
           <input
             type="text"
             value={searchQuery}
@@ -190,10 +196,11 @@ export default function ProductsPage() {
                       alt={product.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    {/* কালার ডট প্রিভিউ কার্ডের ওপরে */}
+                    
+                    {/* কালার ডট প্রিভিউ কার্ডের ওপরে (Fixed) */}
                     <div className="absolute top-4 left-4 flex gap-1.5 bg-white/20 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                      {product.colors?.slice(0, 3).map((col: string, i: number) => (
-                        <div key={i} className="w-3 h-3 rounded-full border border-white" style={{ backgroundColor: col }} />
+                      {product.colors?.slice(0, 4).map((col: any, i: number) => (
+                        <div key={i} className="w-3 h-3 rounded-full border border-white shadow-sm" style={{ backgroundColor: typeof col === 'string' ? col : col.hex }} />
                       ))}
                     </div>
 
@@ -220,7 +227,7 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {/* --- EDIT MODAL --- */}
+        {/* --- EDIT MODAL (Fully Fixed) --- */}
         <AnimatePresence>
           {editingProduct && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
@@ -230,7 +237,7 @@ export default function ProductsPage() {
                 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
                 className="relative w-full max-w-5xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[90vh]"
               >
-                {/* Modal Gallery */}
+                {/* Modal Gallery Side */}
                 <div className="md:w-[350px] bg-gray-50 p-6 border-r border-gray-100 flex flex-col">
                   <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg bg-white mb-4">
                     <img src={galleryImages[activeImageIndex]} className="w-full h-full object-cover" alt="Preview" />
@@ -243,17 +250,20 @@ export default function ProductsPage() {
                     ))}
                   </div>
 
-                  {/* ✅ Modal-এর ভেতর কালার দেখার জায়গা */}
+                  {/* ✅ Fixed: Modal কালার রেন্ডারিং */}
                   <div className="mt-auto pt-6 border-t border-gray-200">
                     <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-3">Managed Colors</label>
                     <div className="flex flex-wrap gap-2">
-                      {editingProduct.colors?.map((col: string, i: number) => (
+                      {editingProduct.colors?.map((col: any, i: number) => (
                         <div key={i} className="group relative">
-                          <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: col }} />
+                          <div 
+                            className="w-8 h-8 rounded-full border-2 border-white shadow-sm transition-transform group-hover:scale-110" 
+                            style={{ backgroundColor: typeof col === 'string' ? col : col.hex }} 
+                          />
                           <button 
                             type="button"
                             onClick={() => removeColor(col)}
-                            className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm"
                           >
                             <IconX size={10} stroke={3} />
                           </button>
@@ -263,7 +273,7 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
-                {/* Modal Form */}
+                {/* Modal Form Side */}
                 <div className="flex-1 p-8 overflow-y-auto">
                   <div className="flex justify-between items-center mb-8">
                     <h2 className="text-xl font-black uppercase tracking-tight">Update Release</h2>
@@ -280,24 +290,24 @@ export default function ProductsPage() {
                         <div>
                             <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Price ($)</label>
                             <input
-                            type="number"
-                            value={typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price}
-                            onChange={(e) => setEditingProduct({ ...editingProduct, price: { ...editingProduct.price, amount: e.target.value } })}
-                            className={inputClasses}
+                              type="number"
+                              value={typeof editingProduct.price === 'object' ? editingProduct.price.amount : editingProduct.price}
+                              onChange={(e) => setEditingProduct({ ...editingProduct, price: { ...editingProduct.price, amount: e.target.value } })}
+                              className={inputClasses}
                             />
                         </div>
 
                         <div>
                             <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Category</label>
                             <select value={editingProduct.category} onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })} className={inputClasses}>
-                            <option value="TEES">TEES</option>
-                            <option value="HOODIES">HOODIES</option>
-                            <option value="ACCESSORIES">ACCESSORIES</option>
+                              <option value="TEES">TEES</option>
+                              <option value="HOODIES">HOODIES</option>
+                              <option value="ACCESSORIES">ACCESSORIES</option>
                             </select>
                         </div>
                     </div>
 
-                    {/* ✅ এডিট মোডালে নতুন কালার অ্যাড করার অপশন */}
+                    {/* ✅ Fixed: Color Picker Section */}
                     <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                         <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-3">Add More Colors</label>
                         <div className="flex items-center gap-3">
@@ -307,11 +317,11 @@ export default function ProductsPage() {
                                 onChange={(e) => setCurrentColor(e.target.value)}
                                 className="w-10 h-10 rounded-lg cursor-pointer border-2 border-white shadow-sm"
                             />
-                            <span className="text-xs font-bold text-gray-500 uppercase">{currentColor}</span>
+                            <span className="text-xs font-bold text-gray-500 uppercase font-mono">{currentColor}</span>
                             <button 
                                 type="button"
                                 onClick={addColor}
-                                className="ml-auto flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-sm"
+                                className="ml-auto flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-sm active:scale-95"
                             >
                                 <IconPlus size={14} stroke={3} /> Add
                             </button>
@@ -326,7 +336,7 @@ export default function ProductsPage() {
                     <button
                       disabled={isUpdating}
                       type="submit"
-                      className="w-full bg-black hover:bg-[#4177BC] text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg"
+                      className="w-full bg-black hover:bg-[#4177BC] text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg disabled:bg-gray-400"
                     >
                       {isUpdating ? <IconLoader2 className="animate-spin" size={16} /> : <IconDeviceFloppy size={16} />}
                       Sync Changes to Vault
